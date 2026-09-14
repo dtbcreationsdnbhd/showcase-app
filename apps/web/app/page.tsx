@@ -1,23 +1,26 @@
-import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import Hero from "@/components/landing/Hero";
+import Navbar from "@/components/landing/Navbar";
+import { getLandingHeroSrc, getLandingLogoSrc } from "@/lib/landing-assets";
+
+const DESIGN_WIDTH = 1920;
 
 export default function Home() {
+  const logoSrc = getLandingLogoSrc();
+  const heroSrc = getLandingHeroSrc();
+
   return (
-    <Container maxWidth="sm" sx={{ py: 10 }}>
-      <Stack spacing={2} sx={{ alignItems: "flex-start" }}>
-        <Typography variant="h4" component="h1">
-          showcase-app
-        </Typography>
-        <Typography color="text.secondary">
-          Next.js + MUI scaffold. Connect Supabase via{" "}
-          <code>apps/web/.env</code>.
-        </Typography>
-        <Button variant="contained" color="primary">
-          Get started
-        </Button>
-      </Stack>
-    </Container>
+    <Box component="main" className="landing-frame">
+      <Box
+        className="landing-stage"
+        style={{
+          transform: `scale(calc(100vw / ${DESIGN_WIDTH}px))`,
+          transformOrigin: "top left",
+        }}
+      >
+        <Hero heroSrc={heroSrc} />
+        <Navbar logoSrc={logoSrc} />
+      </Box>
+    </Box>
   );
 }
