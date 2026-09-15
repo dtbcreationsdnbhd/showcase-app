@@ -4,7 +4,14 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import { useState, type ReactNode } from "react";
-import { CONTACT_FORM_HEIGHT, CONTACT_FORM_PAD_TOP, CONTACT_WAVE_TOP_FADE, figmaPx } from "@/lib/landing-layout";
+import {
+  CONTACT_FORM_HEIGHT,
+  CONTACT_FORM_PAD_BOTTOM,
+  CONTACT_FORM_PAD_TOP,
+  CONTACT_WAVE_MASK_FADE,
+  CONTACT_WAVE_MASK_HOLD_PCT,
+  figmaPx,
+} from "@/lib/landing-layout";
 
 const barlow = {
   fontFamily:
@@ -302,6 +309,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
         alignItems: "center",
         p: 0,
         pt: `${CONTACT_FORM_PAD_TOP}px`,
+        pb: `${CONTACT_FORM_PAD_BOTTOM}px`,
         width: "100%",
         height: CONTACT_FORM_HEIGHT,
         bgcolor: "#050B13",
@@ -316,9 +324,8 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
             inset: 0,
             zIndex: 0,
             pointerEvents: "none",
-            WebkitMaskImage:
-              "linear-gradient(180deg, transparent 0%, #000 42%)",
-            maskImage: "linear-gradient(180deg, transparent 0%, #000 42%)",
+            WebkitMaskImage: `linear-gradient(180deg, transparent 0%, transparent ${CONTACT_WAVE_MASK_HOLD_PCT}%, #000 calc(${CONTACT_WAVE_MASK_HOLD_PCT}% + ${CONTACT_WAVE_MASK_FADE}px), #000 100%)`,
+            maskImage: `linear-gradient(180deg, transparent 0%, transparent ${CONTACT_WAVE_MASK_HOLD_PCT}%, #000 calc(${CONTACT_WAVE_MASK_HOLD_PCT}% + ${CONTACT_WAVE_MASK_FADE}px), #000 100%)`,
           }}
         >
           <Image
@@ -332,24 +339,9 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
       ) : null}
 
       <Box
-        aria-hidden
-        sx={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          top: 0,
-          height: CONTACT_WAVE_TOP_FADE,
-          background:
-            "linear-gradient(180deg, #050B13 18%, rgba(5, 11, 19, 0) 100%)",
-          pointerEvents: "none",
-          zIndex: 1,
-        }}
-      />
-
-      <Box
         sx={{
           position: "relative",
-          zIndex: 2,
+          zIndex: 10,
           display: "flex",
           flexDirection: "row",
           justifyContent: "center",
