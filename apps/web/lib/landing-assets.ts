@@ -57,3 +57,12 @@ export function getLandingProjectShowcaseSrc(): string | null {
     publicUrl("landing/project-showcase.webp")
   );
 }
+
+/** Drop `contact-wave.png` (or `.jpg` / `.webp`) into `apps/web/public/landing/`. */
+export function getLandingContactWaveSrc(): string | null {
+  return (
+    publicUrl("landing/contact-wave.png") ??
+    publicUrl("landing/contact-wave.jpg") ??
+    publicUrl("landing/contact-wave.webp")
+  );
+}

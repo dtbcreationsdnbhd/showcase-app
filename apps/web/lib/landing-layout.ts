@@ -19,8 +19,13 @@ export const SHOWCASE_PAD_BOTTOM = figmaPx(90);
 /** padding + header 70 + gap 50 + cards 414.75 */
 export const SHOWCASE_HEIGHT =
   SHOWCASE_PAD_TOP + figmaPx(70 + 50 + 414.75) + SHOWCASE_PAD_BOTTOM;
+export const CONTACT_CTA_HEIGHT = figmaPx(200);
+export const CONTACT_FORM_PAD_TOP = figmaPx(56);
+export const CONTACT_FORM_HEIGHT = figmaPx(587.25) + CONTACT_FORM_PAD_TOP;
 /** Short fade from the hero photo into the solutions background. */
 export const HERO_BOTTOM_FADE = figmaPx(110);
+/** Soften the hard top edge of the contact wave photo into #050B13. */
+export const CONTACT_WAVE_TOP_FADE = figmaPx(280);
 
 export const LANDING_DESIGN_HEIGHT =
   HERO_DESIGN_HEIGHT +
@@ -28,4 +33,6 @@ export const LANDING_DESIGN_HEIGHT =
   SOLUTIONS_ROWS_HEIGHT +
   PROCESS_INTRO_HEIGHT +
   PROCESS_STEPS_HEIGHT +
-  SHOWCASE_HEIGHT;
+  SHOWCASE_HEIGHT +
+  CONTACT_CTA_HEIGHT +
+  CONTACT_FORM_HEIGHT;

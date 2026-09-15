@@ -1,10 +1,16 @@
 import Box from "@mui/material/Box";
+import ContactCta from "@/components/landing/ContactCta";
+import ContactForm from "@/components/landing/ContactForm";
 import Hero from "@/components/landing/Hero";
 import HowWeWork from "@/components/landing/HowWeWork";
 import Navbar from "@/components/landing/Navbar";
 import ProjectShowcase from "@/components/landing/ProjectShowcase";
 import TargetedSolutions from "@/components/landing/TargetedSolutions";
-import { getLandingHeroSrc, getLandingLogoSrc } from "@/lib/landing-assets";
+import {
+  getLandingContactWaveSrc,
+  getLandingHeroSrc,
+  getLandingLogoSrc,
+} from "@/lib/landing-assets";
 import {
   LANDING_DESIGN_HEIGHT,
   LANDING_DESIGN_WIDTH,
@@ -13,6 +19,7 @@ import {
 export default function Home() {
   const logoSrc = getLandingLogoSrc();
   const heroSrc = getLandingHeroSrc();
+  const contactWaveSrc = getLandingContactWaveSrc();
 
   return (
     <Box
@@ -34,6 +41,8 @@ export default function Home() {
         <TargetedSolutions />
         <HowWeWork />
         <ProjectShowcase />
+        <ContactCta />
+        <ContactForm waveSrc={contactWaveSrc} />
       </Box>
     </Box>
   );
