@@ -22,12 +22,12 @@ body {
   font-family: var(--font-plus-jakarta), "Plus Jakarta Sans", system-ui, sans-serif;
 }
 
-/* Lock the landing to the 1920×1200 composition (monitor), then scale to 100vw. */
+/* Lock the landing to the 1920 composition (monitor), then scale to 100vw.
+   Height is set inline from LANDING_DESIGN_HEIGHT so new sections can add on. */
 .landing-frame {
   position: relative;
   width: 100%;
   overflow-x: clip;
-  height: calc(100vw * 1200 / 1920);
 }
 
 .landing-stage {

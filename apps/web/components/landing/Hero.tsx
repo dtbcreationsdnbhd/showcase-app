@@ -2,6 +2,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import PillButton from "@/components/landing/PillButton";
+import { HERO_BOTTOM_FADE } from "@/lib/landing-layout";
 
 const barlow = {
   fontFamily:
@@ -15,7 +16,7 @@ export default function Hero({ heroSrc }: { heroSrc: string | null }) {
       sx={{
         position: "relative",
         width: "100%",
-        bgcolor: "background.default",
+        bgcolor: "#050B13",
       }}
     >
       {heroSrc ? (
@@ -49,6 +50,19 @@ export default function Hero({ heroSrc }: { heroSrc: string | null }) {
           inset: 0,
           background:
             "linear-gradient(59.86deg, #000000 0%, rgba(0, 0, 0, 0) 55.05%)",
+          pointerEvents: "none",
+        }}
+      />
+
+      <Box
+        aria-hidden
+        sx={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          bottom: 0,
+          height: HERO_BOTTOM_FADE,
+          background: "linear-gradient(180deg, rgba(5, 11, 19, 0) 0%, #050B13 100%)",
           pointerEvents: "none",
         }}
       />

@@ -22,3 +22,16 @@ export function getLandingHeroSrc(): string | null {
     publicUrl("landing/hero.webp")
   );
 }
+
+export type LandingServiceIcon = "ai" | "web" | "star" | "refresh";
+
+/** Drop `ai.png` / `web.png` / `star.png` / `refresh.png` into `apps/web/public/landing/`. */
+export function getLandingServiceIconSrc(
+  key: LandingServiceIcon,
+): string | null {
+  return (
+    publicUrl(`landing/${key}.png`) ??
+    publicUrl(`landing/${key}.jpg`) ??
+    publicUrl(`landing/${key}.webp`)
+  );
+}
