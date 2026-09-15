@@ -159,11 +159,10 @@ function ServiceRow({
         boxSizing: "border-box",
         display: "flex",
         flexDirection: "row",
-        justifyContent: "space-between",
+        justifyContent: "center",
         alignItems: "center",
         py: 0,
-        px: `${figmaPx(37)}px`,
-        gap: `${figmaPx(130)}px`,
+        gap: `${figmaPx(210)}px`,
         width: "100%",
         height: figmaPx(370),
         flexShrink: 0,
@@ -203,7 +202,7 @@ function ServiceRow({
           alignItems: "flex-start",
           p: 0,
           gap: `${figmaPx(60)}px`,
-          width: figmaPx(503),
+          width: figmaPx(380),
           flexShrink: 0,
         }}
       >
@@ -266,8 +265,7 @@ export default function TargetedSolutions() {
           sx={{
             position: "relative",
             width: "100%",
-            height: figmaPx(176),
-            my: `${figmaPx(-30)}px`,
+            height: figmaPx(150),
             flexShrink: 0,
           }}
         >
@@ -305,7 +303,7 @@ export default function TargetedSolutions() {
             justifyContent: "center",
             alignItems: "center",
             p: 0,
-            gap: `${figmaPx(24)}px`,
+            gap: `${figmaPx(36)}px`,
             width: "100%",
             height: figmaPx(144),
             flexShrink: 0,
@@ -384,7 +382,7 @@ export default function TargetedSolutions() {
             flexDirection: "column",
             alignItems: "flex-start",
             p: 0,
-            gap: `${figmaPx(100)}px`,
+            gap: `${figmaPx(50)}px`,
             width: figmaPx(1152),
           }}
         >

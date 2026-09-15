@@ -9,9 +9,18 @@ export function figmaPx(px: number): number {
 
 export const HERO_DESIGN_HEIGHT = 1200;
 export const SOLUTIONS_INTRO_HEIGHT = figmaPx(418);
-export const SOLUTIONS_ROWS_HEIGHT = figmaPx(1960);
+/** 4 rows of 370 + 3 gaps of 50, plus a little air before How We Work. */
+export const SOLUTIONS_ROWS_HEIGHT = figmaPx(4 * 370 + 3 * 50 + 64);
+export const PROCESS_INTRO_HEIGHT = figmaPx(144);
+export const PROCESS_STEPS_GAP = figmaPx(90);
+export const PROCESS_STEPS_HEIGHT = figmaPx(1172);
 /** Short fade from the hero photo into the solutions background. */
 export const HERO_BOTTOM_FADE = figmaPx(110);
 
 export const LANDING_DESIGN_HEIGHT =
-  HERO_DESIGN_HEIGHT + SOLUTIONS_INTRO_HEIGHT + SOLUTIONS_ROWS_HEIGHT;
+  HERO_DESIGN_HEIGHT +
+  SOLUTIONS_INTRO_HEIGHT +
+  SOLUTIONS_ROWS_HEIGHT +
+  PROCESS_INTRO_HEIGHT +
+  PROCESS_STEPS_GAP +
+  PROCESS_STEPS_HEIGHT;

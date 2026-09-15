@@ -23,7 +23,20 @@ export function getLandingHeroSrc(): string | null {
   );
 }
 
+export type LandingProcessStep = "step01" | "step02" | "step03" | "step04";
+
 export type LandingServiceIcon = "ai" | "web" | "star" | "refresh";
+
+/** Drop `step01.png`–`step04.png` into `apps/web/public/landing/`. */
+export function getLandingProcessStepSrc(
+  key: LandingProcessStep,
+): string | null {
+  return (
+    publicUrl(`landing/${key}.png`) ??
+    publicUrl(`landing/${key}.jpg`) ??
+    publicUrl(`landing/${key}.webp`)
+  );
+}
 
 /** Drop `ai.png` / `web.png` / `star.png` / `refresh.png` into `apps/web/public/landing/`. */
 export function getLandingServiceIconSrc(
