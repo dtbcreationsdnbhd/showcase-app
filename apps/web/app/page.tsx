@@ -2,6 +2,7 @@ import Box from "@mui/material/Box";
 import Hero from "@/components/landing/Hero";
 import HowWeWork from "@/components/landing/HowWeWork";
 import Navbar from "@/components/landing/Navbar";
+import ProjectShowcase from "@/components/landing/ProjectShowcase";
 import TargetedSolutions from "@/components/landing/TargetedSolutions";
 import { getLandingHeroSrc, getLandingLogoSrc } from "@/lib/landing-assets";
 import {
@@ -32,6 +33,7 @@ export default function Home() {
         <Navbar logoSrc={logoSrc} />
         <TargetedSolutions />
         <HowWeWork />
+        <ProjectShowcase />
       </Box>
     </Box>
   );

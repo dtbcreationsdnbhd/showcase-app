@@ -7,7 +7,6 @@ import {
 } from "@/lib/landing-assets";
 import {
   PROCESS_INTRO_HEIGHT,
-  PROCESS_STEPS_GAP,
   PROCESS_STEPS_HEIGHT,
   figmaPx,
 } from "@/lib/landing-layout";
@@ -174,8 +173,7 @@ export default function HowWeWork() {
         alignItems: "flex-start",
         p: 0,
         width: "100%",
-        height:
-          PROCESS_INTRO_HEIGHT + PROCESS_STEPS_GAP + PROCESS_STEPS_HEIGHT,
+        height: PROCESS_INTRO_HEIGHT + PROCESS_STEPS_HEIGHT,
         bgcolor: "#050B13",
         position: "relative",
       }}

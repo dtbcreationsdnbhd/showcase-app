@@ -48,3 +48,12 @@ export function getLandingServiceIconSrc(
     publicUrl(`landing/${key}.webp`)
   );
 }
+
+/** Drop `project-showcase.png` (or `.jpg` / `.webp`) into `apps/web/public/landing/`. */
+export function getLandingProjectShowcaseSrc(): string | null {
+  return (
+    publicUrl("landing/project-showcase.png") ??
+    publicUrl("landing/project-showcase.jpg") ??
+    publicUrl("landing/project-showcase.webp")
+  );
+}
