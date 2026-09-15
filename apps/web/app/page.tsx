@@ -1,6 +1,7 @@
 import Box from "@mui/material/Box";
 import ContactCta from "@/components/landing/ContactCta";
 import ContactForm from "@/components/landing/ContactForm";
+import Footer from "@/components/landing/Footer";
 import Hero from "@/components/landing/Hero";
 import HowWeWork from "@/components/landing/HowWeWork";
 import Navbar from "@/components/landing/Navbar";
@@ -43,6 +44,7 @@ export default function Home() {
         <ProjectShowcase />
         <ContactCta />
         <ContactForm waveSrc={contactWaveSrc} />
+        <Footer />
       </Box>
     </Box>
   );
