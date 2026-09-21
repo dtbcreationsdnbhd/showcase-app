@@ -13,6 +13,7 @@ export default function Hero({ heroSrc }: { heroSrc: string | null }) {
   return (
     <Box
       component="section"
+      id="top"
       sx={{
         position: "relative",
         width: "100%",
@@ -220,10 +221,12 @@ export default function Hero({ heroSrc }: { heroSrc: string | null }) {
               height: 52,
             }}
           >
-            <PillButton width={244}>Get a Free Consultation</PillButton>
+            <PillButton width={244} href="#contact">
+              Get a Free Consultation
+            </PillButton>
             <Box
               component="a"
-              href="#"
+              href="#projects"
               sx={{
                 boxSizing: "border-box",
                 display: "flex",

@@ -89,6 +89,7 @@ export default function ProjectShowcase({
         height: SHOWCASE_HEIGHT,
         bgcolor: "#050B13",
         position: "relative",
+        scrollMarginTop: `${figmaPx(20)}px`,
       }}
     >
       <Box

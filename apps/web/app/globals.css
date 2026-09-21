@@ -18,6 +18,10 @@ body {
   overflow-x: clip;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: var(--font-plus-jakarta), "Plus Jakarta Sans", system-ui, sans-serif;
 }

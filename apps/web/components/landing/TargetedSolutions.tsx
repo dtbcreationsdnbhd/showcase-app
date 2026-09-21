@@ -219,7 +219,6 @@ export default function TargetedSolutions() {
   return (
     <Box
       component="section"
-      id="services"
       sx={{
         boxSizing: "border-box",
         display: "flex",
@@ -267,7 +266,9 @@ export default function TargetedSolutions() {
             width: "100%",
             height: figmaPx(150),
             flexShrink: 0,
+            scrollMarginTop: `${figmaPx(50)}px`,
           }}
+          id="services"
         >
           <Box
             component="h2"

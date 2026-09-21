@@ -3,10 +3,10 @@ import Typography from "@mui/material/Typography";
 import Image from "next/image";
 
 const NAV_LINKS = [
-  { label: "HOME", href: "#" },
-  { label: "SERVICES", href: "#" },
-  { label: "HOW WE WORK", href: "#" },
-  { label: "PROJECTS", href: "#" },
+  { label: "HOME", hash: "#top" },
+  { label: "SERVICES", hash: "#services" },
+  { label: "HOW WE WORK", hash: "#how-we-work" },
+  { label: "PROJECTS", hash: "#projects" },
 ] as const;
 
 const headerFont = {
@@ -36,15 +36,20 @@ function ArrowRightIcon() {
   );
 }
 
-export default function Navbar({ logoSrc }: { logoSrc: string | null }) {
+export default function Navbar({
+  logoSrc,
+  hrefPrefix = "",
+}: {
+  logoSrc: string | null;
+  hrefPrefix?: string;
+}) {
+  const withPrefix = (hash: string) => `${hrefPrefix}${hash}`;
+
   return (
     <Box
       component="header"
       sx={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0,
+        position: "relative",
         width: "100%",
         height: 102,
         zIndex: 20,
@@ -95,7 +100,7 @@ export default function Navbar({ logoSrc }: { logoSrc: string | null }) {
       >
         <Box
           component="a"
-          href="#"
+          href={withPrefix("#top")}
           sx={{
             display: "flex",
             flexDirection: "row",
@@ -166,7 +171,7 @@ export default function Navbar({ logoSrc }: { logoSrc: string | null }) {
             <Box
               key={link.label}
               component="a"
-              href={link.href}
+              href={withPrefix(link.hash)}
               sx={{
                 display: "flex",
                 flexDirection: "row",
@@ -199,7 +204,7 @@ export default function Navbar({ logoSrc }: { logoSrc: string | null }) {
 
         <Box
           component="a"
-          href="#"
+          href={withPrefix("#contact")}
           sx={{
             boxSizing: "border-box",
             position: "relative",

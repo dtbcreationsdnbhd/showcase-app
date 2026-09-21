@@ -301,6 +301,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
   return (
     <Box
       component="section"
+      id="contact-form"
       sx={{
         position: "relative",
         boxSizing: "border-box",
@@ -314,6 +315,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
         height: CONTACT_FORM_HEIGHT,
         bgcolor: "#050B13",
         overflow: "hidden",
+        scrollMarginTop: `${figmaPx(50)}px`,
       }}
     >
       {waveSrc ? (

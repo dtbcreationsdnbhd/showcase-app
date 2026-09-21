@@ -11,7 +11,7 @@ function ContactPillButton() {
   return (
     <Box
       component="a"
-      href="#"
+      href="#contact-form"
       sx={{
         boxSizing: "border-box",
         position: "relative",
@@ -108,6 +108,7 @@ export default function ContactCta() {
         height: CONTACT_CTA_HEIGHT,
         bgcolor: "#050B13",
         position: "relative",
+        scrollMarginTop: `${figmaPx(70)}px`,
       }}
     >
       <Box

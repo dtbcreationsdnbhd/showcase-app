@@ -176,6 +176,7 @@ export default function HowWeWork() {
         height: PROCESS_INTRO_HEIGHT + PROCESS_STEPS_HEIGHT,
         bgcolor: "#050B13",
         position: "relative",
+        scrollMarginTop: `${figmaPx(90)}px`,
       }}
     >
       <Box
