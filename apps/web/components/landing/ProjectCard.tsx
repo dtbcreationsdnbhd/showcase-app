@@ -24,11 +24,13 @@ export default function ProjectCard({
   description,
   imageSrc,
   followCursor = false,
+  onOpen,
 }: {
   title: string;
   description: string;
   imageSrc: string | null;
   followCursor?: boolean;
+  onOpen?: () => void;
 }) {
   const [cursor, setCursor] = useState<{ x: number; y: number } | null>(null);
 
@@ -65,6 +67,7 @@ export default function ProjectCard({
         onMouseEnter={followCursor ? updateCursor : undefined}
         onMouseMove={followCursor ? updateCursor : undefined}
         onMouseLeave={followCursor ? () => setCursor(null) : undefined}
+        onClick={followCursor && onOpen ? onOpen : undefined}
         sx={{
           position: "relative",
           isolation: "isolate",

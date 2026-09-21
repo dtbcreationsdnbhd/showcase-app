@@ -1,9 +1,10 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import type { SxProps, Theme } from "@mui/material/styles";
-import { getLandingProjectShowcaseSrc } from "@/lib/landing-assets";
+import { getLandingProjectDetailSrc, getLandingProjectShowcaseSrc } from "@/lib/landing-assets";
 import { SHOWCASE_HEIGHT, SHOWCASE_PAD_BOTTOM, SHOWCASE_PAD_TOP, figmaPx } from "@/lib/landing-layout";
 import ProjectCard from "@/components/landing/ProjectCard";
+import ProjectShowcaseGallery from "@/components/landing/ProjectShowcaseGallery";
 
 const barlow = {
   fontFamily:
@@ -68,6 +69,7 @@ export default function ProjectShowcase({
   arrowUpRight?: boolean;
 }) {
   const imageSrc = getLandingProjectShowcaseSrc();
+  const detailImageSrc = getLandingProjectDetailSrc();
 
   return (
     <Box
@@ -165,29 +167,36 @@ export default function ProjectShowcase({
         </Box>
       </Box>
 
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center",
-          p: 0,
-          gap: `${CARD_GAP}px`,
-          width: ROW_W,
-          height: CARD_H,
-          flexShrink: 0,
-        }}
-      >
-        {PROJECTS.map((project) => (
-          <ProjectCard
-            key={project.title}
-            title={project.title}
-            description={project.description}
-            imageSrc={imageSrc}
-            followCursor={followCursor}
-          />
-        ))}
-      </Box>
+      {followCursor ? (
+        <ProjectShowcaseGallery
+          projects={PROJECTS}
+          imageSrc={imageSrc}
+          detailImageSrc={detailImageSrc}
+        />
+      ) : (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+            p: 0,
+            gap: `${CARD_GAP}px`,
+            width: ROW_W,
+            height: CARD_H,
+            flexShrink: 0,
+          }}
+        >
+          {PROJECTS.map((project) => (
+            <ProjectCard
+              key={project.title}
+              title={project.title}
+              description={project.description}
+              imageSrc={imageSrc}
+            />
+          ))}
+        </Box>
+      )}
     </Box>
   );
 }

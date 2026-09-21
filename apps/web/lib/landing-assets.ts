@@ -58,6 +58,15 @@ export function getLandingProjectShowcaseSrc(): string | null {
   );
 }
 
+/** Drop `project.png` (or `.jpg` / `.webp`) into `apps/web/public/landing/`. Shared by all project detail slots. */
+export function getLandingProjectDetailSrc(): string | null {
+  return (
+    publicUrl("landing/project.png") ??
+    publicUrl("landing/project.jpg") ??
+    publicUrl("landing/project.webp")
+  );
+}
+
 /** Drop `contact-wave.png` (or `.jpg` / `.webp`) into `apps/web/public/landing/`. */
 export function getLandingContactWaveSrc(): string | null {
   return (
