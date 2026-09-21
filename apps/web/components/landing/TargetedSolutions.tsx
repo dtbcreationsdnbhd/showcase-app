@@ -1,10 +1,7 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Image from "next/image";
-import {
-  getLandingServiceIconSrc,
-  type LandingServiceIcon,
-} from "@/lib/landing-assets";
+import { getLandingServiceIconSrc } from "@/lib/landing-assets";
+import SolutionsStickyRows from "@/components/landing/SolutionsStickyRows";
 import {
   SOLUTIONS_INTRO_HEIGHT,
   SOLUTIONS_ROWS_HEIGHT,
@@ -30,190 +27,13 @@ const watermarkWord = {
   whiteSpace: "nowrap",
 } as const;
 
-type ServiceCopy = {
-  title: string;
-  description: string;
-};
-
-const SERVICE_ROWS: {
-  icon: LandingServiceIcon;
-  services: [ServiceCopy, ServiceCopy];
-}[] = [
-  {
-    icon: "ai",
-    services: [
-      {
-        title: "Telegram Bot Integration",
-        description:
-          "Automate replies and capture leads instantly. Never miss a business opportunity.",
-      },
-      {
-        title: "AI Chatbot & Automation",
-        description:
-          "Deploy 24/7 AI chatbots to answer queries and guide traffic straight to sales.",
-      },
-    ],
-  },
-  {
-    icon: "web",
-    services: [
-      {
-        title: "Custom Landing Pages & Web",
-        description:
-          "Fast-loading landing pages designed with one goal: turning visitors into paying clients.",
-      },
-      {
-        title: "Cloud Hosting & Domain Setup",
-        description:
-          "Reliable hosting to ensure your business stays fast, secure, and online during traffic spikes.",
-      },
-    ],
-  },
-  {
-    icon: "star",
-    services: [
-      {
-        title: "Custom Dashboard & System",
-        description:
-          "Secure, intuitive dashboards. Gain full control and visibility over your core operations.",
-      },
-      {
-        title: "Custom Mobile Apps",
-        description:
-          "Seamless custom mobile apps. We handle everything from UI design to Play Store launch.",
-      },
-    ],
-  },
-  {
-    icon: "refresh",
-    services: [
-      {
-        title: "Data Tracking & Pixel Integration",
-        description:
-          "Stop guessing. We track every conversion perfectly so you can optimize your ad spend.",
-      },
-      {
-        title: "Task Automation Scripting",
-        description:
-          "Replace manual and repetitive tasks with smart scripts. Streamline your operations, reduce human error, and save valuable time.",
-      },
-    ],
-  },
-];
-
-function ServiceCopyBlock({ title, description }: ServiceCopy) {
-  return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "flex-start",
-        p: 0,
-        gap: `${figmaPx(6)}px`,
-        width: "100%",
-      }}
-    >
-      <Typography
-        component="h3"
-        sx={{
-          ...barlow,
-          m: 0,
-          fontStyle: "normal",
-          fontWeight: 600,
-          fontSize: figmaPx(25.5),
-          lineHeight: `${figmaPx(41)}px`,
-          letterSpacing: "-0.02em",
-          color: "#C3A4FF",
-        }}
-      >
-        {title}
-      </Typography>
-      <Typography
-        sx={{
-          ...barlow,
-          m: 0,
-          fontStyle: "normal",
-          fontWeight: 500,
-          fontSize: figmaPx(12),
-          lineHeight: "160%",
-          letterSpacing: "0.02em",
-          color: "#FFFFFF",
-        }}
-      >
-        {description}
-      </Typography>
-    </Box>
-  );
-}
-
-function ServiceRow({
-  iconSrc,
-  services,
-}: {
-  iconSrc: string | null;
-  services: [ServiceCopy, ServiceCopy];
-}) {
-  return (
-    <Box
-      sx={{
-        boxSizing: "border-box",
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-        py: 0,
-        gap: `${figmaPx(210)}px`,
-        width: "100%",
-        height: figmaPx(370),
-        flexShrink: 0,
-      }}
-    >
-      <Box
-        sx={{
-          position: "relative",
-          width: figmaPx(317.25),
-          height: figmaPx(277.5),
-          flexShrink: 0,
-          bgcolor: "#050B13",
-          overflow: "hidden",
-        }}
-      >
-        {iconSrc ? (
-          <Image
-            src={iconSrc}
-            alt=""
-            width={423}
-            height={370}
-            sizes={`${figmaPx(423)}px`}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "contain",
-              display: "block",
-            }}
-          />
-        ) : null}
-      </Box>
-
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-start",
-          p: 0,
-          gap: `${figmaPx(60)}px`,
-          width: figmaPx(380),
-          flexShrink: 0,
-        }}
-      >
-        <ServiceCopyBlock {...services[0]} />
-        <ServiceCopyBlock {...services[1]} />
-      </Box>
-    </Box>
-  );
-}
-
 export default function TargetedSolutions() {
+  const iconSrcs = {
+    ai: getLandingServiceIconSrc("ai"),
+    web: getLandingServiceIconSrc("web"),
+    star: getLandingServiceIconSrc("star"),
+    refresh: getLandingServiceIconSrc("refresh"),
+  };
   const watermarkW = figmaPx(869);
 
   return (
@@ -371,30 +191,14 @@ export default function TargetedSolutions() {
           boxSizing: "border-box",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center",
+          justifyContent: "flex-start",
           alignItems: "center",
           width: "100%",
           flexShrink: 0,
+          pb: `${figmaPx(220)}px`,
         }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-            p: 0,
-            gap: `${figmaPx(50)}px`,
-            width: figmaPx(1152),
-          }}
-        >
-          {SERVICE_ROWS.map((row) => (
-            <ServiceRow
-              key={row.icon}
-              iconSrc={getLandingServiceIconSrc(row.icon)}
-              services={row.services}
-            />
-          ))}
-        </Box>
+        <SolutionsStickyRows iconSrcs={iconSrcs} />
       </Box>
     </Box>
   );

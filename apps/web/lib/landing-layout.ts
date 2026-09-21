@@ -9,8 +9,8 @@ export function figmaPx(px: number): number {
 
 export const HERO_DESIGN_HEIGHT = 1200;
 export const SOLUTIONS_INTRO_HEIGHT = figmaPx(418);
-/** 4 rows of 370 + 3 gaps of 50, plus a little air before How We Work. */
-export const SOLUTIONS_ROWS_HEIGHT = figmaPx(4 * 370 + 3 * 50 + 64);
+/** 4 rows of 370 + 3 gaps of 50, plus air so the last pin can release before How We Work. */
+export const SOLUTIONS_ROWS_HEIGHT = figmaPx(4 * 370 + 3 * 50 + 220);
 export const PROCESS_INTRO_HEIGHT = figmaPx(144);
 export const PROCESS_STEPS_HEIGHT = figmaPx(1172);
 /** Tighter join into Project Showcase than the original 90 top padding. */
