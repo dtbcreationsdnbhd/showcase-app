@@ -1,9 +1,9 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import type { SxProps, Theme } from "@mui/material/styles";
-import Image from "next/image";
 import { getLandingProjectShowcaseSrc } from "@/lib/landing-assets";
 import { SHOWCASE_HEIGHT, SHOWCASE_PAD_BOTTOM, SHOWCASE_PAD_TOP, figmaPx } from "@/lib/landing-layout";
+import ProjectCard from "@/components/landing/ProjectCard";
 
 const barlow = {
   fontFamily:
@@ -12,11 +12,8 @@ const barlow = {
 
 const CARD_W = figmaPx(276);
 const CARD_H = figmaPx(414.75);
-const CARD_R = figmaPx(18);
 const CARD_GAP = figmaPx(24);
 const ROW_W = CARD_W * 3 + CARD_GAP * 2;
-const TITLE_PAD = figmaPx(18);
-const TITLE_INNER_W = CARD_W - TITLE_PAD * 2;
 
 const PROJECTS = [
   {
@@ -33,14 +30,19 @@ const PROJECTS = [
   },
 ] as const;
 
-function ArrowRightIcon({ sx }: { sx?: SxProps<Theme> }) {
+function ArrowRightIcon({ upRight = false, sx }: { upRight?: boolean; sx?: SxProps<Theme> }) {
   return (
     <Box
       component="svg"
       viewBox="0 0 20 20"
       aria-hidden
       sx={[
-        { width: figmaPx(18), height: figmaPx(18), display: "block" },
+        {
+          width: figmaPx(18),
+          height: figmaPx(18),
+          display: "block",
+          transform: upRight ? "rotate(-45deg)" : "none",
+        },
         ...(Array.isArray(sx) ? sx : sx ? [sx] : []),
       ]}
     >
@@ -56,125 +58,15 @@ function ArrowRightIcon({ sx }: { sx?: SxProps<Theme> }) {
   );
 }
 
-function ProjectCard({
-  title,
-  description,
-  imageSrc,
+export default function ProjectShowcase({
+  arrowHref = "#",
+  followCursor = false,
+  arrowUpRight = false,
 }: {
-  title: string;
-  description: string;
-  imageSrc: string | null;
+  arrowHref?: string;
+  followCursor?: boolean;
+  arrowUpRight?: boolean;
 }) {
-  return (
-    <Box
-      sx={{
-        position: "relative",
-        isolation: "isolate",
-        width: CARD_W,
-        height: CARD_H,
-        flexShrink: 0,
-        borderRadius: `${CARD_R}px`,
-        overflow: "hidden",
-      }}
-    >
-        {imageSrc ? (
-        <Image
-          src={imageSrc}
-          alt={title}
-          fill
-          sizes={`${CARD_W}px`}
-          style={{ objectFit: "cover", objectPosition: "center" }}
-        />
-      ) : (
-        <Box
-          sx={{
-            width: "100%",
-            height: "100%",
-            bgcolor: "#0C1622",
-          }}
-        />
-      )}
-
-      <Box
-        aria-hidden
-        sx={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.5) 74%)",
-          pointerEvents: "none",
-          zIndex: 1,
-        }}
-      />
-
-      <Box
-        sx={{
-          position: "absolute",
-          left: 0,
-          bottom: 0,
-          boxSizing: "border-box",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          p: `${TITLE_PAD}px`,
-          gap: `${figmaPx(8)}px`,
-          width: CARD_W,
-          height: figmaPx(88),
-          zIndex: 2,
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-            p: 0,
-            gap: `${figmaPx(9)}px`,
-            width: TITLE_INNER_W,
-          }}
-        >
-          <Typography
-            component="h3"
-            sx={{
-              ...barlow,
-              width: TITLE_INNER_W,
-              m: 0,
-              fontStyle: "normal",
-              fontWeight: 600,
-              fontSize: figmaPx(19.5),
-              lineHeight: `${figmaPx(23)}px`,
-              color: "#FFFFFF",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {title}
-          </Typography>
-          <Typography
-            sx={{
-              ...barlow,
-              width: TITLE_INNER_W,
-              m: 0,
-              fontStyle: "normal",
-              fontWeight: 500,
-              fontSize: figmaPx(12),
-              lineHeight: "160%",
-              letterSpacing: "0.02em",
-              color: "rgba(255, 255, 255, 0.5)",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
-            {description}
-          </Typography>
-        </Box>
-      </Box>
-    </Box>
-  );
-}
-
-export default function ProjectShowcase() {
   const imageSrc = getLandingProjectShowcaseSrc();
 
   return (
@@ -236,8 +128,8 @@ export default function ProjectShowcase() {
 
         <Box
           component="a"
-          href="#"
-          aria-label="Next projects"
+          href={arrowHref}
+          aria-label={arrowHref === "/projects" ? "Next projects" : "Back to home"}
           sx={{
             position: "relative",
             display: "flex",
@@ -268,7 +160,7 @@ export default function ProjectShowcase() {
               borderRadius: "50%",
             }}
           >
-            <ArrowRightIcon />
+            <ArrowRightIcon upRight={arrowUpRight} />
           </Box>
         </Box>
       </Box>
@@ -292,6 +184,7 @@ export default function ProjectShowcase() {
             title={project.title}
             description={project.description}
             imageSrc={imageSrc}
+            followCursor={followCursor}
           />
         ))}
       </Box>

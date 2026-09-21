@@ -34,6 +34,9 @@ export const HERO_BOTTOM_FADE = figmaPx(110);
 export const CONTACT_WAVE_MASK_HOLD_PCT = 46;
 export const CONTACT_WAVE_MASK_FADE = HERO_BOTTOM_FADE * 1.8;
 export const FOOTER_HEIGHT = figmaPx(315);
+/** Navbar is 102 on the 1920 stage; projects page has no Hero under it. */
+export const PROJECTS_PAGE_NAV_HEIGHT = 40;
+export const PROJECTS_PAGE_HEIGHT = PROJECTS_PAGE_NAV_HEIGHT + SHOWCASE_HEIGHT;
 
 export const LANDING_DESIGN_HEIGHT =
   HERO_DESIGN_HEIGHT +

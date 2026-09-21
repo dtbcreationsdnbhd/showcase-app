@@ -41,7 +41,7 @@ export default function Home() {
         <Navbar logoSrc={logoSrc} />
         <TargetedSolutions />
         <HowWeWork />
-        <ProjectShowcase />
+        <ProjectShowcase arrowHref="/projects" />
         <ContactCta />
         <ContactForm waveSrc={contactWaveSrc} />
         <Footer />
