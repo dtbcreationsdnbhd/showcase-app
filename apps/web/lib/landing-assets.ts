@@ -49,6 +49,11 @@ export function getLandingServiceIconSrc(
   );
 }
 
+/** Combined morph animation for the sticky service icons. */
+export function getLandingServiceMorphSrc(): string | null {
+  return publicUrl("landing/services-morph.json");
+}
+
 /** Drop `project-showcase.png` (or `.jpg` / `.webp`) into `apps/web/public/landing/`. */
 export function getLandingProjectShowcaseSrc(): string | null {
   return (

@@ -3,9 +3,10 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { figmaPx } from "@/lib/landing-layout";
+import { Lottie, type LottieHandle } from "lottie-react";
+import { STAGE_VIEWPORT_PAGE_HEIGHT_CSS, figmaPx } from "@/lib/landing-layout";
 
 type LandingServiceIcon = "ai" | "web" | "star" | "refresh";
 
@@ -19,15 +20,18 @@ type ServiceCopy = {
   description: string;
 };
 
-const ROW_H = figmaPx(370);
+const ROW_H_CSS = STAGE_VIEWPORT_PAGE_HEIGHT_CSS;
 const ICON_W = figmaPx(317.25);
 const ICON_H = figmaPx(277.5);
-const ICON_REST_Y = (ROW_H - ICON_H) / 2;
-const GROUP_GAP = figmaPx(50);
+const ICON_REST_TOP = `calc((${ROW_H_CSS} - ${ICON_H}px) / 2)`;
 const COPY_GAP = figmaPx(60);
 const COPY_W = figmaPx(380);
 const COL_GAP = figmaPx(210);
 const NAV_STAGE_H = 102;
+const ICON_FADE_MS = 720;
+const ICON_FADE = `${ICON_FADE_MS}ms cubic-bezier(0.22, 1, 0.36, 1)`;
+const COPY_FADE = "500ms cubic-bezier(0.22, 1, 0.36, 1)";
+const ACTIVE_SWITCH_PX = 64;
 
 const SERVICE_ROWS: {
   icon: LandingServiceIcon;
@@ -100,18 +104,223 @@ const SERVICE_ROWS: {
   },
 ];
 
+function usePrefersReducedMotion() {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => setReduced(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+  return reduced;
+}
+
+const HOLD_FRAMES = 24;
+const MORPH_FRAMES = 60;
+const STATE_SPAN = HOLD_FRAMES + MORPH_FRAMES;
+const LAST_ICON = SERVICE_ROWS.length - 1;
+
+const IDLE_RANGES = SERVICE_ROWS.map((_, i) => [
+  i * STATE_SPAN,
+  i * STATE_SPAN + HOLD_FRAMES,
+] as const);
+
+function playheadFrame(x: number) {
+  const clamped = Math.min(Math.max(x, 0), LAST_ICON);
+  if (clamped >= LAST_ICON) return IDLE_RANGES[LAST_ICON][0];
+  const i = Math.min(Math.floor(clamped), LAST_ICON - 1);
+  const f = clamped - i;
+  return (
+    IDLE_RANGES[i][1] + f * (IDLE_RANGES[i + 1][0] - IDLE_RANGES[i][1])
+  );
+}
+
+const LIT_HOVER = [230, 214, 255] as const;
+const SPOT_RADIUS = 88;
+const SPOT_SCALE = 1.35;
+
+function MorphLottie({
+  src,
+  frameRef,
+  seekRef,
+}: {
+  src: string;
+  frameRef: { current: number };
+  seekRef: { current: ((frame: number) => void) | null };
+}) {
+  const ref = useRef<LottieHandle>(null);
+  const hostRef = useRef<HTMLDivElement>(null);
+  const lastFrameRef = useRef(Number.NaN);
+
+  useEffect(() => {
+    const host = hostRef.current;
+    if (!host) return;
+    let paths: SVGElement[] = [];
+    let hover = false;
+    let mx = 0;
+    let my = 0;
+    let sx = 0;
+    let sy = 0;
+    let spotRaf = 0;
+
+    const armWave = () => {
+      paths = Array.from(
+        host.querySelectorAll<SVGElement>("svg path, svg ellipse"),
+      );
+      const n = paths.length;
+      if (n === 0) return;
+      paths.forEach((path, i) => {
+        if (path.dataset.wave === "1") return;
+        path.dataset.wave = "1";
+        path.style.fill = "";
+        const stagger = (i / n) * 2.2;
+        const jitter = ((i * 47) % 80) / 100;
+        path.style.animationDelay = `${-(stagger + jitter)}s`;
+        path.style.animationDuration = `${1.9 + (i % 5) * 0.18}s`;
+      });
+    };
+
+    const clearSpot = () => {
+      for (const path of paths) {
+        path.style.removeProperty("fill");
+        path.style.transform = "";
+      }
+    };
+
+    const paintSpot = () => {
+      spotRaf = 0;
+      if (paths.length === 0) armWave();
+      if (!hover) {
+        clearSpot();
+        return;
+      }
+      sx += (mx - sx) * 0.28;
+      sy += (my - sy) * 0.28;
+      const r2 = SPOT_RADIUS * SPOT_RADIUS;
+      for (const path of paths) {
+        const box = path.getBoundingClientRect();
+        const dx = box.left + box.width / 2 - sx;
+        const dy = box.top + box.height / 2 - sy;
+        const d2 = dx * dx + dy * dy;
+        if (d2 >= r2) {
+          path.style.removeProperty("fill");
+          path.style.transform = "";
+          continue;
+        }
+        const t = 1 - Math.sqrt(d2) / SPOT_RADIUS;
+        const k = t * t;
+        path.style.setProperty(
+          "fill",
+          `rgb(${Math.round(195 + (LIT_HOVER[0] - 195) * k)},${Math.round(163 + (LIT_HOVER[1] - 163) * k)},255)`,
+          "important",
+        );
+        path.style.transform = `scale(${1 + k * SPOT_SCALE})`;
+      }
+      if (hover && Math.hypot(mx - sx, my - sy) > 0.4) {
+        spotRaf = requestAnimationFrame(paintSpot);
+      }
+    };
+
+    const onMove = (event: PointerEvent) => {
+      mx = event.clientX;
+      my = event.clientY;
+      if (!hover) {
+        sx = mx;
+        sy = my;
+        hover = true;
+      }
+      if (!spotRaf) spotRaf = requestAnimationFrame(paintSpot);
+    };
+
+    const onLeave = () => {
+      hover = false;
+      clearSpot();
+      if (spotRaf) {
+        cancelAnimationFrame(spotRaf);
+        spotRaf = 0;
+      }
+    };
+
+    const seek = (frame: number) => {
+      const api = ref.current;
+      if (!api) return;
+      if (frame !== lastFrameRef.current) {
+        lastFrameRef.current = frame;
+        const item = api.animationItem as
+          | { goToAndStop?: (value: number, isFrame?: boolean) => void }
+          | null
+          | undefined;
+        if (item?.goToAndStop) item.goToAndStop(frame, true);
+        else {
+          api.pause();
+          api.seek(frame);
+        }
+      }
+      armWave();
+    };
+    seekRef.current = seek;
+    host.addEventListener("pointermove", onMove);
+    host.addEventListener("pointerleave", onLeave);
+    const raf = requestAnimationFrame(armWave);
+    return () => {
+      cancelAnimationFrame(raf);
+      if (spotRaf) cancelAnimationFrame(spotRaf);
+      host.removeEventListener("pointermove", onMove);
+      host.removeEventListener("pointerleave", onLeave);
+      if (seekRef.current === seek) seekRef.current = null;
+    };
+  }, [frameRef, seekRef]);
+
+  return (
+    <div
+      ref={hostRef}
+      className="solutions-morph"
+      style={{ width: "100%", height: "100%" }}
+    >
+      <Lottie
+        lottieRef={ref}
+        src={src}
+        autoplay={false}
+        loop={false}
+        subscriptions={{
+          ready: () => {
+            lastFrameRef.current = Number.NaN;
+            seekRef.current?.(frameRef.current);
+          },
+        }}
+        style={{ width: "100%", height: "100%" }}
+      />
+    </div>
+  );
+}
+
 function IconStack({
   active,
   iconSrcs,
+  morphSrc,
+  reducedMotion,
+  frameRef,
+  seekRef,
 }: {
   active: number;
   iconSrcs: Record<LandingServiceIcon, string | null>;
+  morphSrc: string | null;
+  reducedMotion: boolean;
+  frameRef: { current: number };
+  seekRef: { current: ((frame: number) => void) | null };
 }) {
+  if (morphSrc && !reducedMotion) {
+    return (
+      <MorphLottie src={morphSrc} frameRef={frameRef} seekRef={seekRef} />
+    );
+  }
+
   return (
     <>
       {SERVICE_ROWS.map((row, i) => {
-        const src = iconSrcs[row.icon];
-        if (!src) return null;
+        const png = iconSrcs[row.icon];
+        if (!png) return null;
         return (
           <Box
             key={row.icon}
@@ -119,14 +328,14 @@ function IconStack({
               position: "absolute",
               inset: 0,
               opacity: i === active ? 1 : 0,
-              transition: "opacity 320ms ease",
+              transition: `opacity ${ICON_FADE}`,
               "@media (prefers-reduced-motion: reduce)": {
                 transition: "none",
               },
             }}
           >
             <Image
-              src={src}
+              src={png}
               alt={i === active ? row.alt : ""}
               width={423}
               height={370}
@@ -192,28 +401,32 @@ function ServiceCopyBlock({ title, description }: ServiceCopy) {
 
 export default function SolutionsStickyRows({
   iconSrcs,
+  morphSrc,
 }: {
   iconSrcs: Record<LandingServiceIcon, string | null>;
+  morphSrc: string | null;
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const slotRef = useRef<HTMLDivElement>(null);
-  const visualRef = useRef<HTMLDivElement>(null);
   const pinRef = useRef<HTMLDivElement>(null);
   const groupRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [active, setActive] = useState(0);
-  const [portalReady, setPortalReady] = useState(false);
+  const activeRef = useRef(0);
+  const morphFrameRef = useRef(IDLE_RANGES[0][1]);
+  const pinSeekRef = useRef<((frame: number) => void) | null>(null);
+  const [pinEl, setPinEl] = useState<HTMLDivElement | null>(null);
+  const [mounted, setMounted] = useState(false);
+  const reducedMotion = usePrefersReducedMotion();
 
-  useLayoutEffect(() => {
-    setPortalReady(true);
+  useEffect(() => {
+    setMounted(true);
   }, []);
 
   useLayoutEffect(() => {
-    if (!portalReady) return;
     const track = trackRef.current;
     const slot = slotRef.current;
-    const visual = visualRef.current;
-    const pin = pinRef.current;
-    if (!track || !slot || !visual || !pin) return;
+    const pin = pinEl;
+    if (!track || !slot || !pin) return;
 
     let raf = 0;
 
@@ -223,51 +436,71 @@ export default function SolutionsStickyRows({
       const slotRect = slot.getBoundingClientRect();
       if (slotRect.width < 1) return;
 
+      // Natural screen tops for the icon at track start / end, and the sticky park.
+      // One continuous clamp — no flow↔fixed handoff, so start/end don't hitch.
       const restView = slotRect.top - trackRect.top;
       const navView = NAV_STAGE_H * (slotRect.width / ICON_W);
       const startTop = trackRect.top + restView;
       const endTop = trackRect.bottom - restView - slotRect.height;
       const parkTop =
         navView + (window.innerHeight - navView - slotRect.height) / 2;
+      const pinTop = Math.max(startTop, Math.min(parkTop, endTop));
 
-      // Follow in document flow (no JS lag). Only the pinned phase uses
-      // position:fixed, and its top stays constant — that's the "stuck" feel.
-      if (startTop > parkTop) {
-        visual.style.transform = "none";
-        visual.style.visibility = "visible";
-        pin.style.visibility = "hidden";
-      } else if (endTop < parkTop) {
-        const maxLocal = Math.max(
-          0,
-          track.offsetHeight - ICON_REST_Y * 2 - ICON_H,
-        );
-        visual.style.transform = `translate3d(0, ${maxLocal}px, 0)`;
-        visual.style.visibility = "visible";
-        pin.style.visibility = "hidden";
-      } else {
-        visual.style.visibility = "hidden";
-        visual.style.transform = "none";
-        pin.style.top = `${parkTop}px`;
-        pin.style.left = `${slotRect.left}px`;
-        pin.style.width = `${slotRect.width}px`;
-        pin.style.height = `${slotRect.height}px`;
-        pin.style.visibility = "visible";
-      }
+      pin.style.top = `${pinTop}px`;
+      pin.style.left = `${slotRect.left}px`;
+      pin.style.width = `${slotRect.width}px`;
+      pin.style.height = `${slotRect.height}px`;
+      pin.style.visibility =
+        endTop < -slotRect.height || startTop > window.innerHeight
+          ? "hidden"
+          : "visible";
 
-      const target = navView + (window.innerHeight - navView) * 0.42;
+      const iconCenterY = pinTop + slotRect.height / 2;
+      const target = iconCenterY;
       let best = 0;
       let bestDist = Infinity;
+      const dists: number[] = [];
+      const mids: number[] = [];
       groupRefs.current.forEach((el, i) => {
         if (!el) return;
         const r = el.getBoundingClientRect();
         const mid = r.top + r.height / 2;
+        mids[i] = mid;
         const dist = Math.abs(mid - target);
+        dists[i] = dist;
         if (dist < bestDist) {
           bestDist = dist;
           best = i;
         }
       });
-      setActive((prev) => (prev === best ? prev : best));
+      if (
+        mids.length === SERVICE_ROWS.length &&
+        Number.isFinite(mids[0]) &&
+        Number.isFinite(mids[LAST_ICON]) &&
+        mids[LAST_ICON] !== mids[0]
+      ) {
+        const x =
+          LAST_ICON *
+          Math.min(
+            Math.max((target - mids[0]) / (mids[LAST_ICON] - mids[0]), 0),
+            1,
+          );
+        morphFrameRef.current = playheadFrame(x);
+        pinSeekRef.current?.(morphFrameRef.current);
+      }
+      const current = activeRef.current;
+      const currentDist = dists[current];
+      const shouldSwitch =
+        best !== current &&
+        (currentDist == null || currentDist - bestDist > ACTIVE_SWITCH_PX);
+      if (shouldSwitch) {
+        activeRef.current = best;
+        groupRefs.current.forEach((el, i) => {
+          if (!el) return;
+          el.style.opacity = i === best ? "1" : "0.38";
+        });
+        setActive(best);
+      }
     };
 
     const onScroll = () => {
@@ -275,19 +508,15 @@ export default function SolutionsStickyRows({
       raf = requestAnimationFrame(update);
     };
 
-    const onResize = () => {
-      onScroll();
-    };
-
     update();
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onResize);
+    window.addEventListener("resize", onScroll);
     return () => {
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onResize);
+      window.removeEventListener("resize", onScroll);
       if (raf) cancelAnimationFrame(raf);
     };
-  }, [portalReady]);
+  }, [pinEl]);
 
   return (
     <>
@@ -314,7 +543,7 @@ export default function SolutionsStickyRows({
           ref={slotRef}
           sx={{
             position: "absolute",
-            top: ICON_REST_Y,
+            top: ICON_REST_TOP,
             left: 0,
             width: ICON_W,
             height: ICON_H,
@@ -322,22 +551,6 @@ export default function SolutionsStickyRows({
             pointerEvents: "none",
           }}
         />
-        <Box
-          ref={visualRef}
-          sx={{
-            position: "absolute",
-            top: ICON_REST_Y,
-            left: 0,
-            width: ICON_W,
-            height: ICON_H,
-            overflow: "hidden",
-            bgcolor: "#050B13",
-            pointerEvents: "none",
-            willChange: "transform",
-          }}
-        >
-          <IconStack active={active} iconSrcs={iconSrcs} />
-        </Box>
       </Box>
 
       <Box
@@ -346,7 +559,7 @@ export default function SolutionsStickyRows({
           flexDirection: "column",
           alignItems: "flex-start",
           p: 0,
-          gap: `${GROUP_GAP}px`,
+          gap: 0,
           width: COPY_W,
           flexShrink: 0,
         }}
@@ -366,10 +579,10 @@ export default function SolutionsStickyRows({
               p: 0,
               gap: `${COPY_GAP}px`,
               width: "100%",
-              height: ROW_H,
+              height: ROW_H_CSS,
               flexShrink: 0,
               opacity: i === active ? 1 : 0.38,
-              transition: "opacity 280ms ease",
+              transition: `opacity ${COPY_FADE}`,
               "@media (prefers-reduced-motion: reduce)": {
                 transition: "none",
                 opacity: 1,
@@ -382,21 +595,31 @@ export default function SolutionsStickyRows({
         ))}
       </Box>
     </Box>
-    {portalReady
+    {mounted
       ? createPortal(
           <div
-            ref={pinRef}
+            ref={(el) => {
+              pinRef.current = el;
+              setPinEl((prev) => (prev === el ? prev : el));
+            }}
             data-solutions-pin="true"
             style={{
               position: "fixed",
               zIndex: 40,
-              overflow: "hidden",
-              pointerEvents: "none",
+              overflow: "visible",
+              pointerEvents: "auto",
               visibility: "hidden",
               background: "#050B13",
             }}
           >
-            <IconStack active={active} iconSrcs={iconSrcs} />
+            <IconStack
+              active={active}
+              iconSrcs={iconSrcs}
+              morphSrc={morphSrc}
+              reducedMotion={reducedMotion}
+              frameRef={morphFrameRef}
+              seekRef={pinSeekRef}
+            />
           </div>,
           document.body,
         )

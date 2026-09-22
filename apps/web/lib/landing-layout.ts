@@ -8,8 +8,19 @@ export function figmaPx(px: number): number {
 }
 
 export const HERO_DESIGN_HEIGHT = 1200;
+/** Title page + AI / web / star / refresh — each one viewport on the scaled stage. */
+export const SOLUTIONS_PAGE_COUNT = 5;
+export const SOLUTIONS_SERVICE_PAGES = 4;
+/**
+ * Stage px for one viewport tall page: after `scale(100vw/1920)` it reads as 100vh.
+ * Use in CSS height: `calc(${LANDING_DESIGN_WIDTH}px * 100vh / 100vw)`.
+ */
+export const STAGE_VIEWPORT_PAGE_HEIGHT_CSS = `calc(${LANDING_DESIGN_WIDTH}px * 100vh / 100vw)`;
+/** Air after the last service page so the sticky icon can release before How We Work. */
+export const SOLUTIONS_RELEASE_HEIGHT = figmaPx(220);
+/** @deprecated Prefer STAGE_VIEWPORT_PAGE_HEIGHT_CSS; kept for any static fallback. */
 export const SOLUTIONS_INTRO_HEIGHT = figmaPx(418);
-/** 4 rows of 370 + 3 gaps of 50, plus air so the last pin can release before How We Work. */
+/** @deprecated Prefer STAGE_VIEWPORT_PAGE_HEIGHT_CSS * service pages + release. */
 export const SOLUTIONS_ROWS_HEIGHT = figmaPx(4 * 370 + 3 * 50 + 220);
 export const PROCESS_INTRO_HEIGHT = figmaPx(144);
 export const PROCESS_STEPS_HEIGHT = figmaPx(1172);
@@ -38,13 +49,26 @@ export const FOOTER_HEIGHT = figmaPx(315);
 export const PROJECTS_PAGE_NAV_HEIGHT = 40;
 export const PROJECTS_PAGE_HEIGHT = PROJECTS_PAGE_NAV_HEIGHT + SHOWCASE_HEIGHT;
 
-export const LANDING_DESIGN_HEIGHT =
+/** Everything except Targeted Solutions (solutions uses viewport pages). */
+export const LANDING_HEIGHT_WITHOUT_SOLUTIONS =
   HERO_DESIGN_HEIGHT +
-  SOLUTIONS_INTRO_HEIGHT +
-  SOLUTIONS_ROWS_HEIGHT +
   PROCESS_INTRO_HEIGHT +
   PROCESS_STEPS_HEIGHT +
   SHOWCASE_HEIGHT +
   CONTACT_CTA_HEIGHT +
   CONTACT_FORM_HEIGHT +
   FOOTER_HEIGHT;
+
+/**
+ * Approximate design height assuming a 16:9 viewport for one page.
+ * Prefer `landingFrameHeightCss()` for the live scaled frame.
+ */
+export const LANDING_DESIGN_HEIGHT =
+  LANDING_HEIGHT_WITHOUT_SOLUTIONS +
+  SOLUTIONS_PAGE_COUNT * (LANDING_DESIGN_WIDTH * (9 / 16)) +
+  SOLUTIONS_RELEASE_HEIGHT;
+
+/** Screen-space height of the scaled landing frame (vh pages + fixed stage sections). */
+export function landingFrameHeightCss(): string {
+  return `calc(100vw * ${LANDING_HEIGHT_WITHOUT_SOLUTIONS + SOLUTIONS_RELEASE_HEIGHT} / ${LANDING_DESIGN_WIDTH} + ${SOLUTIONS_PAGE_COUNT} * 100vh)`;
+}

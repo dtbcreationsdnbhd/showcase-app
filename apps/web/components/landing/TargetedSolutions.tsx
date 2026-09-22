@@ -1,10 +1,10 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { getLandingServiceIconSrc } from "@/lib/landing-assets";
+import { getLandingServiceIconSrc, getLandingServiceMorphSrc } from "@/lib/landing-assets";
 import SolutionsStickyRows from "@/components/landing/SolutionsStickyRows";
 import {
-  SOLUTIONS_INTRO_HEIGHT,
-  SOLUTIONS_ROWS_HEIGHT,
+  SOLUTIONS_RELEASE_HEIGHT,
+  STAGE_VIEWPORT_PAGE_HEIGHT_CSS,
   figmaPx,
 } from "@/lib/landing-layout";
 
@@ -22,8 +22,6 @@ const watermarkWord = {
   lineHeight: `${figmaPx(96)}px`,
   textAlign: "center",
   textTransform: "uppercase",
-  color: "#0A121C",
-  mixBlendMode: "screen",
   whiteSpace: "nowrap",
 } as const;
 
@@ -34,6 +32,7 @@ export default function TargetedSolutions() {
     star: getLandingServiceIconSrc("star"),
     refresh: getLandingServiceIconSrc("refresh"),
   };
+  const morphSrc = getLandingServiceMorphSrc();
   const watermarkW = figmaPx(869);
 
   return (
@@ -45,24 +44,26 @@ export default function TargetedSolutions() {
         flexDirection: "column",
         alignItems: "flex-start",
         width: "100%",
-        height: SOLUTIONS_INTRO_HEIGHT + SOLUTIONS_ROWS_HEIGHT,
         bgcolor: "#050B13",
         position: "relative",
         overflow: "visible",
       }}
     >
       <Box
+        id="services"
         sx={{
           boxSizing: "border-box",
           display: "flex",
           flexDirection: "column",
-          alignItems: "flex-start",
-          py: `${figmaPx(64)}px`,
+          alignItems: "center",
+          justifyContent: "center",
+          py: 0,
           px: 0,
           width: "100%",
-          height: SOLUTIONS_INTRO_HEIGHT,
+          height: STAGE_VIEWPORT_PAGE_HEIGHT_CSS,
           position: "relative",
           flexShrink: 0,
+          scrollMarginTop: 0,
         }}
       >
         <Box
@@ -86,9 +87,7 @@ export default function TargetedSolutions() {
             width: "100%",
             height: figmaPx(150),
             flexShrink: 0,
-            scrollMarginTop: `${figmaPx(50)}px`,
           }}
-          id="services"
         >
           <Box
             component="h2"
@@ -106,10 +105,10 @@ export default function TargetedSolutions() {
               m: 0,
             }}
           >
-            <Typography component="span" sx={{ ...watermarkWord }}>
+            <Typography component="span" className="solutions-title-flow" sx={{ ...watermarkWord }}>
               Targeted
             </Typography>
-            <Typography component="span" sx={{ ...watermarkWord }}>
+            <Typography component="span" className="solutions-title-flow" sx={{ ...watermarkWord }}>
               Solutions
             </Typography>
           </Box>
@@ -126,7 +125,6 @@ export default function TargetedSolutions() {
             p: 0,
             gap: `${figmaPx(36)}px`,
             width: "100%",
-            height: figmaPx(144),
             flexShrink: 0,
           }}
         >
@@ -162,14 +160,12 @@ export default function TargetedSolutions() {
               p: 0,
               gap: `${figmaPx(10)}px`,
               width: figmaPx(640),
-              height: figmaPx(62),
             }}
           >
             <Typography
               sx={{
                 ...barlow,
                 width: figmaPx(797),
-                height: figmaPx(62),
                 fontStyle: "normal",
                 fontWeight: 500,
                 fontSize: figmaPx(16.5),
@@ -195,10 +191,10 @@ export default function TargetedSolutions() {
           alignItems: "center",
           width: "100%",
           flexShrink: 0,
-          pb: `${figmaPx(220)}px`,
+          pb: `${SOLUTIONS_RELEASE_HEIGHT}px`,
         }}
       >
-        <SolutionsStickyRows iconSrcs={iconSrcs} />
+        <SolutionsStickyRows iconSrcs={iconSrcs} morphSrc={morphSrc} />
       </Box>
     </Box>
   );

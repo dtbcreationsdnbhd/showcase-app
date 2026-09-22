@@ -13,8 +13,8 @@ import {
   getLandingLogoSrc,
 } from "@/lib/landing-assets";
 import {
-  LANDING_DESIGN_HEIGHT,
   LANDING_DESIGN_WIDTH,
+  landingFrameHeightCss,
 } from "@/lib/landing-layout";
 
 export default function Home() {
@@ -27,7 +27,7 @@ export default function Home() {
       component="main"
       className="landing-frame"
       style={{
-        height: `calc(100vw * ${LANDING_DESIGN_HEIGHT} / ${LANDING_DESIGN_WIDTH})`,
+        height: landingFrameHeightCss(),
       }}
     >
       <Box
