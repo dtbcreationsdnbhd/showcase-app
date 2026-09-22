@@ -1,12 +1,13 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
+import CenterHashLink from "@/components/landing/CenterHashLink";
 
 const NAV_LINKS = [
-  { label: "HOME", hash: "#top" },
-  { label: "SERVICES", hash: "#services" },
-  { label: "HOW WE WORK", hash: "#how-we-work" },
-  { label: "PROJECTS", hash: "#projects" },
+  { label: "HOME", hash: "#top", center: false },
+  { label: "SERVICES", hash: "#services", center: true },
+  { label: "HOW WE WORK", hash: "#how-we-work", center: true },
+  { label: "PROJECTS", hash: "#projects", center: true },
 ] as const;
 
 const headerFont = {
@@ -167,24 +168,21 @@ export default function Navbar({
             flexShrink: 0,
           }}
         >
-          {NAV_LINKS.map((link) => (
-            <Box
-              key={link.label}
-              component="a"
-              href={withPrefix(link.hash)}
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                py: "16px",
-                px: "20px",
-                height: 54,
-                boxSizing: "border-box",
-                textDecoration: "none",
-                cursor: "pointer",
-              }}
-            >
+          {NAV_LINKS.map((link) => {
+            const href = withPrefix(link.hash);
+            const linkSx = {
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              py: "16px",
+              px: "20px",
+              height: 54,
+              boxSizing: "border-box",
+              textDecoration: "none",
+              cursor: "pointer",
+            } as const;
+            const label = (
               <Typography
                 component="span"
                 sx={{
@@ -198,8 +196,25 @@ export default function Navbar({
               >
                 {link.label}
               </Typography>
-            </Box>
-          ))}
+            );
+            if (link.center) {
+              return (
+                <CenterHashLink key={link.label} hash={link.hash} href={href} sx={linkSx}>
+                  {label}
+                </CenterHashLink>
+              );
+            }
+            return (
+              <Box
+                key={link.label}
+                component="a"
+                href={href}
+                sx={linkSx}
+              >
+                {label}
+              </Box>
+            );
+          })}
         </Box>
 
         <Box

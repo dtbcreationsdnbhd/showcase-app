@@ -17,13 +17,30 @@ export const SOLUTIONS_SERVICE_PAGES = 4;
  */
 export const STAGE_VIEWPORT_PAGE_HEIGHT_CSS = `calc(${LANDING_DESIGN_WIDTH}px * 100vh / 100vw)`;
 /** Air after the last service page so the sticky icon can release before How We Work. */
-export const SOLUTIONS_RELEASE_HEIGHT = figmaPx(220);
+export const SOLUTIONS_RELEASE_HEIGHT = 0;
+/**
+ * Our Proven Delivery Process: compact in-flow title (fixed stage px) +
+ * card animation pages (vh). Intro is NOT a full viewport — that left a huge
+ * gap between title and cards.
+ */
+export const PROCESS_INTRO_HEIGHT = figmaPx(200);
+/** Extra pages so each step holds long enough to read the copy. */
+export const PROCESS_CARD_PAGES = 7;
+/**
+ * After the stack closes, dwell on the closed pile before the pin releases —
+ * user scrolls a bit more, then the page continues.
+ */
+export const PROCESS_OUTRO_HOLD_PAGES = 0.55;
+export const PROCESS_PAGE_COUNT = PROCESS_CARD_PAGES + PROCESS_OUTRO_HOLD_PAGES;
+/** Fraction of the cards track used by the animation (rest is post-close hold). */
+export const PROCESS_ANIM_TRAVEL =
+  PROCESS_CARD_PAGES / PROCESS_PAGE_COUNT;
+/** Scroll track for the card animation only (intro is in-flow, fixed height). */
+export const PROCESS_CARDS_SCROLL_HEIGHT_CSS = `calc(${PROCESS_PAGE_COUNT} * ${LANDING_DESIGN_WIDTH}px * 100vh / 100vw)`;
 /** @deprecated Prefer STAGE_VIEWPORT_PAGE_HEIGHT_CSS; kept for any static fallback. */
 export const SOLUTIONS_INTRO_HEIGHT = figmaPx(418);
 /** @deprecated Prefer STAGE_VIEWPORT_PAGE_HEIGHT_CSS * service pages + release. */
 export const SOLUTIONS_ROWS_HEIGHT = figmaPx(4 * 370 + 3 * 50 + 220);
-export const PROCESS_INTRO_HEIGHT = figmaPx(144);
-export const PROCESS_STEPS_HEIGHT = figmaPx(1172);
 /** Tighter join into Project Showcase than the original 90 top padding. */
 export const SHOWCASE_PAD_TOP = figmaPx(80);
 export const SHOWCASE_PAD_BOTTOM = figmaPx(90);
@@ -52,8 +69,6 @@ export const PROJECTS_PAGE_HEIGHT = PROJECTS_PAGE_NAV_HEIGHT + SHOWCASE_HEIGHT;
 /** Everything except Targeted Solutions (solutions uses viewport pages). */
 export const LANDING_HEIGHT_WITHOUT_SOLUTIONS =
   HERO_DESIGN_HEIGHT +
-  PROCESS_INTRO_HEIGHT +
-  PROCESS_STEPS_HEIGHT +
   SHOWCASE_HEIGHT +
   CONTACT_CTA_HEIGHT +
   CONTACT_FORM_HEIGHT +
@@ -65,10 +80,12 @@ export const LANDING_HEIGHT_WITHOUT_SOLUTIONS =
  */
 export const LANDING_DESIGN_HEIGHT =
   LANDING_HEIGHT_WITHOUT_SOLUTIONS +
+  PROCESS_INTRO_HEIGHT +
+  PROCESS_PAGE_COUNT * (LANDING_DESIGN_WIDTH * (9 / 16)) +
   SOLUTIONS_PAGE_COUNT * (LANDING_DESIGN_WIDTH * (9 / 16)) +
   SOLUTIONS_RELEASE_HEIGHT;
 
 /** Screen-space height of the scaled landing frame (vh pages + fixed stage sections). */
 export function landingFrameHeightCss(): string {
-  return `calc(100vw * ${LANDING_HEIGHT_WITHOUT_SOLUTIONS + SOLUTIONS_RELEASE_HEIGHT} / ${LANDING_DESIGN_WIDTH} + ${SOLUTIONS_PAGE_COUNT} * 100vh)`;
+  return `calc(100vw * ${LANDING_HEIGHT_WITHOUT_SOLUTIONS + SOLUTIONS_RELEASE_HEIGHT + PROCESS_INTRO_HEIGHT} / ${LANDING_DESIGN_WIDTH} + ${SOLUTIONS_PAGE_COUNT + PROCESS_PAGE_COUNT} * 100vh)`;
 }
