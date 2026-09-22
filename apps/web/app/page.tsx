@@ -1,23 +1,51 @@
-import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import ContactCta from "@/components/landing/ContactCta";
+import ContactForm from "@/components/landing/ContactForm";
+import Footer from "@/components/landing/Footer";
+import Hero from "@/components/landing/Hero";
+import HowWeWork from "@/components/landing/HowWeWork";
+import Navbar from "@/components/landing/Navbar";
+import ProjectShowcase from "@/components/landing/ProjectShowcase";
+import TargetedSolutions from "@/components/landing/TargetedSolutions";
+import {
+  getLandingContactWaveSrc,
+  getLandingHeroSrc,
+  getLandingLogoSrc,
+} from "@/lib/landing-assets";
+import {
+  LANDING_DESIGN_HEIGHT,
+  LANDING_DESIGN_WIDTH,
+} from "@/lib/landing-layout";
 
 export default function Home() {
+  const logoSrc = getLandingLogoSrc();
+  const heroSrc = getLandingHeroSrc();
+  const contactWaveSrc = getLandingContactWaveSrc();
+
   return (
-    <Container maxWidth="sm" sx={{ py: 10 }}>
-      <Stack spacing={2} sx={{ alignItems: "flex-start" }}>
-        <Typography variant="h4" component="h1">
-          showcase-app
-        </Typography>
-        <Typography color="text.secondary">
-          Next.js + MUI scaffold. Connect Supabase via{" "}
-          <code>apps/web/.env</code>.
-        </Typography>
-        <Button variant="contained" color="primary">
-          Get started
-        </Button>
-      </Stack>
-    </Container>
+    <Box
+      component="main"
+      className="landing-frame"
+      style={{
+        height: `calc(100vw * ${LANDING_DESIGN_HEIGHT} / ${LANDING_DESIGN_WIDTH})`,
+      }}
+    >
+      <Box
+        className="landing-stage"
+        style={{
+          transform: `scale(calc(100vw / ${LANDING_DESIGN_WIDTH}px))`,
+          transformOrigin: "top left",
+        }}
+      >
+        <Hero heroSrc={heroSrc} />
+        <Navbar logoSrc={logoSrc} />
+        <TargetedSolutions />
+        <HowWeWork />
+        <ProjectShowcase arrowHref="/projects" />
+        <ContactCta />
+        <ContactForm waveSrc={contactWaveSrc} />
+        <Footer />
+      </Box>
+    </Box>
   );
 }
