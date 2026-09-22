@@ -43,13 +43,6 @@ const theme = createTheme({
           fontWeight: 600,
           letterSpacing: "0.01em",
         },
-        containedPrimary: {
-          backgroundColor: "#A855F7",
-          color: "#FFFFFF",
-          "&:hover": {
-            backgroundColor: "#A855F7",
-          },
-        },
         outlined: {
           borderColor: "rgba(255,255,255,0.38)",
           color: "#FFFFFF",
@@ -59,6 +52,18 @@ const theme = createTheme({
           },
         },
       },
+      variants: [
+        {
+          props: { variant: "contained", color: "primary" },
+          style: {
+            backgroundColor: "#A855F7",
+            color: "#FFFFFF",
+            "&:hover": {
+              backgroundColor: "#A855F7",
+            },
+          },
+        },
+      ],
     },
     MuiCssBaseline: {
       styleOverrides: {
