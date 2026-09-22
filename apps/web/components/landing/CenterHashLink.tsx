@@ -2,8 +2,9 @@
 
 import { useCallback, type MouseEvent, type ReactNode } from "react";
 import Box from "@mui/material/Box";
+import { scrollLandingBy } from "@/lib/landing-nav";
 
-/** Smooth-scroll a hash target so its box is vertically centered in the viewport. */
+/** Scroll a hash target so its box is vertically centered in the viewport. */
 export default function CenterHashLink({
   hash,
   href,
@@ -25,7 +26,7 @@ export default function CenterHashLink({
       event.preventDefault();
       const rect = el.getBoundingClientRect();
       const delta = rect.top + rect.height / 2 - window.innerHeight / 2;
-      window.scrollBy({ top: delta, behavior: "smooth" });
+      scrollLandingBy(delta);
       history.pushState(null, "", href.includes("#") ? href : `#${id}`);
     },
     [hash, href],

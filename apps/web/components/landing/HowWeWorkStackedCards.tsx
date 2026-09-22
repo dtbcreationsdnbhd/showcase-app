@@ -11,6 +11,7 @@ import {
   STAGE_VIEWPORT_PAGE_HEIGHT_CSS,
   figmaPx,
 } from "@/lib/landing-layout";
+import { isLandingNav } from "@/lib/landing-nav";
 
 const barlow = {
   fontFamily:
@@ -297,6 +298,12 @@ export default function HowWeWorkStackedCards({
 
     const chase = (ts: number) => {
       chaseRaf = 0;
+      if (isLandingNav()) {
+        displayProgress = targetProgress;
+        publish(displayProgress);
+        lastTs = 0;
+        return;
+      }
       const dt = lastTs ? Math.min((ts - lastTs) / 1000, 0.048) : 1 / 60;
       lastTs = ts;
 
@@ -345,7 +352,13 @@ export default function HowWeWorkStackedCards({
 
       targetProgress = clamp01(-rect.top / travel / PROCESS_ANIM_TRAVEL);
 
-      if (reducedMotion) {
+      const jumped = Math.abs(targetProgress - displayProgress) > cardSpan * 0.55;
+      if (reducedMotion || isLandingNav() || jumped) {
+        if (chaseRaf) {
+          cancelAnimationFrame(chaseRaf);
+          chaseRaf = 0;
+        }
+        lastTs = 0;
         displayProgress = targetProgress;
         publish(displayProgress);
         return;
