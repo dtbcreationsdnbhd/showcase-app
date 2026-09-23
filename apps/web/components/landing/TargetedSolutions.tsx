@@ -2,9 +2,10 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { getLandingServiceIconSrc, getLandingServiceMorphSrc } from "@/lib/landing-assets";
 import SolutionsStickyRows from "@/components/landing/SolutionsStickyRows";
+import ScrollRevealPin from "@/components/landing/ScrollRevealPin";
 import {
   SOLUTIONS_RELEASE_HEIGHT,
-  STAGE_VIEWPORT_PAGE_HEIGHT_CSS,
+  TITLE_HOLD_PAGES,
   figmaPx,
 } from "@/lib/landing-layout";
 
@@ -49,23 +50,7 @@ export default function TargetedSolutions() {
         overflow: "visible",
       }}
     >
-      <Box
-        id="services"
-        sx={{
-          boxSizing: "border-box",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          py: 0,
-          px: 0,
-          width: "100%",
-          height: STAGE_VIEWPORT_PAGE_HEIGHT_CSS,
-          position: "relative",
-          flexShrink: 0,
-          scrollMarginTop: 0,
-        }}
-      >
+      <ScrollRevealPin holdPages={TITLE_HOLD_PAGES} anchorId="services">
         <Box
           aria-hidden
           sx={{
@@ -180,7 +165,7 @@ export default function TargetedSolutions() {
             </Typography>
           </Box>
         </Box>
-      </Box>
+      </ScrollRevealPin>
 
       <Box
         sx={{

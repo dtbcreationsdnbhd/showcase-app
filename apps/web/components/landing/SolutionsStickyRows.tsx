@@ -7,6 +7,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Lottie, type LottieHandle } from "lottie-react";
 import { STAGE_VIEWPORT_PAGE_HEIGHT_CSS, figmaPx } from "@/lib/landing-layout";
+import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
 
 type LandingServiceIcon = "ai" | "web" | "star" | "refresh";
 
@@ -103,18 +104,6 @@ const SERVICE_ROWS: {
     ],
   },
 ];
-
-function usePrefersReducedMotion() {
-  const [reduced, setReduced] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const sync = () => setReduced(mq.matches);
-    sync();
-    mq.addEventListener("change", sync);
-    return () => mq.removeEventListener("change", sync);
-  }, []);
-  return reduced;
-}
 
 const HOLD_FRAMES = 24;
 const MORPH_FRAMES = 60;

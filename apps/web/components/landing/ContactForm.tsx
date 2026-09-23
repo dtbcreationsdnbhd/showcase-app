@@ -571,6 +571,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
                 height: figmaPx(40.5),
                 border: 0,
                 background: "linear-gradient(90deg, #CC35CC 0%, #563DFE 100%)",
+                boxShadow: "0px 4px 20px rgba(236, 115, 255, 0.5)",
                 borderRadius: "9999px",
                 fontStyle: "normal",
                 fontWeight: 600,

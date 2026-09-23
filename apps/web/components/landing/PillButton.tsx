@@ -26,6 +26,7 @@ export default function PillButton({
         pl: "20px",
         pr: "6px",
         background: "linear-gradient(90deg, #CC35CC 0%, #563DFE 100%)",
+        boxShadow: "0px 4px 20px rgba(236, 115, 255, 0.5)",
         borderRadius: "9999px",
         textDecoration: "none",
         cursor: "pointer",

@@ -16,7 +16,10 @@ export default function CenterHashLink({
   href: string;
   children: ReactNode;
   sx?: object;
-} & Omit<React.ComponentProps<typeof Box>, "component" | "href" | "onClick" | "sx">) {
+} & Omit<
+  React.ComponentProps<typeof Box<"a">>,
+  "component" | "href" | "onClick" | "sx"
+>) {
   const onClick = useCallback(
     (event: MouseEvent<HTMLAnchorElement>) => {
       const id = hash.replace(/^#/, "");
@@ -24,8 +27,13 @@ export default function CenterHashLink({
       const el = document.getElementById(id);
       if (!el) return;
       event.preventDefault();
+      // A pinned title's wrapper is several viewports tall, so centring it
+      // would drop the user mid-hold. Align its top with the viewport instead,
+      // which is exactly where the pin engages and the reveal begins.
       const rect = el.getBoundingClientRect();
-      const delta = rect.top + rect.height / 2 - window.innerHeight / 2;
+      const delta = el.hasAttribute("data-pin-top")
+        ? rect.top
+        : rect.top + rect.height / 2 - window.innerHeight / 2;
       scrollLandingBy(delta);
       history.pushState(null, "", href.includes("#") ? href : `#${id}`);
     },

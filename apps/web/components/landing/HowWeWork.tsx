@@ -5,9 +5,10 @@ import {
   getLandingProcessStepSrc,
   type LandingProcessStep,
 } from "@/lib/landing-assets";
+import ScrollRevealPin from "@/components/landing/ScrollRevealPin";
 import {
   PROCESS_CARDS_SCROLL_HEIGHT_CSS,
-  PROCESS_INTRO_HEIGHT,
+  TITLE_HOLD_PAGES,
   figmaPx,
 } from "@/lib/landing-layout";
 
@@ -72,22 +73,13 @@ export default function HowWeWork() {
         zIndex: 45,
       }}
     >
-      <Box
-        sx={{
-          boxSizing: "border-box",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100%",
-          // Compact block — full viewport here left a huge gap before cards.
-          height: PROCESS_INTRO_HEIGHT,
-          flexShrink: 0,
-          // Nav still centers #how-we-work via CenterHashLink.
-        }}
+      <ScrollRevealPin
+        holdPages={TITLE_HOLD_PAGES}
+        anchorId="how-we-work"
+        // Above the Solutions pin, below the process cards pin.
+        zIndex={46}
       >
         <Box
-          id="how-we-work"
           sx={{
             display: "flex",
             flexDirection: "column",
@@ -135,7 +127,7 @@ export default function HowWeWork() {
             solutions.
           </Typography>
         </Box>
-      </Box>
+      </ScrollRevealPin>
 
       <Box
         sx={{

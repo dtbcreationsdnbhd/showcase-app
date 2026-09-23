@@ -161,6 +161,7 @@ export default function ProjectShowcase({
               width: figmaPx(33.75),
               height: figmaPx(33.75),
               background: "linear-gradient(90deg, #CC35CC 0%, #563DFE 100%)",
+              boxShadow: "0px 3px 12px rgba(236, 115, 255, 0.5)",
               borderRadius: "50%",
             }}
           >

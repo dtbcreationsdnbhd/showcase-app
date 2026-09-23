@@ -12,6 +12,7 @@ import {
   figmaPx,
 } from "@/lib/landing-layout";
 import { isLandingNav } from "@/lib/landing-nav";
+import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
 
 const barlow = {
   fontFamily:
@@ -97,18 +98,6 @@ function eased(t: number): number {
 function rangeProgress(value: number, start: number, end: number): number {
   if (end <= start) return value >= end ? 1 : 0;
   return clamp01((value - start) / (end - start));
-}
-
-function usePrefersReducedMotion() {
-  const [reduced, setReduced] = useState(false);
-  useEffect(() => {
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const sync = () => setReduced(media.matches);
-    sync();
-    media.addEventListener("change", sync);
-    return () => media.removeEventListener("change", sync);
-  }, []);
-  return reduced;
 }
 
 function ProcessCard({
