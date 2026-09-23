@@ -14,6 +14,7 @@ export default function PillButton({
     <Box
       component="a"
       href={href}
+      className="hover-grow"
       sx={{
         boxSizing: "border-box",
         position: "relative",

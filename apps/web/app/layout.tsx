@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Barlow_Semi_Condensed, Plus_Jakarta_Sans } from "next/font/google";
+import SiteCursor from "@/components/landing/SiteCursor";
 import ThemeRegistry from "@/components/ThemeRegistry";
 import "./globals.css";
 
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className={`${plusJakarta.className} min-h-full flex flex-col`}>
         <ThemeRegistry>{children}</ThemeRegistry>
+        <SiteCursor />
       </body>
     </html>
   );

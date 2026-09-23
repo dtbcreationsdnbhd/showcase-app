@@ -44,7 +44,7 @@ export default function ProjectShowcaseGallery({
             title={project.title}
             description={project.description}
             imageSrc={imageSrc}
-            followCursor
+            cursorLabel="View Project"
             onOpen={() => setSelected(project.title)}
           />
         ))}

@@ -12,6 +12,7 @@ function ContactPillButton() {
     <Box
       component="a"
       href="#contact-form"
+      className="hover-grow"
       sx={{
         boxSizing: "border-box",
         position: "relative",

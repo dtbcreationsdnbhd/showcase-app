@@ -199,7 +199,13 @@ export default function Navbar({
             );
             if (link.center) {
               return (
-                <CenterHashLink key={link.label} hash={link.hash} href={href} sx={linkSx}>
+                <CenterHashLink
+                  key={link.label}
+                  hash={link.hash}
+                  href={href}
+                  className="hover-grow-lg"
+                  sx={linkSx}
+                >
                   {label}
                 </CenterHashLink>
               );
@@ -209,6 +215,7 @@ export default function Navbar({
                 key={link.label}
                 component="a"
                 href={href}
+                className="hover-grow-lg"
                 sx={linkSx}
               >
                 {label}
@@ -220,6 +227,7 @@ export default function Navbar({
         <Box
           component="a"
           href={withPrefix("#contact")}
+          className="hover-grow"
           sx={{
             boxSizing: "border-box",
             position: "relative",

@@ -227,6 +227,7 @@ export default function Hero({ heroSrc }: { heroSrc: string | null }) {
             <Box
               component="a"
               href="#projects"
+              className="hover-grow"
               sx={{
                 boxSizing: "border-box",
                 display: "flex",

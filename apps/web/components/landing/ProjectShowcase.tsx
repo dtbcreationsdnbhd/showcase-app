@@ -133,6 +133,7 @@ export default function ProjectShowcase({
           component="a"
           href={arrowHref}
           aria-label={arrowHref === "/projects" ? "Next projects" : "Back to home"}
+          className="hover-grow-lg"
           sx={{
             position: "relative",
             display: "flex",
@@ -194,6 +195,8 @@ export default function ProjectShowcase({
               title={project.title}
               description={project.description}
               imageSrc={imageSrc}
+              cursorLabel="Next"
+              href={arrowHref}
             />
           ))}
         </Box>
