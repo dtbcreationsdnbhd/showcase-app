@@ -135,7 +135,7 @@ export default function SiteCursor() {
       }
       const from = event.target instanceof Element ? event.target : null;
       const el = from?.closest(".hover-grow, .hover-grow-lg, .hover-grow-sm");
-      if (!el) {
+      if (!(el instanceof HTMLElement)) {
         return;
       }
       const next = event.relatedTarget;
