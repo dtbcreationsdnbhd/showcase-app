@@ -129,6 +129,25 @@ body {
   }
 }
 
+.footer-apex-letter {
+  display: inline-block;
+  vertical-align: top;
+  line-height: 1;
+  transform: translate3d(0, 0.95em, 0);
+  will-change: transform;
+}
+
+.footer-apex-glyph {
+  display: block;
+  line-height: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footer-apex-letter {
+    transform: none;
+  }
+}
+
 .site-cursor-label {
   font-family: var(--font-barlow-semi-condensed), "Barlow Semi Condensed", sans-serif;
   font-weight: 500;
