@@ -44,12 +44,16 @@ body {
 }
 
 .hover-grow,
-.hover-grow-lg {
+.hover-grow-lg,
+.hover-grow-sm {
   --spring-from: 1.06;
   --spring-dip: 0.84;
   --spring-pop: 1.12;
   --spring-settle: 0.95;
-  transform: scale(1);
+  transform: translateZ(0) scale(1);
+  transform-origin: center center;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
   transition: transform 180ms ease;
 }
 
@@ -63,48 +67,63 @@ body {
   --spring-from: 1.18;
 }
 
+.hover-grow-sm {
+  --spring-from: 1.03;
+  --spring-dip: 0.98;
+  --spring-pop: 1.04;
+  --spring-settle: 0.995;
+}
+
 .hover-grow:hover,
-.hover-grow-lg:hover {
+.hover-grow-lg:hover,
+.hover-grow-sm:hover {
   animation: none;
 }
 
 .hover-grow:hover {
-  transform: scale(1.06);
+  transform: translateZ(0) scale(1.06);
 }
 
 .hover-grow-lg:hover {
-  transform: scale(1.18);
+  transform: translateZ(0) scale(1.18);
+}
+
+.hover-grow-sm:hover {
+  transform: translateZ(0) scale(1.03);
 }
 
 .hover-grow.is-spring:not(:hover),
-.hover-grow-lg.is-spring:not(:hover) {
+.hover-grow-lg.is-spring:not(:hover),
+.hover-grow-sm.is-spring:not(:hover) {
   animation: hover-spring 0.72s linear both;
   transition: none;
 }
 
 @keyframes hover-spring {
   0% {
-    transform: scale(var(--spring-from));
+    transform: translateZ(0) scale(var(--spring-from));
   }
   30% {
-    transform: scale(var(--spring-dip));
+    transform: translateZ(0) scale(var(--spring-dip));
   }
   54% {
-    transform: scale(var(--spring-pop));
+    transform: translateZ(0) scale(var(--spring-pop));
   }
   76% {
-    transform: scale(var(--spring-settle));
+    transform: translateZ(0) scale(var(--spring-settle));
   }
   100% {
-    transform: scale(1);
+    transform: translateZ(0) scale(1);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .hover-grow,
   .hover-grow-lg,
+  .hover-grow-sm,
   .hover-grow.is-spring:not(:hover),
-  .hover-grow-lg.is-spring:not(:hover) {
+  .hover-grow-lg.is-spring:not(:hover),
+  .hover-grow-sm.is-spring:not(:hover) {
     animation: none;
     transition: none;
   }

@@ -134,7 +134,7 @@ export default function SiteCursor() {
         return;
       }
       const from = event.target instanceof Element ? event.target : null;
-      const el = from?.closest(".hover-grow, .hover-grow-lg");
+      const el = from?.closest(".hover-grow, .hover-grow-lg, .hover-grow-sm");
       if (!el) {
         return;
       }

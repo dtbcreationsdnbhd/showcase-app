@@ -47,9 +47,15 @@ export const SHOWCASE_PAD_BOTTOM = figmaPx(90);
 /** padding + header 70 + gap 50 + cards 414.75 */
 export const SHOWCASE_HEIGHT =
   SHOWCASE_PAD_TOP + figmaPx(70 + 50 + 414.75) + SHOWCASE_PAD_BOTTOM;
-export const CONTACT_CTA_HEIGHT = figmaPx(200);
+/** Contact CTA is one full viewport on the scaled stage (not fixed Figma px). */
+export const CONTACT_CTA_VIEWPORT_PAGES = 1;
+export const CONTACT_CTA_HEIGHT_CSS = STAGE_VIEWPORT_PAGE_HEIGHT_CSS;
+/** Contact form is one full viewport on the scaled stage (not fixed Figma px). */
+export const CONTACT_FORM_VIEWPORT_PAGES = 1;
+export const CONTACT_FORM_HEIGHT_CSS = STAGE_VIEWPORT_PAGE_HEIGHT_CSS;
 export const CONTACT_FORM_PAD_TOP = figmaPx(56);
 export const CONTACT_FORM_PAD_BOTTOM = figmaPx(80);
+/** @deprecated Prefer CONTACT_FORM_HEIGHT_CSS; kept for any static fallback. */
 export const CONTACT_FORM_HEIGHT =
   figmaPx(587.25) + CONTACT_FORM_PAD_TOP + CONTACT_FORM_PAD_BOTTOM;
 /** Short fade from the hero photo into the solutions background. */
@@ -66,13 +72,9 @@ export const FOOTER_HEIGHT = figmaPx(315);
 export const PROJECTS_PAGE_NAV_HEIGHT = 40;
 export const PROJECTS_PAGE_HEIGHT = PROJECTS_PAGE_NAV_HEIGHT + SHOWCASE_HEIGHT;
 
-/** Everything except Targeted Solutions (solutions uses viewport pages). */
+/** Everything except Targeted Solutions / Process / Contact CTA / Contact form (those use viewport pages). */
 export const LANDING_HEIGHT_WITHOUT_SOLUTIONS =
-  HERO_DESIGN_HEIGHT +
-  SHOWCASE_HEIGHT +
-  CONTACT_CTA_HEIGHT +
-  CONTACT_FORM_HEIGHT +
-  FOOTER_HEIGHT;
+  HERO_DESIGN_HEIGHT + SHOWCASE_HEIGHT + FOOTER_HEIGHT;
 
 /**
  * Approximate design height assuming a 16:9 viewport for one page.
@@ -83,9 +85,11 @@ export const LANDING_DESIGN_HEIGHT =
   PROCESS_INTRO_HEIGHT +
   PROCESS_PAGE_COUNT * (LANDING_DESIGN_WIDTH * (9 / 16)) +
   SOLUTIONS_PAGE_COUNT * (LANDING_DESIGN_WIDTH * (9 / 16)) +
+  CONTACT_CTA_VIEWPORT_PAGES * (LANDING_DESIGN_WIDTH * (9 / 16)) +
+  CONTACT_FORM_VIEWPORT_PAGES * (LANDING_DESIGN_WIDTH * (9 / 16)) +
   SOLUTIONS_RELEASE_HEIGHT;
 
 /** Screen-space height of the scaled landing frame (vh pages + fixed stage sections). */
 export function landingFrameHeightCss(): string {
-  return `calc(100vw * ${LANDING_HEIGHT_WITHOUT_SOLUTIONS + SOLUTIONS_RELEASE_HEIGHT + PROCESS_INTRO_HEIGHT} / ${LANDING_DESIGN_WIDTH} + ${SOLUTIONS_PAGE_COUNT + PROCESS_PAGE_COUNT} * 100vh)`;
+  return `calc(100vw * ${LANDING_HEIGHT_WITHOUT_SOLUTIONS + SOLUTIONS_RELEASE_HEIGHT + PROCESS_INTRO_HEIGHT} / ${LANDING_DESIGN_WIDTH} + ${SOLUTIONS_PAGE_COUNT + PROCESS_PAGE_COUNT + CONTACT_CTA_VIEWPORT_PAGES + CONTACT_FORM_VIEWPORT_PAGES} * 100vh)`;
 }
