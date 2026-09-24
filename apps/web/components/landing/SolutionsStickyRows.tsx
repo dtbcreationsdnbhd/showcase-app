@@ -592,6 +592,7 @@ export default function SolutionsStickyRows({
               setPinEl((prev) => (prev === el ? prev : el));
             }}
             data-solutions-pin="true"
+            className="landing-desktop-pin"
             style={{
               position: "fixed",
               zIndex: 40,

@@ -175,6 +175,7 @@ export default function ScrollRevealPin({
         ? createPortal(
             <div
               ref={pinRef}
+              className="landing-desktop-pin"
               style={{
                 position: "fixed",
                 left: 0,

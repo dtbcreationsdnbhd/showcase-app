@@ -74,22 +74,25 @@ body {
   --spring-settle: 0.995;
 }
 
-.hover-grow:hover,
-.hover-grow-lg:hover,
-.hover-grow-sm:hover {
-  animation: none;
-}
+/* Touch taps latch :hover on mobile, leaving elements stuck mid-grow. */
+@media (hover: hover) {
+  .hover-grow:hover,
+  .hover-grow-lg:hover,
+  .hover-grow-sm:hover {
+    animation: none;
+  }
 
-.hover-grow:hover {
-  transform: translateZ(0) scale(1.06);
-}
+  .hover-grow:hover {
+    transform: translateZ(0) scale(1.06);
+  }
 
-.hover-grow-lg:hover {
-  transform: translateZ(0) scale(1.18);
-}
+  .hover-grow-lg:hover {
+    transform: translateZ(0) scale(1.18);
+  }
 
-.hover-grow-sm:hover {
-  transform: translateZ(0) scale(1.03);
+  .hover-grow-sm:hover {
+    transform: translateZ(0) scale(1.03);
+  }
 }
 
 .hover-grow.is-spring:not(:hover),
@@ -169,6 +172,16 @@ body {
 .landing-stage {
   position: relative;
   width: 1920px;
+}
+
+/* Pinned sections portal to document.body to escape the scaled stage, so the
+   mobile breakpoint can't reach them through the desktop tree's wrapper. Each
+   one is a full-viewport fixed layer, so leaking covers the mobile page.
+   `!important` because every portal root sets `display` inline. */
+@media (max-width: 767px) {
+  .landing-desktop-pin {
+    display: none !important;
+  }
 }
 
 @keyframes solutions-dot-wave {
