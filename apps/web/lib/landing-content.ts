@@ -22,6 +22,64 @@ export const SOLUTIONS_INTRO_TEXT = SOLUTIONS_INTRO_SENTENCES.join(" ");
 
 export const SHOWCASE_TITLE = "Project Showcase";
 
+/** Desktop keeps the title on one nowrap line; mobile stacks the two halves. */
+export const CTA_TITLE_LINES = [
+  "Ready to Scale?",
+  "Connect with Our Team",
+] as const;
+
+export const CTA_TITLE = CTA_TITLE_LINES.join(" ");
+
+/** Both trees break between the two halves. */
+export const CTA_BODY_LINES = [
+  "Whether you need to automate workflows, build custom systems, or launch high-converting digital assets,",
+  "we are here to turn your bottlenecks into measurable revenue.",
+] as const;
+
+export const CTA_BUTTON_LABEL = "Get in touch with us";
+
+export const FORM_SERVICES_TITLE = "Services";
+export const FORM_SERVICES_HINT = "You may select multiple services";
+
+export const FORM_SERVICES = [
+  "Branding Design",
+  "Design System",
+  "Product Design",
+  "Website Design",
+  "Other Services",
+] as const;
+
+export const FORM_BUDGET_TITLE = "Budget";
+
+export const FORM_BUDGETS = [
+  "$10.000 - $20.000",
+  "$20.000 - $50.000",
+  "$50.000 - $100.000",
+  "> $100.000",
+] as const;
+
+export const FORM_CYCLE_TITLE = "Project Cycle";
+
+export const FORM_CYCLES = [
+  "2-3 Months",
+  "6-12 Months",
+  "Ongoing Work",
+  "Other",
+] as const;
+
+export const FORM_REACH_TITLE = "Reach out to us";
+export const FORM_REACH_INTRO =
+  "Fill up and submit the form below. We will respond to you within 12 hours.";
+
+export const FORM_FIELDS = [
+  { label: "Full Name", required: true },
+  { label: "Email or Telegram", required: true },
+  { label: "What are you looking to build?", required: true },
+  { label: "Tell us more about your project", required: false },
+] as const;
+
+export const FORM_SUBMIT_LABEL = "Submit Inquiry";
+
 export const PROJECTS = [
   {
     title: "Teleflies",

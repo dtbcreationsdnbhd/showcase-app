@@ -1,5 +1,10 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import {
+  CTA_BODY_LINES,
+  CTA_BUTTON_LABEL,
+  CTA_TITLE,
+} from "@/lib/landing-content";
 import { TITLE_HOLD_PAGES, figmaPx } from "@/lib/landing-layout";
 import ScrollRevealPin from "@/components/landing/ScrollRevealPin";
 
@@ -57,7 +62,7 @@ function ContactPillButton() {
             backfaceVisibility: "hidden",
           }}
         >
-          Get in touch with us
+          {CTA_BUTTON_LABEL}
         </Box>
         <Box
           aria-hidden
@@ -156,7 +161,7 @@ export default function ContactCta() {
                 whiteSpace: "nowrap",
               }}
             >
-              Ready to Scale? Connect with Our Team
+              {CTA_TITLE}
             </Typography>
 
             <Box
@@ -185,10 +190,9 @@ export default function ContactCta() {
                   color: "#FFFFFF",
                 }}
               >
-                Whether you need to automate workflows, build custom systems, or
-                launch high-converting digital assets,
+                {CTA_BODY_LINES[0]}
                 <br />
-                we are here to turn your bottlenecks into measurable revenue.
+                {CTA_BODY_LINES[1]}
               </Typography>
             </Box>
           </Box>

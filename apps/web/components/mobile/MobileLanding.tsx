@@ -1,4 +1,6 @@
 import Box from "@mui/material/Box";
+import MobileContactCta from "@/components/mobile/MobileContactCta";
+import MobileContactForm from "@/components/mobile/MobileContactForm";
 import MobileHero from "@/components/mobile/MobileHero";
 import MobileHowWeWork from "@/components/mobile/MobileHowWeWork";
 import MobileNavbar from "@/components/mobile/MobileNavbar";
@@ -52,6 +54,8 @@ export default function MobileLanding({
           imageSrc={getLandingProjectShowcaseSrc()}
           detailImageSrc={getLandingProjectDetailSrc()}
         />
+        <MobileContactCta />
+        <MobileContactForm />
       </Box>
     </Box>
   );

@@ -5,6 +5,18 @@ import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import { useState, type ReactNode } from "react";
 import {
+  FORM_BUDGETS,
+  FORM_BUDGET_TITLE,
+  FORM_CYCLES,
+  FORM_CYCLE_TITLE,
+  FORM_REACH_INTRO,
+  FORM_REACH_TITLE,
+  FORM_SERVICES,
+  FORM_SERVICES_HINT,
+  FORM_SERVICES_TITLE,
+  FORM_SUBMIT_LABEL,
+} from "@/lib/landing-content";
+import {
   CONTACT_FORM_HEIGHT_CSS,
   CONTACT_WAVE_MASK_FADE,
   CONTACT_WAVE_MASK_HOLD_PCT,
@@ -20,28 +32,6 @@ const CARD_W = figmaPx(423);
 const CARD_H = figmaPx(587.25);
 const CARD_PAD = figmaPx(26);
 const INNER_W = CARD_W - CARD_PAD * 2;
-
-const SERVICES = [
-  "Branding Design",
-  "Design System",
-  "Product Design",
-  "Website Design",
-  "Other Services",
-] as const;
-
-const BUDGETS = [
-  "$10.000 - $20.000",
-  "$20.000 - $50.000",
-  "$50.000 - $100.000",
-  "> $100.000",
-] as const;
-
-const CYCLES = [
-  "2-3 Months",
-  "6-12 Months",
-  "Ongoing Work",
-  "Other",
-] as const;
 
 const chipBase = {
   ...barlow,
@@ -280,7 +270,7 @@ function FormCard({ children }: { children: ReactNode }) {
 }
 
 export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
-  const [services, setServices] = useState<string[]>(["Branding Design"]);
+  const [services, setServices] = useState<string[]>([FORM_SERVICES[0]]);
   const [budget, setBudget] = useState<string | null>(null);
   const [cycle, setCycle] = useState<string | null>(null);
   const [fullName, setFullName] = useState("");
@@ -379,7 +369,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
                   width: INNER_W,
                 }}
               >
-                <SectionTitle>Services</SectionTitle>
+                <SectionTitle>{FORM_SERVICES_TITLE}</SectionTitle>
                 <Typography
                   sx={{
                     ...barlow,
@@ -392,11 +382,11 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
                     color: "rgba(255, 255, 255, 0.5)",
                   }}
                 >
-                  You may select multiple services
+                  {FORM_SERVICES_HINT}
                 </Typography>
               </Box>
               <ChipRow>
-                {SERVICES.map((label) => (
+                {FORM_SERVICES.map((label) => (
                   <Chip
                     key={label}
                     label={label}
@@ -419,9 +409,9 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
                 width: INNER_W,
               }}
             >
-              <SectionTitle>Budget</SectionTitle>
+              <SectionTitle>{FORM_BUDGET_TITLE}</SectionTitle>
               <ChipRow>
-                {BUDGETS.map((label) => (
+                {FORM_BUDGETS.map((label) => (
                   <Chip
                     key={label}
                     label={label}
@@ -446,9 +436,9 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
                 width: INNER_W,
               }}
             >
-              <SectionTitle>Project Cycle</SectionTitle>
+              <SectionTitle>{FORM_CYCLE_TITLE}</SectionTitle>
               <ChipRow>
-                {CYCLES.map((label) => (
+                {FORM_CYCLES.map((label) => (
                   <Chip
                     key={label}
                     label={label}
@@ -488,7 +478,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
                 color: "#C3A4FF",
               }}
             >
-              Reach out to us
+              {FORM_REACH_TITLE}
             </Typography>
             <Typography
               sx={{
@@ -503,8 +493,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
                 color: "rgba(255, 255, 255, 0.5)",
               }}
             >
-              Fill up and submit the form below. We will respond to you within
-              12 hours.
+              {FORM_REACH_INTRO}
             </Typography>
           </Box>
 
@@ -583,7 +572,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
                 WebkitAppearance: "none",
               }}
             >
-              Submit Inquiry
+              {FORM_SUBMIT_LABEL}
             </Box>
           </Box>
         </FormCard>
