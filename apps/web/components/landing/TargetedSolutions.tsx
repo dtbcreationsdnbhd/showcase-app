@@ -4,6 +4,11 @@ import { getLandingServiceIconSrc, getLandingServiceMorphSrc } from "@/lib/landi
 import SolutionsStickyRows from "@/components/landing/SolutionsStickyRows";
 import ScrollRevealPin from "@/components/landing/ScrollRevealPin";
 import {
+  SOLUTIONS_INTRO_TEXT,
+  SOLUTIONS_SUBTITLE,
+  SOLUTIONS_TITLE_WORDS,
+} from "@/lib/landing-content";
+import {
   SOLUTIONS_RELEASE_HEIGHT,
   TITLE_HOLD_PAGES,
   figmaPx,
@@ -90,12 +95,16 @@ export default function TargetedSolutions() {
               m: 0,
             }}
           >
-            <Typography component="span" className="solutions-title-flow" sx={{ ...watermarkWord }}>
-              Targeted
-            </Typography>
-            <Typography component="span" className="solutions-title-flow" sx={{ ...watermarkWord }}>
-              Solutions
-            </Typography>
+            {SOLUTIONS_TITLE_WORDS.map((word) => (
+              <Typography
+                key={word}
+                component="span"
+                className="solutions-title-flow"
+                sx={{ ...watermarkWord }}
+              >
+                {word}
+              </Typography>
+            ))}
           </Box>
         </Box>
 
@@ -133,7 +142,7 @@ export default function TargetedSolutions() {
               whiteSpace: "nowrap",
             }}
           >
-            for your business growth.
+            {SOLUTIONS_SUBTITLE}
           </Typography>
 
           <Box
@@ -159,9 +168,7 @@ export default function TargetedSolutions() {
                 color: "#FFFFFF",
               }}
             >
-              We provide precise, scalable digital services designed to solve
-              your operational bottlenecks. Choose the tools you need to
-              streamline your workflow and drive conversions.
+              {SOLUTIONS_INTRO_TEXT}
             </Typography>
           </Box>
         </Box>

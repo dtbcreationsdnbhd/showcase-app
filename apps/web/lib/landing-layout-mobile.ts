@@ -33,3 +33,8 @@ export const MOBILE_NAV_HEIGHT = 100;
 export const MOBILE_HERO_HEIGHT = MOBILE_DESIGN_HEIGHT;
 /** Fade from the hero photo into the section below it. */
 export const MOBILE_HERO_BOTTOM_FADE = 120;
+
+/** Shared dark field behind every section below the hero. */
+export const MOBILE_SECTION_BG = "#050B13";
+/** Barely-there watermark: the Figma export reads near-black on the dark field. */
+export const MOBILE_SOLUTIONS_TITLE_COLOR = "#16202D";
