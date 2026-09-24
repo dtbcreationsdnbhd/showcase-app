@@ -1,3 +1,11 @@
+/** Shared by the desktop navbar and the mobile menu so the two can't drift. */
+export const NAV_LINKS = [
+  { label: "HOME", hash: "#top", center: false },
+  { label: "SERVICES", hash: "#services", center: true },
+  { label: "HOW WE WORK", hash: "#how-we-work", center: true },
+  { label: "PROJECTS", hash: "#projects", center: true },
+] as const;
+
 /** True while a navbar/hash scroll is in flight — How We Work scrubs 1:1 (fast-forward). */
 let landingNavDepth = 0;
 

@@ -184,6 +184,14 @@ body {
   }
 }
 
+/* Mirror of the above: the mobile menu also portals to body, so widening the
+   window past the breakpoint while it is open must not leave it on screen. */
+@media (min-width: 768px) {
+  .mobile-menu-root {
+    display: none !important;
+  }
+}
+
 @keyframes solutions-dot-wave {
   0%,
   100% {

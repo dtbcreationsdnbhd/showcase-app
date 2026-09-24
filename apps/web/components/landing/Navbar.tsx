@@ -2,13 +2,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import CenterHashLink from "@/components/landing/CenterHashLink";
-
-const NAV_LINKS = [
-  { label: "HOME", hash: "#top", center: false },
-  { label: "SERVICES", hash: "#services", center: true },
-  { label: "HOW WE WORK", hash: "#how-we-work", center: true },
-  { label: "PROJECTS", hash: "#projects", center: true },
-] as const;
+import { NAV_LINKS } from "@/lib/landing-nav";
 
 const headerFont = {
   fontFamily:

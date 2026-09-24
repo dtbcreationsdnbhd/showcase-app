@@ -5,10 +5,12 @@ export default function PillButton({
   children,
   href = "#",
   width,
+  arrowUpRight = false,
 }: {
   children: ReactNode;
   href?: string;
   width?: number;
+  arrowUpRight?: boolean;
 }) {
   return (
     <Box
@@ -75,7 +77,12 @@ export default function PillButton({
           <Box
             component="svg"
             viewBox="0 0 16 16"
-            sx={{ width: 16, height: 16, display: "block" }}
+            sx={{
+              width: 16,
+              height: 16,
+              display: "block",
+              transform: arrowUpRight ? "rotate(-45deg)" : "none",
+            }}
           >
             <path
               d="M2 8h10.5M9.2 3.8 13.8 8 9.2 12.2"

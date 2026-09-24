@@ -19,7 +19,8 @@ export default function MobileLanding({
           top: 0,
           left: 0,
           width: "100%",
-          zIndex: 80,
+          // Above the menu panel (200) so the close button stays tappable.
+          zIndex: 210,
           pointerEvents: "none",
         }}
       >
