@@ -4,7 +4,8 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import { Fragment, useEffect, useState } from "react";
-import { figmaPx } from "@/lib/landing-layout";
+import { createPortal } from "react-dom";
+import { LANDING_DESIGN_WIDTH, figmaPx } from "@/lib/landing-layout";
 
 const barlow = {
   fontFamily:
@@ -175,6 +176,11 @@ export default function ProjectDetailPopup({
 }) {
   const detail = PROJECT_DETAILS[projectKey];
   const [thumb, setThumb] = useState(0);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     setThumb(0);
@@ -190,21 +196,24 @@ export default function ProjectDetailPopup({
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  if (!detail) {
+  if (!detail || !mounted) {
     return null;
   }
 
   const cardW = figmaPx(34 + 387 + 56 + 358.5 + 34);
   const closeSize = figmaPx(36);
 
-  return (
+  return createPortal(
     <Box
       role="presentation"
       onClick={onClose}
       sx={{
         position: "fixed",
         inset: 0,
-        zIndex: 40,
+        zIndex: 200,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
         bgcolor: "rgba(5, 11, 19, 0.45)",
         backdropFilter: "blur(28px)",
         WebkitBackdropFilter: "blur(28px)",
@@ -212,11 +221,10 @@ export default function ProjectDetailPopup({
     >
       <Box
         sx={{
-          position: "absolute",
-          left: "50%",
-          top: "50%",
-          transform: "translate(-50%, -50%)",
+          position: "relative",
           width: cardW,
+          flexShrink: 0,
+          transform: `scale(calc(100vw / ${LANDING_DESIGN_WIDTH}px))`,
         }}
       >
         <Box
@@ -499,6 +507,7 @@ export default function ProjectDetailPopup({
         </Box>
         </Box>
       </Box>
-    </Box>
+    </Box>,
+    document.body,
   );
 }

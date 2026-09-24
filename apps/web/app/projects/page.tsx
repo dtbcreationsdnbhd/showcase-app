@@ -22,13 +22,34 @@ export default function ProjectsPage() {
       }}
     >
       <Box
+        sx={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
+          zIndex: 80,
+          pointerEvents: "none",
+        }}
+      >
+        <Box
+          sx={{
+            width: LANDING_DESIGN_WIDTH,
+            transform: `scale(calc(100vw / ${LANDING_DESIGN_WIDTH}px))`,
+            transformOrigin: "top left",
+            pointerEvents: "auto",
+          }}
+        >
+          <Navbar logoSrc={logoSrc} hrefPrefix="/" />
+        </Box>
+      </Box>
+
+      <Box
         className="landing-stage"
         style={{
           transform: `scale(calc(100vw / ${LANDING_DESIGN_WIDTH}px))`,
           transformOrigin: "top left",
         }}
       >
-        <Navbar logoSrc={logoSrc} />
         <Box
           sx={{
             pt: `${PROJECTS_PAGE_NAV_HEIGHT}px`,

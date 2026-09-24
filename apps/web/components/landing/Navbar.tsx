@@ -1,12 +1,13 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
+import CenterHashLink from "@/components/landing/CenterHashLink";
 
 const NAV_LINKS = [
-  { label: "HOME", href: "#" },
-  { label: "SERVICES", href: "#" },
-  { label: "HOW WE WORK", href: "#" },
-  { label: "PROJECTS", href: "#" },
+  { label: "HOME", hash: "#top", center: false },
+  { label: "SERVICES", hash: "#services", center: true },
+  { label: "HOW WE WORK", hash: "#how-we-work", center: true },
+  { label: "PROJECTS", hash: "#projects", center: true },
 ] as const;
 
 const headerFont = {
@@ -36,15 +37,20 @@ function ArrowRightIcon() {
   );
 }
 
-export default function Navbar({ logoSrc }: { logoSrc: string | null }) {
+export default function Navbar({
+  logoSrc,
+  hrefPrefix = "",
+}: {
+  logoSrc: string | null;
+  hrefPrefix?: string;
+}) {
+  const withPrefix = (hash: string) => `${hrefPrefix}${hash}`;
+
   return (
     <Box
       component="header"
       sx={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0,
+        position: "relative",
         width: "100%",
         height: 102,
         zIndex: 20,
@@ -95,7 +101,7 @@ export default function Navbar({ logoSrc }: { logoSrc: string | null }) {
       >
         <Box
           component="a"
-          href="#"
+          href={withPrefix("#top")}
           sx={{
             display: "flex",
             flexDirection: "row",
@@ -162,24 +168,21 @@ export default function Navbar({ logoSrc }: { logoSrc: string | null }) {
             flexShrink: 0,
           }}
         >
-          {NAV_LINKS.map((link) => (
-            <Box
-              key={link.label}
-              component="a"
-              href={link.href}
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                py: "16px",
-                px: "20px",
-                height: 54,
-                boxSizing: "border-box",
-                textDecoration: "none",
-                cursor: "pointer",
-              }}
-            >
+          {NAV_LINKS.map((link) => {
+            const href = withPrefix(link.hash);
+            const linkSx = {
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              py: "16px",
+              px: "20px",
+              height: 54,
+              boxSizing: "border-box",
+              textDecoration: "none",
+              cursor: "pointer",
+            } as const;
+            const label = (
               <Typography
                 component="span"
                 sx={{
@@ -193,13 +196,38 @@ export default function Navbar({ logoSrc }: { logoSrc: string | null }) {
               >
                 {link.label}
               </Typography>
-            </Box>
-          ))}
+            );
+            if (link.center) {
+              return (
+                <CenterHashLink
+                  key={link.label}
+                  hash={link.hash}
+                  href={href}
+                  className="hover-grow-lg"
+                  sx={linkSx}
+                >
+                  {label}
+                </CenterHashLink>
+              );
+            }
+            return (
+              <Box
+                key={link.label}
+                component="a"
+                href={href}
+                className="hover-grow-lg"
+                sx={linkSx}
+              >
+                {label}
+              </Box>
+            );
+          })}
         </Box>
 
         <Box
           component="a"
-          href="#"
+          href={withPrefix("#contact")}
+          className="hover-grow"
           sx={{
             boxSizing: "border-box",
             position: "relative",
@@ -209,6 +237,7 @@ export default function Navbar({ logoSrc }: { logoSrc: string | null }) {
             width: 190,
             height: 52,
             background: "linear-gradient(90deg, #CC35CC 0%, #563DFE 100%)",
+            boxShadow: "0px 4px 20px rgba(236, 115, 255, 0.5)",
             borderRadius: "9999px",
             textDecoration: "none",
             cursor: "pointer",

@@ -5,9 +5,7 @@ import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import { useState, type ReactNode } from "react";
 import {
-  CONTACT_FORM_HEIGHT,
-  CONTACT_FORM_PAD_BOTTOM,
-  CONTACT_FORM_PAD_TOP,
+  CONTACT_FORM_HEIGHT_CSS,
   CONTACT_WAVE_MASK_FADE,
   CONTACT_WAVE_MASK_HOLD_PCT,
   figmaPx,
@@ -301,17 +299,17 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
   return (
     <Box
       component="section"
+      id="contact-form"
       sx={{
         position: "relative",
         boxSizing: "border-box",
         display: "flex",
         flexDirection: "column",
+        justifyContent: "center",
         alignItems: "center",
         p: 0,
-        pt: `${CONTACT_FORM_PAD_TOP}px`,
-        pb: `${CONTACT_FORM_PAD_BOTTOM}px`,
         width: "100%",
-        height: CONTACT_FORM_HEIGHT,
+        height: CONTACT_FORM_HEIGHT_CSS,
         bgcolor: "#050B13",
         overflow: "hidden",
       }}
@@ -558,6 +556,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
             <Box
               component="button"
               type="button"
+              className="hover-grow-sm"
               sx={{
                 ...barlow,
                 boxSizing: "border-box",
@@ -572,6 +571,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
                 height: figmaPx(40.5),
                 border: 0,
                 background: "linear-gradient(90deg, #CC35CC 0%, #563DFE 100%)",
+                boxShadow: "0px 4px 20px rgba(236, 115, 255, 0.5)",
                 borderRadius: "9999px",
                 fontStyle: "normal",
                 fontWeight: 600,

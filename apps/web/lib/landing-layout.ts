@@ -8,20 +8,60 @@ export function figmaPx(px: number): number {
 }
 
 export const HERO_DESIGN_HEIGHT = 1200;
+/**
+ * Scroll distance a pinned section title holds still for, in viewport pages.
+ * A pin wrapper is 1 page for the pinned title plus this many pages of hold.
+ * Calibrated against the reference capture: ~2200px of scroll on a 1080px
+ * viewport. See the design spec before changing it — it drives three sections.
+ */
+export const TITLE_HOLD_PAGES = 2;
+/** Pinned title page + its hold + AI / web / star / refresh — each one viewport. */
+export const SOLUTIONS_PAGE_COUNT = 5 + TITLE_HOLD_PAGES;
+export const SOLUTIONS_SERVICE_PAGES = 4;
+/**
+ * Stage px for one viewport tall page: after `scale(100vw/1920)` it reads as 100vh.
+ * Use in CSS height: `calc(${LANDING_DESIGN_WIDTH}px * 100vh / 100vw)`.
+ */
+export const STAGE_VIEWPORT_PAGE_HEIGHT_CSS = `calc(${LANDING_DESIGN_WIDTH}px * 100vh / 100vw)`;
+/** Air after the last service page so the sticky icon can release before How We Work. */
+export const SOLUTIONS_RELEASE_HEIGHT = 0;
+/**
+ * Our Proven Delivery Process: the intro is a pinned title page plus its hold,
+ * then the card animation pages. Counted in viewport pages, not fixed stage px,
+ * because the pin centres the title in a full viewport.
+ */
+export const PROCESS_INTRO_PAGES = 1 + TITLE_HOLD_PAGES;
+/** Extra pages so each step holds long enough to read the copy. */
+export const PROCESS_CARD_PAGES = 7;
+/**
+ * After the stack closes, dwell on the closed pile before the pin releases —
+ * user scrolls a bit more, then the page continues.
+ */
+export const PROCESS_OUTRO_HOLD_PAGES = 0.55;
+export const PROCESS_PAGE_COUNT = PROCESS_CARD_PAGES + PROCESS_OUTRO_HOLD_PAGES;
+/** Fraction of the cards track used by the animation (rest is post-close hold). */
+export const PROCESS_ANIM_TRAVEL =
+  PROCESS_CARD_PAGES / PROCESS_PAGE_COUNT;
+/** Scroll track for the card animation only (intro is in-flow, fixed height). */
+export const PROCESS_CARDS_SCROLL_HEIGHT_CSS = `calc(${PROCESS_PAGE_COUNT} * ${LANDING_DESIGN_WIDTH}px * 100vh / 100vw)`;
+/** @deprecated Prefer STAGE_VIEWPORT_PAGE_HEIGHT_CSS; kept for any static fallback. */
 export const SOLUTIONS_INTRO_HEIGHT = figmaPx(418);
-/** 4 rows of 370 + 3 gaps of 50, plus a little air before How We Work. */
-export const SOLUTIONS_ROWS_HEIGHT = figmaPx(4 * 370 + 3 * 50 + 64);
-export const PROCESS_INTRO_HEIGHT = figmaPx(144);
-export const PROCESS_STEPS_HEIGHT = figmaPx(1172);
+/** @deprecated Prefer STAGE_VIEWPORT_PAGE_HEIGHT_CSS * service pages + release. */
+export const SOLUTIONS_ROWS_HEIGHT = figmaPx(4 * 370 + 3 * 50 + 220);
 /** Tighter join into Project Showcase than the original 90 top padding. */
 export const SHOWCASE_PAD_TOP = figmaPx(80);
 export const SHOWCASE_PAD_BOTTOM = figmaPx(90);
 /** padding + header 70 + gap 50 + cards 414.75 */
 export const SHOWCASE_HEIGHT =
   SHOWCASE_PAD_TOP + figmaPx(70 + 50 + 414.75) + SHOWCASE_PAD_BOTTOM;
-export const CONTACT_CTA_HEIGHT = figmaPx(200);
+/** Contact CTA: one viewport page for the pinned title plus its hold. */
+export const CONTACT_CTA_VIEWPORT_PAGES = 1 + TITLE_HOLD_PAGES;
+/** Contact form is one full viewport on the scaled stage (not fixed Figma px). */
+export const CONTACT_FORM_VIEWPORT_PAGES = 1;
+export const CONTACT_FORM_HEIGHT_CSS = STAGE_VIEWPORT_PAGE_HEIGHT_CSS;
 export const CONTACT_FORM_PAD_TOP = figmaPx(56);
 export const CONTACT_FORM_PAD_BOTTOM = figmaPx(80);
+/** @deprecated Prefer CONTACT_FORM_HEIGHT_CSS; kept for any static fallback. */
 export const CONTACT_FORM_HEIGHT =
   figmaPx(587.25) + CONTACT_FORM_PAD_TOP + CONTACT_FORM_PAD_BOTTOM;
 /** Short fade from the hero photo into the solutions background. */
@@ -38,13 +78,24 @@ export const FOOTER_HEIGHT = figmaPx(315);
 export const PROJECTS_PAGE_NAV_HEIGHT = 40;
 export const PROJECTS_PAGE_HEIGHT = PROJECTS_PAGE_NAV_HEIGHT + SHOWCASE_HEIGHT;
 
+/** Everything except Targeted Solutions / Process / Contact CTA / Contact form (those use viewport pages). */
+export const LANDING_HEIGHT_WITHOUT_SOLUTIONS =
+  HERO_DESIGN_HEIGHT + SHOWCASE_HEIGHT + FOOTER_HEIGHT;
+
+/**
+ * Approximate design height assuming a 16:9 viewport for one page.
+ * Prefer `landingFrameHeightCss()` for the live scaled frame.
+ */
 export const LANDING_DESIGN_HEIGHT =
-  HERO_DESIGN_HEIGHT +
-  SOLUTIONS_INTRO_HEIGHT +
-  SOLUTIONS_ROWS_HEIGHT +
-  PROCESS_INTRO_HEIGHT +
-  PROCESS_STEPS_HEIGHT +
-  SHOWCASE_HEIGHT +
-  CONTACT_CTA_HEIGHT +
-  CONTACT_FORM_HEIGHT +
-  FOOTER_HEIGHT;
+  LANDING_HEIGHT_WITHOUT_SOLUTIONS +
+  PROCESS_INTRO_PAGES * (LANDING_DESIGN_WIDTH * (9 / 16)) +
+  PROCESS_PAGE_COUNT * (LANDING_DESIGN_WIDTH * (9 / 16)) +
+  SOLUTIONS_PAGE_COUNT * (LANDING_DESIGN_WIDTH * (9 / 16)) +
+  CONTACT_CTA_VIEWPORT_PAGES * (LANDING_DESIGN_WIDTH * (9 / 16)) +
+  CONTACT_FORM_VIEWPORT_PAGES * (LANDING_DESIGN_WIDTH * (9 / 16)) +
+  SOLUTIONS_RELEASE_HEIGHT;
+
+/** Screen-space height of the scaled landing frame (vh pages + fixed stage sections). */
+export function landingFrameHeightCss(): string {
+  return `calc(100vw * ${LANDING_HEIGHT_WITHOUT_SOLUTIONS + SOLUTIONS_RELEASE_HEIGHT} / ${LANDING_DESIGN_WIDTH} + ${SOLUTIONS_PAGE_COUNT + PROCESS_INTRO_PAGES + PROCESS_PAGE_COUNT + CONTACT_CTA_VIEWPORT_PAGES + CONTACT_FORM_VIEWPORT_PAGES} * 100vh)`;
+}

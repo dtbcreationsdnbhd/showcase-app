@@ -89,6 +89,7 @@ export default function ProjectShowcase({
         height: SHOWCASE_HEIGHT,
         bgcolor: "#050B13",
         position: "relative",
+        scrollMarginTop: `${figmaPx(20)}px`,
       }}
     >
       <Box
@@ -132,6 +133,7 @@ export default function ProjectShowcase({
           component="a"
           href={arrowHref}
           aria-label={arrowHref === "/projects" ? "Next projects" : "Back to home"}
+          className="hover-grow-lg"
           sx={{
             position: "relative",
             display: "flex",
@@ -159,6 +161,7 @@ export default function ProjectShowcase({
               width: figmaPx(33.75),
               height: figmaPx(33.75),
               background: "linear-gradient(90deg, #CC35CC 0%, #563DFE 100%)",
+              boxShadow: "0px 3px 12px rgba(236, 115, 255, 0.5)",
               borderRadius: "50%",
             }}
           >
@@ -193,6 +196,8 @@ export default function ProjectShowcase({
               title={project.title}
               description={project.description}
               imageSrc={imageSrc}
+              cursorLabel="Next"
+              href={arrowHref}
             />
           ))}
         </Box>

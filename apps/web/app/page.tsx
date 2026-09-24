@@ -13,8 +13,8 @@ import {
   getLandingLogoSrc,
 } from "@/lib/landing-assets";
 import {
-  LANDING_DESIGN_HEIGHT,
   LANDING_DESIGN_WIDTH,
+  landingFrameHeightCss,
 } from "@/lib/landing-layout";
 
 export default function Home() {
@@ -27,9 +27,31 @@ export default function Home() {
       component="main"
       className="landing-frame"
       style={{
-        height: `calc(100vw * ${LANDING_DESIGN_HEIGHT} / ${LANDING_DESIGN_WIDTH})`,
+        height: landingFrameHeightCss(),
       }}
     >
+      <Box
+        sx={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
+          zIndex: 80,
+          pointerEvents: "none",
+        }}
+      >
+        <Box
+          sx={{
+            width: LANDING_DESIGN_WIDTH,
+            transform: `scale(calc(100vw / ${LANDING_DESIGN_WIDTH}px))`,
+            transformOrigin: "top left",
+            pointerEvents: "auto",
+          }}
+        >
+          <Navbar logoSrc={logoSrc} />
+        </Box>
+      </Box>
+
       <Box
         className="landing-stage"
         style={{
@@ -38,7 +60,6 @@ export default function Home() {
         }}
       >
         <Hero heroSrc={heroSrc} />
-        <Navbar logoSrc={logoSrc} />
         <TargetedSolutions />
         <HowWeWork />
         <ProjectShowcase arrowHref="/projects" />
