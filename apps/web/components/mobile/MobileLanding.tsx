@@ -1,5 +1,6 @@
 import Box from "@mui/material/Box";
 import MobileHero from "@/components/mobile/MobileHero";
+import MobileHowWeWork from "@/components/mobile/MobileHowWeWork";
 import MobileNavbar from "@/components/mobile/MobileNavbar";
 import MobileServicePages from "@/components/mobile/MobileServicePages";
 import MobileTargetedSolutions from "@/components/mobile/MobileTargetedSolutions";
@@ -41,6 +42,7 @@ export default function MobileLanding({
         <MobileHero heroSrc={heroSrc} />
         <MobileTargetedSolutions />
         <MobileServicePages />
+        <MobileHowWeWork />
       </Box>
     </Box>
   );
