@@ -66,7 +66,7 @@ export default function MobileMenu({
 
   return createPortal(
     <div
-      className="mobile-menu-root"
+      className="mobile-portal-root"
       // The root spans the viewport but only the panel should catch taps —
       // otherwise it swallows the close button sitting above it.
       style={{ position: "fixed", inset: 0, zIndex: 200, pointerEvents: "none" }}

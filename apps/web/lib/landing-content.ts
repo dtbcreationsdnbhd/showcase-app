@@ -20,6 +20,58 @@ export const SOLUTIONS_INTRO_SENTENCES = [
 
 export const SOLUTIONS_INTRO_TEXT = SOLUTIONS_INTRO_SENTENCES.join(" ");
 
+export const SHOWCASE_TITLE = "Project Showcase";
+
+export const PROJECTS = [
+  {
+    title: "Teleflies",
+    description: "SaaS Platform • Telegram Bot • Automation",
+  },
+  {
+    title: "TrackSpend",
+    description: "Custom Dashboard • AdTech & Marketing • Data...",
+  },
+  {
+    title: "Ad Spend Markup Generator",
+    description: "Desktop Utility • White-Label Reporting • Agen...",
+  },
+] as const;
+
+export type ProjectDetail = {
+  name: string;
+  tags: string[];
+  challenge: string;
+  solution: string;
+};
+
+const SHARED_CHALLENGE =
+  "Getting users to register is only half the battle. Without constant engagement, they forget your brand, and you lose repeat business.";
+const SHARED_SOLUTION =
+  "Teleflies automates user engagement. With targeted mass broadcasting and real-time alerts, it brings dormant users back to your platform.";
+
+/** Keyed by the card title. A trailing "..." marks a tag the desktop layout
+ *  pushes onto its own row. */
+export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
+  Teleflies: {
+    name: "Teleflies: Telegram Automation Ecosystem",
+    tags: ["SaaS Platform", "Telegram Bot", "Automation"],
+    challenge: SHARED_CHALLENGE,
+    solution: SHARED_SOLUTION,
+  },
+  TrackSpend: {
+    name: "TrackSpend",
+    tags: ["Custom Dashboard", "AdTech & Marketing", "Data..."],
+    challenge: SHARED_CHALLENGE,
+    solution: SHARED_SOLUTION,
+  },
+  "Ad Spend Markup Generator": {
+    name: "Ad Spend Markup Generator",
+    tags: ["Desktop Utility", "White-Label Reporting", "Agen..."],
+    challenge: SHARED_CHALLENGE,
+    solution: SHARED_SOLUTION,
+  },
+};
+
 /** Desktop has room for the long version; the mobile frame does not. */
 export const PROCESS_TITLE = "Our Proven Delivery Process.";
 export const PROCESS_TITLE_SHORT = "Our Process";

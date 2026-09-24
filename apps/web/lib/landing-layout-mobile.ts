@@ -44,3 +44,5 @@ export const MOBILE_GUTTER = 33;
 export const MOBILE_CONTENT_WIDTH = MOBILE_DESIGN_WIDTH - MOBILE_GUTTER * 2;
 export const MOBILE_SERVICE_TITLE_COLOR = "#C3A4FF";
 export const MOBILE_DIVIDER_COLOR = "rgba(255, 255, 255, 0.12)";
+export const MOBILE_ACCENT_GRADIENT =
+  "linear-gradient(90deg, #CC35CC 0%, #563DFE 100%)";

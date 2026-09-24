@@ -184,10 +184,11 @@ body {
   }
 }
 
-/* Mirror of the above: the mobile menu also portals to body, so widening the
-   window past the breakpoint while it is open must not leave it on screen. */
+/* Mirror of the above: the mobile menu and project popup also portal to body,
+   so widening the window past the breakpoint while one is open must not leave
+   it on screen. */
 @media (min-width: 768px) {
-  .mobile-menu-root {
+  .mobile-portal-root {
     display: none !important;
   }
 }

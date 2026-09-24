@@ -5,6 +5,7 @@ import { getLandingProjectDetailSrc, getLandingProjectShowcaseSrc } from "@/lib/
 import { SHOWCASE_HEIGHT, SHOWCASE_PAD_BOTTOM, SHOWCASE_PAD_TOP, figmaPx } from "@/lib/landing-layout";
 import ProjectCard from "@/components/landing/ProjectCard";
 import ProjectShowcaseGallery from "@/components/landing/ProjectShowcaseGallery";
+import { PROJECTS, SHOWCASE_TITLE } from "@/lib/landing-content";
 
 const barlow = {
   fontFamily:
@@ -15,21 +16,6 @@ const CARD_W = figmaPx(276);
 const CARD_H = figmaPx(414.75);
 const CARD_GAP = figmaPx(24);
 const ROW_W = CARD_W * 3 + CARD_GAP * 2;
-
-const PROJECTS = [
-  {
-    title: "Teleflies",
-    description: "SaaS Platform • Telegram Bot • Automation",
-  },
-  {
-    title: "TrackSpend",
-    description: "Custom Dashboard • AdTech & Marketing • Data...",
-  },
-  {
-    title: "Ad Spend Markup Generator",
-    description: "Desktop Utility • White-Label Reporting • Agen...",
-  },
-] as const;
 
 function ArrowRightIcon({ upRight = false, sx }: { upRight?: boolean; sx?: SxProps<Theme> }) {
   return (
@@ -126,7 +112,7 @@ export default function ProjectShowcase({
             whiteSpace: "nowrap",
           }}
         >
-          Project Showcase
+          {SHOWCASE_TITLE}
         </Typography>
 
         <Box
