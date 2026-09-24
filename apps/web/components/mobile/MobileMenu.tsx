@@ -35,14 +35,41 @@ export default function MobileMenu({
     if (!open) {
       return;
     }
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    // `overflow: hidden` on body does not stop touch scrolling on mobile
+    // Safari — the document keeps moving under the menu. Pin the page instead.
+    const scrollY = window.scrollY;
+    const html = document.documentElement;
+    const body = document.body;
+    const previous = {
+      htmlOverflow: html.style.overflow,
+      bodyOverflow: body.style.overflow,
+      bodyPosition: body.style.position,
+      bodyTop: body.style.top,
+      bodyLeft: body.style.left,
+      bodyRight: body.style.right,
+      bodyWidth: body.style.width,
+    };
+    html.style.overflow = "hidden";
+    body.style.overflow = "hidden";
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.left = "0";
+    body.style.right = "0";
+    body.style.width = "100%";
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         onClose();
       }
     };
     window.addEventListener("keydown", onKeyDown);
+    const onTouchMove = (event: TouchEvent) => {
+      const panel = document.getElementById("mobile-menu-panel");
+      if (panel && event.target instanceof Node && panel.contains(event.target)) {
+        return;
+      }
+      event.preventDefault();
+    };
+    document.addEventListener("touchmove", onTouchMove, { passive: false });
     // Widening past the breakpoint hands over to the desktop tree; without this
     // the menu stays open off-screen and its scroll lock freezes the page.
     const media = window.matchMedia(`(min-width: ${MOBILE_BREAKPOINT}px)`);
@@ -54,8 +81,18 @@ export default function MobileMenu({
     media.addEventListener("change", onBreakpointChange);
     onBreakpointChange();
     return () => {
-      document.body.style.overflow = previousOverflow;
+      html.style.overflow = previous.htmlOverflow;
+      body.style.overflow = previous.bodyOverflow;
+      body.style.position = previous.bodyPosition;
+      body.style.top = previous.bodyTop;
+      body.style.left = previous.bodyLeft;
+      body.style.right = previous.bodyRight;
+      body.style.width = previous.bodyWidth;
+      html.style.scrollBehavior = "auto";
+      window.scrollTo(0, scrollY);
+      html.style.scrollBehavior = "";
       window.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("touchmove", onTouchMove);
       media.removeEventListener("change", onBreakpointChange);
     };
   }, [open, onClose]);
@@ -71,14 +108,16 @@ export default function MobileMenu({
       // otherwise it swallows the close button sitting above it.
       style={{ position: "fixed", inset: 0, zIndex: 200, pointerEvents: "none" }}
     >
-      <Box
-        sx={{
-          width: MOBILE_DESIGN_WIDTH,
-          height: MOBILE_VIEWPORT_HEIGHT_CSS,
-          zoom: MOBILE_STAGE_ZOOM,
-        }}
-      >
         <Box
+          sx={{
+            position: "relative",
+            width: MOBILE_DESIGN_WIDTH,
+            height: MOBILE_VIEWPORT_HEIGHT_CSS,
+            zoom: MOBILE_STAGE_ZOOM,
+          }}
+        >
+        <Box
+          id="mobile-menu-panel"
           component="nav"
           aria-label="Mobile"
           sx={{
@@ -96,6 +135,8 @@ export default function MobileMenu({
             boxSizing: "border-box",
             borderRadius: "28px 28px 0 0",
             overflowY: "auto",
+            overscrollBehavior: "contain",
+            touchAction: "pan-y",
             // Glows are read off the Figma export, not sampled — tune on device.
             background:
               "radial-gradient(120% 55% at 50% 0%, rgba(32, 72, 132, 0.42) 0%, rgba(7, 12, 30, 0) 70%), radial-gradient(70% 38% at 45% 58%, rgba(138, 62, 198, 0.20) 0%, rgba(7, 12, 30, 0) 75%), rgba(7, 12, 30, 0.86)",

@@ -246,7 +246,8 @@ export default function MobileContactForm() {
         width: "100%",
         bgcolor: MOBILE_SECTION_BG,
         boxSizing: "border-box",
-        py: "60px",
+        pt: "90px",
+        pb: "60px",
         display: "flex",
         justifyContent: "center",
       }}

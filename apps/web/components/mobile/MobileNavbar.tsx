@@ -76,10 +76,29 @@ export default function MobileNavbar({
         }}
       >
         <Box
+          aria-hidden
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 180,
+            pointerEvents: "none",
+            background:
+              "linear-gradient(180deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 100%)",
+            backdropFilter: "blur(24px)",
+            WebkitBackdropFilter: "blur(24px)",
+            maskImage:
+              "linear-gradient(180deg, #000 0%, #000 35%, transparent 100%)",
+            WebkitMaskImage:
+              "linear-gradient(180deg, #000 0%, #000 35%, transparent 100%)",
+          }}
+        />
+        <Box
           component="a"
           href={`${hrefPrefix}#${mobileAnchorId("top")}`}
           onClick={close}
-          sx={{ textDecoration: "none", cursor: "pointer" }}
+          sx={{ position: "relative", zIndex: 1, textDecoration: "none", cursor: "pointer" }}
         >
           <Typography
             component="span"
@@ -116,6 +135,8 @@ export default function MobileNavbar({
             WebkitBackdropFilter: "blur(12px)",
             cursor: "pointer",
             flexShrink: 0,
+            position: "relative",
+            zIndex: 1,
           }}
         >
           <MenuIcon open={open} />
