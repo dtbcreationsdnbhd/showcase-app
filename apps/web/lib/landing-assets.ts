@@ -58,6 +58,13 @@ export function getLandingServiceIconSrc(
   );
 }
 
+/** Standalone animation per service icon. Mobile holds these on frame 0. */
+export function getLandingServiceIconLottieSrc(
+  key: LandingServiceIcon,
+): string | null {
+  return publicUrl(`landing/${key}.json`);
+}
+
 /** Combined morph animation for the sticky service icons. */
 export function getLandingServiceMorphSrc(): string | null {
   return publicUrl("landing/services-morph.json");

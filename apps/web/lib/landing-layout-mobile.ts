@@ -38,3 +38,9 @@ export const MOBILE_HERO_BOTTOM_FADE = 120;
 export const MOBILE_SECTION_BG = "#050B13";
 /** Barely-there watermark: the Figma export reads near-black on the dark field. */
 export const MOBILE_SOLUTIONS_TITLE_COLOR = "#16202D";
+
+/** Every stacked section keeps its copy inside this column. */
+export const MOBILE_GUTTER = 33;
+export const MOBILE_CONTENT_WIDTH = MOBILE_DESIGN_WIDTH - MOBILE_GUTTER * 2;
+export const MOBILE_SERVICE_TITLE_COLOR = "#C3A4FF";
+export const MOBILE_DIVIDER_COLOR = "rgba(255, 255, 255, 0.12)";

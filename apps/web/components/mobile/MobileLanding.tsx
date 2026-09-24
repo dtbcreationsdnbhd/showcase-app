@@ -1,6 +1,7 @@
 import Box from "@mui/material/Box";
 import MobileHero from "@/components/mobile/MobileHero";
 import MobileNavbar from "@/components/mobile/MobileNavbar";
+import MobileServicePages from "@/components/mobile/MobileServicePages";
 import MobileTargetedSolutions from "@/components/mobile/MobileTargetedSolutions";
 import {
   MOBILE_DESIGN_WIDTH,
@@ -39,6 +40,7 @@ export default function MobileLanding({
       <Box sx={{ width: MOBILE_DESIGN_WIDTH, zoom: MOBILE_STAGE_ZOOM }}>
         <MobileHero heroSrc={heroSrc} />
         <MobileTargetedSolutions />
+        <MobileServicePages />
       </Box>
     </Box>
   );
