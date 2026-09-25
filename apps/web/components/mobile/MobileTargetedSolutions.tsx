@@ -8,9 +8,9 @@ import {
 import {
   MOBILE_SECTION_BG,
   MOBILE_SOLUTIONS_TITLE_COLOR,
-  MOBILE_VIEWPORT_HEIGHT_CSS,
   mobileAnchorId,
 } from "@/lib/landing-layout-mobile";
+import MobileTitleReveal from "./MobileTitleReveal";
 
 const barlow = {
   fontFamily:
@@ -27,17 +27,9 @@ export default function MobileTargetedSolutions() {
         position: "relative",
         width: "100%",
         bgcolor: MOBILE_SECTION_BG,
-        // The title owns a whole screen, like the pinned desktop title page.
-        // `minHeight`, so a short device grows the section instead of clipping.
-        minHeight: MOBILE_VIEWPORT_HEIGHT_CSS,
-        py: "60px",
-        boxSizing: "border-box",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
       }}
     >
+      <MobileTitleReveal>
       {/* Desktop sets the two words side by side; the mobile frame stacks them. */}
       <Box
         component="h2"
@@ -90,6 +82,7 @@ export default function MobileTargetedSolutions() {
       <Box
         sx={{
           mt: "26px",
+          mx: "auto",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -112,6 +105,7 @@ export default function MobileTargetedSolutions() {
           </Typography>
         ))}
       </Box>
+      </MobileTitleReveal>
     </Box>
   );
 }

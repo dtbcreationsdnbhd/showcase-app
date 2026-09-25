@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { useCallback, useState } from "react";
 import MobileMenu from "@/components/mobile/MobileMenu";
+import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
 import {
   MOBILE_NAV_HEIGHT,
   mobileAnchorId,
@@ -16,36 +17,49 @@ const headerFont = {
   fontWeight: 500,
 } as const;
 
-const strokeProps = {
-  fill: "none",
-  stroke: "#FFFFFF",
-  strokeWidth: "1.6",
-  strokeLinecap: "round",
-} as const;
-
-/** The bars want a wide box, the cross a square one — sharing one skews the cross. */
+/** Three bars fold into a cross. One box, so the swap is a move instead of a cut. */
 function MenuIcon({ open }: { open: boolean }) {
-  if (open) {
-    return (
-      <Box
-        component="svg"
-        viewBox="0 0 18 18"
-        aria-hidden
-        sx={{ width: 18, height: 18, display: "block" }}
-      >
-        <path d="M2 2 16 16M16 2 2 16" {...strokeProps} />
-      </Box>
-    );
-  }
-
+  const reduced = usePrefersReducedMotion();
+  const line = {
+    fill: "none",
+    stroke: "#FFFFFF",
+    strokeWidth: 1.6,
+    strokeLinecap: "round" as const,
+    transformBox: "fill-box" as const,
+    transformOrigin: "center",
+    transition: reduced
+      ? "none"
+      : "transform 320ms cubic-bezier(0.22, 1, 0.36, 1), opacity 180ms ease",
+  };
   return (
     <Box
       component="svg"
-      viewBox="0 0 18 12"
+      viewBox="0 0 18 18"
       aria-hidden
-      sx={{ width: 18, height: 12, display: "block" }}
+      sx={{ width: 18, height: 18, display: "block", overflow: "visible" }}
     >
-      <path d="M0 1h18M0 6h18M0 11h18" {...strokeProps} />
+      <path
+        d="M2 5h14"
+        style={{
+          ...line,
+          transform: open ? "translateY(4px) rotate(45deg)" : "none",
+        }}
+      />
+      <path
+        d="M2 9h14"
+        style={{
+          ...line,
+          opacity: open ? 0 : 1,
+          transform: open ? "scaleX(0)" : "none",
+        }}
+      />
+      <path
+        d="M2 13h14"
+        style={{
+          ...line,
+          transform: open ? "translateY(-4px) rotate(-45deg)" : "none",
+        }}
+      />
     </Box>
   );
 }

@@ -1,16 +1,18 @@
+"use client";
+
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { getLandingServiceIconLottieSrc } from "@/lib/landing-assets";
+import { useRef } from "react";
 import { SERVICE_ROWS, type ServiceCopy } from "@/lib/landing-content";
 import {
   MOBILE_CONTENT_WIDTH,
-  MOBILE_DIVIDER_COLOR,
   MOBILE_GUTTER,
   MOBILE_SECTION_BG,
   MOBILE_SERVICE_TITLE_COLOR,
   MOBILE_VIEWPORT_HEIGHT_CSS,
 } from "@/lib/landing-layout-mobile";
 import MobileServiceIcon from "./MobileServiceIcon";
+import { MobileSeamLine, useMobileStackLag } from "./mobile-stack";
 
 const barlow = {
   fontFamily:
@@ -54,31 +56,47 @@ function ServiceCopyBlock({ title, description }: ServiceCopy) {
   );
 }
 
-export default function MobileServicePages() {
+type ServiceRow = (typeof SERVICE_ROWS)[number] & { iconSrc: string | null };
+
+export default function MobileServicePages({ rows }: { rows: ServiceRow[] }) {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  useMobileStackLag(wrapRef);
+
   return (
-    <>
-      {SERVICE_ROWS.map((row) => {
-        const iconSrc = getLandingServiceIconLottieSrc(row.icon);
+    <Box ref={wrapRef} sx={{ position: "relative", width: "100%" }}>
+      {rows.map((row, index) => {
+        const iconSrc = row.iconSrc;
         return (
           <Box
             key={row.icon}
             component="section"
             aria-label={row.alt}
             sx={{
+              position: "sticky",
+              top: 0,
+              zIndex: index + 1,
               width: "100%",
-              bgcolor: MOBILE_SECTION_BG,
-              // One page per icon, like the desktop pinned rows.
+              // One page per icon. Each one sticks, and the next slides up over it.
               // `minHeight`, so a short device grows the page instead of clipping.
               minHeight: MOBILE_VIEWPORT_HEIGHT_CSS,
-              px: `${MOBILE_GUTTER}px`,
-              py: "52px",
-              boxSizing: "border-box",
-              borderBottom: `1px solid ${MOBILE_DIVIDER_COLOR}`,
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
             }}
           >
+            <Box
+              data-sheet=""
+              sx={{
+                position: "relative",
+                width: "100%",
+                minHeight: MOBILE_VIEWPORT_HEIGHT_CSS,
+                boxSizing: "border-box",
+                px: `${MOBILE_GUTTER}px`,
+                py: "52px",
+                bgcolor: MOBILE_SECTION_BG,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+              }}
+            >
+            <MobileSeamLine edge="top" />
             {iconSrc ? (
               <MobileServiceIcon
                 src={iconSrc}
@@ -99,9 +117,13 @@ export default function MobileServicePages() {
                 <ServiceCopyBlock key={service.title} {...service} />
               ))}
             </Box>
+            {index === rows.length - 1 ? (
+              <MobileSeamLine edge="bottom" />
+            ) : null}
+            </Box>
           </Box>
         );
       })}
-    </>
+    </Box>
   );
 }

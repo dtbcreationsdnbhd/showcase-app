@@ -9,10 +9,10 @@ import {
   MOBILE_ACCENT_GRADIENT,
   MOBILE_CONTENT_WIDTH,
   MOBILE_SECTION_BG,
-  MOBILE_VIEWPORT_HEIGHT_CSS,
   mobileAnchorId,
 } from "@/lib/landing-layout-mobile";
 import MobilePillButton from "./MobilePillButton";
+import MobileTitleReveal from "./MobileTitleReveal";
 
 const barlow = {
   fontFamily:
@@ -27,14 +27,17 @@ export default function MobileContactCta() {
       sx={{
         width: "100%",
         bgcolor: MOBILE_SECTION_BG,
-        minHeight: MOBILE_VIEWPORT_HEIGHT_CSS,
-        boxSizing: "border-box",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
       }}
     >
+      <MobileTitleReveal>
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
       <Typography
         component="h2"
         sx={{
@@ -92,6 +95,8 @@ export default function MobileContactCta() {
           {CTA_BUTTON_LABEL}
         </MobilePillButton>
       </Box>
+      </Box>
+      </MobileTitleReveal>
     </Box>
   );
 }
