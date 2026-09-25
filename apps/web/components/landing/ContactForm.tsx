@@ -16,6 +16,10 @@ import {
   FORM_SERVICES_TITLE,
   FORM_SUBMIT_LABEL,
 } from "@/lib/landing-content";
+import InquirySnackbar, {
+  type InquiryNotice,
+} from "@/components/InquirySnackbar";
+import { submitInquiry } from "@/lib/inquiries";
 import {
   CONTACT_FORM_HEIGHT_CSS,
   CONTACT_WAVE_MASK_FADE,
@@ -277,6 +281,8 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
   const [contact, setContact] = useState("");
   const [lookingToBuild, setLookingToBuild] = useState("");
   const [projectDetails, setProjectDetails] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [notice, setNotice] = useState<InquiryNotice | null>(null);
 
   function toggleService(label: string) {
     setServices((current) =>
@@ -284,6 +290,38 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
         ? current.filter((item) => item !== label)
         : [...current, label],
     );
+  }
+
+  async function handleSubmit() {
+    if (submitting) return;
+    setSubmitting(true);
+    const result = await submitInquiry({
+      source: "web",
+      services,
+      budget,
+      projectCycle: cycle,
+      fullName,
+      contact,
+      lookingToBuild,
+      projectDetails,
+    });
+    setSubmitting(false);
+    if (!result.ok) {
+      setNotice({ id: Date.now(), message: result.message, tone: "error" });
+      return;
+    }
+    setServices([FORM_SERVICES[0]]);
+    setBudget(null);
+    setCycle(null);
+    setFullName("");
+    setContact("");
+    setLookingToBuild("");
+    setProjectDetails("");
+    setNotice({
+      id: Date.now(),
+      message: "Submitted. We will respond within 12 hours.",
+      tone: "success",
+    });
   }
 
   return (
@@ -546,6 +584,10 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
               component="button"
               type="button"
               className="hover-grow-sm"
+              disabled={submitting}
+              onClick={() => {
+                void handleSubmit();
+              }}
               sx={{
                 ...barlow,
                 boxSizing: "border-box",
@@ -567,16 +609,18 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
                 fontSize: figmaPx(13.5),
                 lineHeight: `${figmaPx(22)}px`,
                 color: "#FFFFFF",
-                cursor: "pointer",
+                cursor: submitting ? "default" : "pointer",
+                opacity: submitting ? 0.7 : 1,
                 appearance: "none",
                 WebkitAppearance: "none",
               }}
             >
-              {FORM_SUBMIT_LABEL}
+              {submitting ? "Submitting..." : FORM_SUBMIT_LABEL}
             </Box>
           </Box>
         </FormCard>
       </Box>
+      <InquirySnackbar notice={notice} onClose={() => setNotice(null)} />
     </Box>
   );
 }
