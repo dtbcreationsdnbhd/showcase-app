@@ -16,6 +16,10 @@ import {
   FORM_SERVICES_TITLE,
   FORM_SUBMIT_LABEL,
 } from "@/lib/landing-content";
+import InquirySnackbar, {
+  type InquiryNotice,
+} from "@/components/InquirySnackbar";
+import { submitInquiry } from "@/lib/inquiries";
 import {
   MOBILE_ACCENT_GRADIENT,
   MOBILE_CONTENT_WIDTH,
@@ -229,6 +233,8 @@ export default function MobileContactForm() {
   const [values, setValues] = useState<string[]>(() =>
     FORM_FIELDS.map(() => ""),
   );
+  const [submitting, setSubmitting] = useState(false);
+  const [notice, setNotice] = useState<InquiryNotice | null>(null);
 
   function toggleService(label: string) {
     setServices((current) =>
@@ -236,6 +242,35 @@ export default function MobileContactForm() {
         ? current.filter((item) => item !== label)
         : [...current, label],
     );
+  }
+
+  async function handleSubmit() {
+    if (submitting) return;
+    setSubmitting(true);
+    const result = await submitInquiry({
+      source: "mobile",
+      services,
+      budget,
+      projectCycle: cycle,
+      fullName: values[0] ?? "",
+      contact: values[1] ?? "",
+      lookingToBuild: values[2] ?? "",
+      projectDetails: values[3] ?? "",
+    });
+    setSubmitting(false);
+    if (!result.ok) {
+      setNotice({ id: Date.now(), message: result.message, tone: "error" });
+      return;
+    }
+    setServices([FORM_SERVICES[0]]);
+    setBudget(null);
+    setCycle(null);
+    setValues(FORM_FIELDS.map(() => ""));
+    setNotice({
+      id: Date.now(),
+      message: "Submitted. We will respond within 12 hours.",
+      tone: "success",
+    });
   }
 
   return (
@@ -373,6 +408,10 @@ export default function MobileContactForm() {
         <Box
           component="button"
           type="button"
+          disabled={submitting}
+          onClick={() => {
+            void handleSubmit();
+          }}
           sx={{
             ...barlow,
             boxSizing: "border-box",
@@ -389,13 +428,16 @@ export default function MobileContactForm() {
             fontWeight: 600,
             fontSize: 16.5,
             color: "#FFFFFF",
+            cursor: submitting ? "default" : "pointer",
+            opacity: submitting ? 0.7 : 1,
             appearance: "none",
             WebkitAppearance: "none",
           }}
         >
-          {FORM_SUBMIT_LABEL}
+          {submitting ? "Submitting..." : FORM_SUBMIT_LABEL}
         </Box>
       </Box>
+      <InquirySnackbar notice={notice} onClose={() => setNotice(null)} />
     </Box>
   );
 }

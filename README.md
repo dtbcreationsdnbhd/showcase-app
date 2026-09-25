@@ -43,10 +43,21 @@ pnpm --filter admin build
 |---|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase → Project Settings → API → Project URL |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase → Project Settings → API → publishable key |
+| `NEXT_PUBLIC_INQUIRY_TABLE` | `staging_inquiries` locally and on Vercel Preview; `production_inquiries` on Vercel Production |
 
 Use **one** Supabase project for `web` and (later) `admin`. Do not commit `.env`.
 
 Browser client helper: `apps/web/lib/supabase/client.ts` (`createBrowserClient()`).
+
+### Contact form tables
+
+Desktop and mobile submissions share one table per environment. A `source` column is `web` or `mobile`.
+
+1. Open the Supabase project → **SQL Editor** → New query.
+2. Paste and run [apps/web/supabase/inquiries.sql](apps/web/supabase/inquiries.sql).
+3. Table Editor should list `staging_inquiries` and `production_inquiries`.
+
+The script creates both tables, turns on row level security, and allows anonymous insert only. Visitors cannot read other rows. The publishable key cannot create tables, so this SQL step is manual.
 
 ## Production: Vercel (web)
 
@@ -58,9 +69,10 @@ Browser client helper: `apps/web/lib/supabase/client.ts` (`createBrowserClient()
    - Install Command: `pnpm install`
    - Build Command: `cd ../.. && pnpm turbo build --filter=web`  
      or leave Vercel’s detected Next.js build for `apps/web`.
-6. Environment Variables (Production + Preview):
-   - `NEXT_PUBLIC_SUPABASE_URL`
-   - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+6. Environment Variables:
+   - Production and Preview: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+   - Production only: `NEXT_PUBLIC_INQUIRY_TABLE` = `production_inquiries`
+   - Preview: `NEXT_PUBLIC_INQUIRY_TABLE` = `staging_inquiries`
 7. Deploy → open `*.vercel.app`.
 
 ### First deploy checklist
@@ -68,7 +80,7 @@ Browser client helper: `apps/web/lib/supabase/client.ts` (`createBrowserClient()
 - [ ] GitHub repo created and code pushed
 - [ ] Supabase project created; URL + anon key copied
 - [ ] Vercel project Root Directory = `apps/web`
-- [ ] Both `NEXT_PUBLIC_*` vars set in Vercel
+- [ ] Supabase URL, publishable key, and `NEXT_PUBLIC_INQUIRY_TABLE` set in Vercel (Preview = staging, Production = production)
 - [ ] Deploy succeeds; homepage loads (MUI button visible)
 - [ ] (Optional) Custom domain later in Vercel
 
