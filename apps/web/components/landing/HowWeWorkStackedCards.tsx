@@ -602,6 +602,7 @@ export default function HowWeWorkStackedCards({
                 setPinEl((prev) => (prev === el ? prev : el));
               }}
               data-process-pin="true"
+              className="landing-desktop-pin"
               style={{
                 position: "fixed",
                 left: 0,

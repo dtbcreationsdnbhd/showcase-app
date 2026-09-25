@@ -23,6 +23,15 @@ export function getLandingHeroSrc(): string | null {
   );
 }
 
+/** Drop `hero-mobile.png` (or `.jpg` / `.webp`) into `apps/web/public/landing/`. */
+export function getLandingHeroMobileSrc(): string | null {
+  return (
+    publicUrl("landing/hero-mobile.png") ??
+    publicUrl("landing/hero-mobile.jpg") ??
+    publicUrl("landing/hero-mobile.webp")
+  );
+}
+
 export type LandingProcessStep = "step01" | "step02" | "step03" | "step04";
 
 export type LandingServiceIcon = "ai" | "web" | "star" | "refresh";
@@ -47,6 +56,13 @@ export function getLandingServiceIconSrc(
     publicUrl(`landing/${key}.jpg`) ??
     publicUrl(`landing/${key}.webp`)
   );
+}
+
+/** Standalone animation per service icon. Mobile holds these on frame 0. */
+export function getLandingServiceIconLottieSrc(
+  key: LandingServiceIcon,
+): string | null {
+  return publicUrl(`landing/${key}.json`);
 }
 
 /** Combined morph animation for the sticky service icons. */

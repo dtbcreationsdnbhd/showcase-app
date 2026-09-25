@@ -1,10 +1,12 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import HowWeWorkStackedCards from "@/components/landing/HowWeWorkStackedCards";
+import { getLandingProcessStepSrc } from "@/lib/landing-assets";
 import {
-  getLandingProcessStepSrc,
-  type LandingProcessStep,
-} from "@/lib/landing-assets";
+  PROCESS_INTRO_SENTENCES,
+  PROCESS_STEPS,
+  PROCESS_TITLE,
+} from "@/lib/landing-content";
 import ScrollRevealPin from "@/components/landing/ScrollRevealPin";
 import {
   PROCESS_CARDS_SCROLL_HEIGHT_CSS,
@@ -16,42 +18,6 @@ const barlow = {
   fontFamily:
     'var(--font-barlow-semi-condensed), "Barlow Semi Condensed", sans-serif',
 } as const;
-
-const PROCESS_STEPS: {
-  n: string;
-  image: LandingProcessStep;
-  title: string;
-  description: string;
-}[] = [
-  {
-    n: "01",
-    image: "step01",
-    title: "Discovery & Architecture",
-    description:
-      "We start by understanding your core objectives. We assess your digital needs and design a tailored technical blueprint that aligns perfectly with your business goals.",
-  },
-  {
-    n: "02",
-    image: "step02",
-    title: "Agile Engineering",
-    description:
-      "We build your custom systems, bots, or apps using modern tech stacks. You get regular milestone updates so you are always in control—no surprises.",
-  },
-  {
-    n: "03",
-    image: "step03",
-    title: "Stress-Testing & Launch",
-    description:
-      "Before going live, we rigorously test your system for security and performance. We handle cloud deployment to ensure a smooth, crash-free launch even under high traffic.",
-  },
-  {
-    n: "04",
-    image: "step04",
-    title: "Tracking & Scaling",
-    description:
-      "Launching is just the beginning. We integrate your data tracking (GTM/Pixel) and hand over a fully-equipped system ready to capture leads and scale.",
-  },
-];
 
 export default function HowWeWork() {
   const steps = PROCESS_STEPS.map((step) => ({
@@ -107,7 +73,7 @@ export default function HowWeWork() {
               whiteSpace: "nowrap",
             }}
           >
-            Our Proven Delivery Process.
+            {PROCESS_TITLE}
           </Typography>
 
           <Typography
@@ -122,9 +88,8 @@ export default function HowWeWork() {
               color: "#FFFFFF",
             }}
           >
-            Transparency and efficiency at every stage. <br />
-            Here is how we turn your business bottlenecks into automated
-            solutions.
+            {PROCESS_INTRO_SENTENCES[0]} <br />
+            {PROCESS_INTRO_SENTENCES[1]}
           </Typography>
         </Box>
       </ScrollRevealPin>

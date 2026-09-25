@@ -3,6 +3,7 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { useEffect, useRef } from "react";
+import { COPYRIGHT_TEXT } from "@/lib/landing-content";
 import { FOOTER_HEIGHT, figmaPx } from "@/lib/landing-layout";
 
 const barlow = {
@@ -224,7 +225,7 @@ export default function Footer() {
           color: "#FFFFFF",
         }}
       >
-        © Copyright 2026, All Rights Reserved by Apex Digital Solutions
+        {COPYRIGHT_TEXT}
       </Typography>
     </Box>
   );

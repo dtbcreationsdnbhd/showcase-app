@@ -8,18 +8,16 @@ import { createPortal } from "react-dom";
 import { Lottie, type LottieHandle } from "lottie-react";
 import { STAGE_VIEWPORT_PAGE_HEIGHT_CSS, figmaPx } from "@/lib/landing-layout";
 import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
-
-type LandingServiceIcon = "ai" | "web" | "star" | "refresh";
+import {
+  SERVICE_ROWS,
+  type ServiceCopy,
+  type ServiceIconKey,
+} from "@/lib/landing-content";
 
 const barlow = {
   fontFamily:
     'var(--font-barlow-semi-condensed), "Barlow Semi Condensed", sans-serif',
 } as const;
-
-type ServiceCopy = {
-  title: string;
-  description: string;
-};
 
 const ROW_H_CSS = STAGE_VIEWPORT_PAGE_HEIGHT_CSS;
 const ICON_W = figmaPx(317.25);
@@ -33,77 +31,6 @@ const ICON_FADE_MS = 720;
 const ICON_FADE = `${ICON_FADE_MS}ms cubic-bezier(0.22, 1, 0.36, 1)`;
 const COPY_FADE = "500ms cubic-bezier(0.22, 1, 0.36, 1)";
 const ACTIVE_SWITCH_PX = 64;
-
-const SERVICE_ROWS: {
-  icon: LandingServiceIcon;
-  alt: string;
-  services: [ServiceCopy, ServiceCopy];
-}[] = [
-  {
-    icon: "ai",
-    alt: "AI",
-    services: [
-      {
-        title: "Telegram Bot Integration",
-        description:
-          "Automate replies and capture leads instantly. Never miss a business opportunity.",
-      },
-      {
-        title: "AI Chatbot & Automation",
-        description:
-          "Deploy 24/7 AI chatbots to answer queries and guide traffic straight to sales.",
-      },
-    ],
-  },
-  {
-    icon: "web",
-    alt: "Web",
-    services: [
-      {
-        title: "Custom Landing Pages & Web",
-        description:
-          "Fast-loading landing pages designed with one goal: turning visitors into paying clients.",
-      },
-      {
-        title: "Cloud Hosting & Domain Setup",
-        description:
-          "Reliable hosting to ensure your business stays fast, secure, and online during traffic spikes.",
-      },
-    ],
-  },
-  {
-    icon: "star",
-    alt: "Custom systems",
-    services: [
-      {
-        title: "Custom Dashboard & System",
-        description:
-          "Secure, intuitive dashboards. Gain full control and visibility over your core operations.",
-      },
-      {
-        title: "Custom Mobile Apps",
-        description:
-          "Seamless custom mobile apps. We handle everything from UI design to Play Store launch.",
-      },
-    ],
-  },
-  {
-    icon: "refresh",
-    alt: "Automation",
-    services: [
-      {
-        title: "Data Tracking & Pixel Integration",
-        description:
-          "Stop guessing. We track every conversion perfectly so you can optimize your ad spend.",
-      },
-      {
-        title: "Task Automation Scripting",
-        description:
-          "Replace manual and repetitive tasks with smart scripts. Streamline your operations, reduce human error, and save valuable time.",
-      },
-    ],
-  },
-];
 
 const HOLD_FRAMES = 24;
 const MORPH_FRAMES = 60;
@@ -293,7 +220,7 @@ function IconStack({
   seekRef,
 }: {
   active: number;
-  iconSrcs: Record<LandingServiceIcon, string | null>;
+  iconSrcs: Record<ServiceIconKey, string | null>;
   morphSrc: string | null;
   reducedMotion: boolean;
   frameRef: { current: number };
@@ -392,7 +319,7 @@ export default function SolutionsStickyRows({
   iconSrcs,
   morphSrc,
 }: {
-  iconSrcs: Record<LandingServiceIcon, string | null>;
+  iconSrcs: Record<ServiceIconKey, string | null>;
   morphSrc: string | null;
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -592,6 +519,7 @@ export default function SolutionsStickyRows({
               setPinEl((prev) => (prev === el ? prev : el));
             }}
             data-solutions-pin="true"
+            className="landing-desktop-pin"
             style={{
               position: "fixed",
               zIndex: 40,

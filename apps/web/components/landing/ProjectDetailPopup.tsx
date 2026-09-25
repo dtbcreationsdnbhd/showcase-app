@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Fragment, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { LANDING_DESIGN_WIDTH, figmaPx } from "@/lib/landing-layout";
+import { PROJECT_DETAILS } from "@/lib/landing-content";
 
 const barlow = {
   fontFamily:
@@ -35,39 +36,6 @@ const bodySx = {
   letterSpacing: "0.02em",
   color: "#FFFFFF",
 } as const;
-
-export type ProjectDetail = {
-  name: string;
-  tags: string[];
-  challenge: string;
-  solution: string;
-};
-
-const SHARED_CHALLENGE =
-  "Getting users to register is only half the battle. Without constant engagement, they forget your brand, and you lose repeat business.";
-const SHARED_SOLUTION =
-  "Teleflies automates user engagement. With targeted mass broadcasting and real-time alerts, it brings dormant users back to your platform.";
-
-export const PROJECT_DETAILS: Record<string, ProjectDetail> = {
-  Teleflies: {
-    name: "Teleflies: Telegram Automation Ecosystem",
-    tags: ["SaaS Platform", "Telegram Bot", "Automation"],
-    challenge: SHARED_CHALLENGE,
-    solution: SHARED_SOLUTION,
-  },
-  TrackSpend: {
-    name: "TrackSpend",
-    tags: ["Custom Dashboard", "AdTech & Marketing", "Data..."],
-    challenge: SHARED_CHALLENGE,
-    solution: SHARED_SOLUTION,
-  },
-  "Ad Spend Markup Generator": {
-    name: "Ad Spend Markup Generator",
-    tags: ["Desktop Utility", "White-Label Reporting", "Agen..."],
-    challenge: SHARED_CHALLENGE,
-    solution: SHARED_SOLUTION,
-  },
-};
 
 function ProjectPhoto({
   src,
