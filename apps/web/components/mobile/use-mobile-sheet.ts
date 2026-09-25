@@ -32,6 +32,14 @@ export function useMobileSheet(open: boolean) {
     return () => cancelAnimationFrame(id);
   }, [present, open, reduced]);
 
+  useEffect(() => {
+    if (open || !present || reduced) return;
+    // `transitionend` does not fire reliably on the zoomed stage, which leaves
+    // the sheet mounted and the page scroll-locked after it has slid away.
+    const id = window.setTimeout(() => setPresent(false), MOBILE_SHEET_MS + 80);
+    return () => window.clearTimeout(id);
+  }, [open, present, reduced]);
+
   const onTransitionEnd = (event: React.TransitionEvent<HTMLElement>) => {
     if (event.target !== event.currentTarget) return;
     if (event.propertyName !== "transform") return;

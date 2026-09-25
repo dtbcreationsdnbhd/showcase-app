@@ -2,7 +2,7 @@
 
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import PillButton from "@/components/landing/PillButton";
 import { COPYRIGHT_LINES } from "@/lib/landing-content";
@@ -36,6 +36,8 @@ export default function MobileMenu({
   hrefPrefix?: string;
 }) {
   const { present, shown, reduced, onTransitionEnd } = useMobileSheet(open);
+  /** Scroll to restore when the lock lifts. Set when a link moves the pinned page. */
+  const destination = useRef<number | null>(null);
 
   useEffect(() => {
     if (!present) {
@@ -44,6 +46,7 @@ export default function MobileMenu({
     // `overflow: hidden` on body does not stop touch scrolling on mobile
     // Safari — the document keeps moving under the menu. Pin the page instead.
     const scrollY = window.scrollY;
+    const hashAtOpen = window.location.hash;
     const html = document.documentElement;
     const body = document.body;
     const previous = {
@@ -86,7 +89,33 @@ export default function MobileMenu({
     };
     media.addEventListener("change", onBreakpointChange);
     onBreakpointChange();
+    // Move the pinned page as soon as the hash changes, while the sheet still
+    // covers it. Waiting until the lock lifts made the section flash in late.
+    const onHashChange = () => {
+      const hash = window.location.hash;
+      if (!hash || hash === hashAtOpen) return;
+      const target = document.getElementById(decodeURIComponent(hash.slice(1)));
+      if (!target) return;
+      const pinned = Math.abs(parseFloat(body.style.top) || 0);
+      html.style.overflow = "";
+      body.style.overflow = "";
+      body.style.position = "";
+      body.style.top = "";
+      html.style.scrollBehavior = "auto";
+      window.scrollTo(0, pinned);
+      const next = Math.max(0, target.getBoundingClientRect().top + window.scrollY);
+      window.scrollTo(0, next);
+      const y = window.scrollY;
+      html.style.overflow = "hidden";
+      body.style.overflow = "hidden";
+      body.style.position = "fixed";
+      body.style.top = `-${y}px`;
+      destination.current = y;
+    };
+    window.addEventListener("hashchange", onHashChange);
     return () => {
+      const y = destination.current ?? scrollY;
+      destination.current = null;
       html.style.overflow = previous.htmlOverflow;
       body.style.overflow = previous.bodyOverflow;
       body.style.position = previous.bodyPosition;
@@ -95,8 +124,9 @@ export default function MobileMenu({
       body.style.right = previous.bodyRight;
       body.style.width = previous.bodyWidth;
       html.style.scrollBehavior = "auto";
-      window.scrollTo(0, scrollY);
+      window.scrollTo(0, y);
       html.style.scrollBehavior = "";
+      window.removeEventListener("hashchange", onHashChange);
       window.removeEventListener("keydown", onKeyDown);
       document.removeEventListener("touchmove", onTouchMove);
       media.removeEventListener("change", onBreakpointChange);
