@@ -3,8 +3,12 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import {
+  mobileSheetMotion,
+  useMobileSheet,
+} from "@/components/mobile/use-mobile-sheet";
 import { PROJECT_DETAILS } from "@/lib/landing-content";
 import {
   MOBILE_BREAKPOINT,
@@ -88,14 +92,19 @@ export default function MobileProjectDetailPopup({
   onClose,
   imageSrc,
 }: {
-  projectKey: string;
+  projectKey: string | null;
   onClose: () => void;
   imageSrc: string | null;
 }) {
-  const detail = PROJECT_DETAILS[projectKey];
+  const open = projectKey !== null;
+  const { present, shown, reduced, onTransitionEnd } = useMobileSheet(open);
+  const heldKey = useRef(projectKey);
+  if (projectKey) heldKey.current = projectKey;
+  const detail = heldKey.current ? PROJECT_DETAILS[heldKey.current] : undefined;
   const [thumb, setThumb] = useState(0);
 
   useEffect(() => {
+    if (!present) return;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
@@ -118,9 +127,9 @@ export default function MobileProjectDetailPopup({
       document.removeEventListener("keydown", onKeyDown);
       media.removeEventListener("change", onBreakpointChange);
     };
-  }, [onClose]);
+  }, [present, onClose]);
 
-  if (!detail || typeof document === "undefined") return null;
+  if (!present || !detail || typeof document === "undefined") return null;
 
   return createPortal(
     <div
@@ -131,6 +140,7 @@ export default function MobileProjectDetailPopup({
         role="dialog"
         aria-modal
         aria-labelledby="mobile-project-detail-title"
+        onTransitionEnd={onTransitionEnd}
         sx={{
           width: MOBILE_DESIGN_WIDTH,
           height: MOBILE_VIEWPORT_HEIGHT_CSS,
@@ -138,6 +148,7 @@ export default function MobileProjectDetailPopup({
           bgcolor: MOBILE_SECTION_BG,
           overflowY: "auto",
           overscrollBehavior: "contain",
+          ...mobileSheetMotion(shown, reduced),
         }}
       >
         <Box

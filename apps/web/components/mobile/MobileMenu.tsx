@@ -15,6 +15,10 @@ import {
   MOBILE_VIEWPORT_HEIGHT_CSS,
   mobileAnchorId,
 } from "@/lib/landing-layout-mobile";
+import {
+  mobileSheetMotion,
+  useMobileSheet,
+} from "@/components/mobile/use-mobile-sheet";
 
 const barlow = {
   fontFamily:
@@ -31,8 +35,10 @@ export default function MobileMenu({
   onClose: () => void;
   hrefPrefix?: string;
 }) {
+  const { present, shown, reduced, onTransitionEnd } = useMobileSheet(open);
+
   useEffect(() => {
-    if (!open) {
+    if (!present) {
       return;
     }
     // `overflow: hidden` on body does not stop touch scrolling on mobile
@@ -95,9 +101,9 @@ export default function MobileMenu({
       document.removeEventListener("touchmove", onTouchMove);
       media.removeEventListener("change", onBreakpointChange);
     };
-  }, [open, onClose]);
+  }, [present, onClose]);
 
-  if (!open) {
+  if (!present) {
     return null;
   }
 
@@ -120,6 +126,7 @@ export default function MobileMenu({
           id="mobile-menu-panel"
           component="nav"
           aria-label="Mobile"
+          onTransitionEnd={onTransitionEnd}
           sx={{
             position: "absolute",
             top: MOBILE_NAV_HEIGHT,
@@ -137,6 +144,7 @@ export default function MobileMenu({
             overflowY: "auto",
             overscrollBehavior: "contain",
             touchAction: "pan-y",
+            ...mobileSheetMotion(shown, reduced),
             // Glows are read off the Figma export, not sampled — tune on device.
             background:
               "radial-gradient(120% 55% at 50% 0%, rgba(32, 72, 132, 0.42) 0%, rgba(7, 12, 30, 0) 70%), radial-gradient(70% 38% at 45% 58%, rgba(138, 62, 198, 0.20) 0%, rgba(7, 12, 30, 0) 75%), rgba(7, 12, 30, 0.86)",

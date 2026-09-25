@@ -173,13 +173,11 @@ export default function MobileProjectShowcase({
         <Box aria-hidden sx={{ flexShrink: 0, width: `${RAIL_INSET}px` }} />
       </Box>
 
-      {openKey ? (
-        <MobileProjectDetailPopup
-          projectKey={openKey}
-          onClose={() => setOpenKey(null)}
-          imageSrc={detailImageSrc}
-        />
-      ) : null}
+      <MobileProjectDetailPopup
+        projectKey={openKey}
+        onClose={() => setOpenKey(null)}
+        imageSrc={detailImageSrc}
+      />
     </Box>
   );
 }

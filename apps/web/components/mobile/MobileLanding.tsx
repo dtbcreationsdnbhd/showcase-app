@@ -7,9 +7,11 @@ import MobileHowWeWork from "@/components/mobile/MobileHowWeWork";
 import MobileNavbar from "@/components/mobile/MobileNavbar";
 import MobileProjectShowcase from "@/components/mobile/MobileProjectShowcase";
 import MobileServicePages from "@/components/mobile/MobileServicePages";
+import { SERVICE_ROWS } from "@/lib/landing-content";
 import {
   getLandingProjectDetailSrc,
   getLandingProjectShowcaseSrc,
+  getLandingServiceIconLottieSrc,
 } from "@/lib/landing-assets";
 import MobileTargetedSolutions from "@/components/mobile/MobileTargetedSolutions";
 import {
@@ -49,7 +51,12 @@ export default function MobileLanding({
       <Box sx={{ width: MOBILE_DESIGN_WIDTH, zoom: MOBILE_STAGE_ZOOM }}>
         <MobileHero heroSrc={heroSrc} />
         <MobileTargetedSolutions />
-        <MobileServicePages />
+        <MobileServicePages
+          rows={SERVICE_ROWS.map((row) => ({
+            ...row,
+            iconSrc: getLandingServiceIconLottieSrc(row.icon),
+          }))}
+        />
         <MobileHowWeWork />
         <MobileProjectShowcase
           imageSrc={getLandingProjectShowcaseSrc()}
