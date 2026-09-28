@@ -1,7 +1,8 @@
--- Contact inquiries. Run once in the Supabase SQL Editor.
+-- Contact inquiries. Run in the Supabase SQL Editor.
 -- Local and Vercel Preview write staging_inquiries.
 -- Vercel Production writes production_inquiries.
 -- Visitors may insert only. They cannot read, update, or delete rows.
+-- Signed-in back-office users may select rows. Re-running this file keeps existing rows.
 
 create table if not exists public.staging_inquiries (
   id uuid primary key default gen_random_uuid(),
@@ -48,3 +49,20 @@ create policy "public can insert production inquiries"
   for insert
   to anon, authenticated
   with check (source in ('web', 'mobile'));
+
+grant select on public.staging_inquiries to authenticated;
+grant select on public.production_inquiries to authenticated;
+
+drop policy if exists "authenticated can read staging inquiries" on public.staging_inquiries;
+create policy "authenticated can read staging inquiries"
+  on public.staging_inquiries
+  for select
+  to authenticated
+  using (true);
+
+drop policy if exists "authenticated can read production inquiries" on public.production_inquiries;
+create policy "authenticated can read production inquiries"
+  on public.production_inquiries
+  for select
+  to authenticated
+  using (true);
