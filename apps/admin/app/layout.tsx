@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "showcase-app Admin",
-  description: "Admin app (coming later)",
+  title: "Show Case Back Office",
+  description: "Back office sign in",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
