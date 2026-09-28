@@ -1,16 +1,13 @@
-"use client";
-
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
-import { useRef } from "react";
 import {
   MOBILE_DESIGN_WIDTH,
   MOBILE_GUTTER,
   MOBILE_SECTION_BG,
   MOBILE_VIEWPORT_HEIGHT_CSS,
 } from "@/lib/landing-layout-mobile";
-import { MobileSeamLine, useMobileStackLag } from "./mobile-stack";
+import { MobileSeamLine } from "./mobile-stack";
 
 const barlow = {
   fontFamily:
@@ -43,11 +40,8 @@ export default function MobileProcessSteps({
 }: {
   steps: ProcessStepCard[];
 }) {
-  const wrapRef = useRef<HTMLDivElement>(null);
-  useMobileStackLag(wrapRef);
-
   return (
-    <Box ref={wrapRef} sx={{ position: "relative", width: "100%" }}>
+    <Box sx={{ position: "relative", width: "100%" }}>
       {steps.map((step, index) => (
         <Box
           key={step.n}
@@ -62,7 +56,6 @@ export default function MobileProcessSteps({
           }}
         >
           <Box
-            data-sheet=""
             sx={{
               position: "relative",
               width: "100%",

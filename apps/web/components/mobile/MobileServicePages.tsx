@@ -1,8 +1,5 @@
-"use client";
-
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { useRef } from "react";
 import { SERVICE_ROWS, type ServiceCopy } from "@/lib/landing-content";
 import {
   MOBILE_CONTENT_WIDTH,
@@ -12,7 +9,7 @@ import {
   MOBILE_VIEWPORT_HEIGHT_CSS,
 } from "@/lib/landing-layout-mobile";
 import MobileServiceIcon from "./MobileServiceIcon";
-import { MobileSeamLine, useMobileStackLag } from "./mobile-stack";
+import { MobileSeamLine } from "./mobile-stack";
 
 const barlow = {
   fontFamily:
@@ -59,11 +56,8 @@ function ServiceCopyBlock({ title, description }: ServiceCopy) {
 type ServiceRow = (typeof SERVICE_ROWS)[number] & { iconSrc: string | null };
 
 export default function MobileServicePages({ rows }: { rows: ServiceRow[] }) {
-  const wrapRef = useRef<HTMLDivElement>(null);
-  useMobileStackLag(wrapRef);
-
   return (
-    <Box ref={wrapRef} sx={{ position: "relative", width: "100%" }}>
+    <Box sx={{ position: "relative", width: "100%" }}>
       {rows.map((row, index) => {
         const iconSrc = row.iconSrc;
         return (
@@ -82,7 +76,6 @@ export default function MobileServicePages({ rows }: { rows: ServiceRow[] }) {
             }}
           >
             <Box
-              data-sheet=""
               sx={{
                 position: "relative",
                 width: "100%",
