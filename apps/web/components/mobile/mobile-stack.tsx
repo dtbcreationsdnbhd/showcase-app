@@ -43,12 +43,18 @@ export function useMobileStackLag(
     const lag = sheets.map(() => 0);
     let last = window.scrollY;
     let frame = 0;
+    let idleFrames = 0;
 
     const paint = () => {
       const dy = window.scrollY - last;
       last = window.scrollY;
       const vh = window.innerHeight;
-      let moving = Math.abs(dy) > 0.4;
+      const scrolling = Math.abs(dy) > 0.4;
+      idleFrames = scrolling ? 0 : idleFrames + 1;
+      // Release only after the gesture eases. Decaying on every frame pulls the
+      // card back between scroll updates, so it bounces while the finger is still moving.
+      const settle = idleFrames > 8;
+      let moving = false;
 
       sheets.forEach((sheet, index) => {
         if (index === 0) return;
@@ -56,15 +62,17 @@ export function useMobileStackLag(
         if (!section) return;
         const top = section.getBoundingClientRect().top;
         const sliding = top > 1 && top < vh;
-        if (sliding) {
-          lag[index] = Math.max(
-            -MAX_LAG,
-            Math.min(MAX_LAG, lag[index] + dy * RESIST),
-          );
+        if (!settle) {
+          if (sliding) {
+            const step = Math.max(-14, Math.min(14, dy * RESIST));
+            lag[index] = Math.max(-MAX_LAG, Math.min(MAX_LAG, lag[index] + step));
+          }
+          if (Math.abs(lag[index]) > 0.4 || scrolling) moving = true;
+        } else {
+          const next = lag[index] * (1 - RELEASE);
+          if (Math.abs(next) > 0.4) moving = true;
+          lag[index] = Math.abs(next) < 0.4 ? 0 : next;
         }
-        const next = lag[index] * (1 - RELEASE);
-        if (Math.abs(next) > 0.4) moving = true;
-        lag[index] = Math.abs(next) < 0.4 ? 0 : next;
         sheet.style.transform = lag[index]
           ? `translate3d(0, ${lag[index].toFixed(2)}px, 0)`
           : "";
