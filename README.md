@@ -7,7 +7,7 @@ pnpm + Turborepo monorepo:
 | App | Path | Role | Local |
 |---|---|---|---|
 | **web** | `apps/web` | Landing page (Next.js + MUI + Supabase client) | http://localhost:3000 |
-| **admin** | `apps/admin` | Back office (default Next.js stub) | http://localhost:3001 |
+| **admin** | `apps/admin` | Back office (username + password login) | http://localhost:3001 |
 
 **Stack:** Next.js on **Vercel** · backend on **Supabase** (one project for both apps).
 
@@ -28,6 +28,8 @@ pnpm dev          # web on :3000
 pnpm dev:admin    # admin on :3001
 ```
 
+Admin uses the same two Supabase variables. Copy them into `apps/admin/.env` (see `apps/admin/.env.example`). Do not commit `.env`.
+
 Other scripts:
 
 ```bash
@@ -45,9 +47,25 @@ pnpm --filter admin build
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase → Project Settings → API → publishable key |
 | `NEXT_PUBLIC_INQUIRY_TABLE` | `staging_inquiries` locally and on Vercel Preview; `production_inquiries` on Vercel Production |
 
-Use **one** Supabase project for `web` and (later) `admin`. Do not commit `.env`.
+Use **one** Supabase project for `web` and `admin`. Do not commit `.env`.
 
 Browser client helper: `apps/web/lib/supabase/client.ts` (`createBrowserClient()`).
+
+### Admin login
+
+The admin login form asks for a **username** and password. Supabase Auth has no username field, so the app signs in as `username@internal.invalid`. The `.invalid` domain does not receive mail. There is no signup page. The password stays in the Supabase dashboard and is not stored in this repo.
+
+Create the first account once:
+
+1. Supabase → **Authentication** → **Users** → **Add user**.
+2. Email: `admin@internal.invalid`
+3. Password: set it only in this dashboard.
+4. Turn on **Auto Confirm** (this address cannot receive a confirmation email).
+5. **Authentication** → **Providers** → **Email**: turn off public sign-ups so visitors cannot register.
+
+To add another person later, create `theirname@internal.invalid` the same way. The login code does not need a change.
+
+No new tables and no service role key.
 
 ### Contact form tables
 
@@ -84,12 +102,12 @@ The script creates both tables, turns on row level security, and allows anonymou
 - [ ] Deploy succeeds; homepage loads (MUI button visible)
 - [ ] (Optional) Custom domain later in Vercel
 
-### Admin on Vercel (later)
+### Admin on Vercel
 
 Create a **second** Vercel project from the same repo:
 
 - Root Directory: `apps/admin`
-- Same Supabase env vars when admin needs the backend
+- Environment variables (Production and Preview): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (same values as web)
 
 ## Repo layout
 
@@ -97,7 +115,7 @@ Create a **second** Vercel project from the same repo:
 /
 ├── apps/
 │   ├── web/       # landing (MUI + Supabase scaffold)
-│   └── admin/     # admin stub
+│   └── admin/     # admin login
 ├── pnpm-workspace.yaml
 ├── turbo.json
 └── package.json
