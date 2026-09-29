@@ -10,12 +10,10 @@ import { useState } from "react";
 
 export default function InquiryDetailsButton({
   name,
-  submitted,
   lookingToBuild,
   details,
 }: {
   name: string;
-  submitted: string;
   lookingToBuild: string;
   details: string | null;
 }) {
@@ -73,9 +71,6 @@ export default function InquiryDetailsButton({
           >
             <ArrowForwardIcon />
           </IconButton>
-          <Typography variant="caption" color="text.primary">
-            submitted: {submitted}
-          </Typography>
         </Box>
         <Box
           sx={{

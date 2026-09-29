@@ -17,6 +17,7 @@ const columns = [
   "Services",
   "Budget",
   "Project cycle",
+  "Submitted",
   "Action",
 ] as const;
 
@@ -92,10 +93,10 @@ export default function InquiriesTable({
                 <TableCell>{serviceList(row.services) || "—"}</TableCell>
                 <TableCell>{row.budget || "—"}</TableCell>
                 <TableCell>{row.project_cycle || "—"}</TableCell>
+                <TableCell>{formatInquiryDate(row.created_at)}</TableCell>
                 <TableCell>
                   <InquiryDetailsButton
                     name={row.full_name}
-                    submitted={formatInquiryDate(row.created_at)}
                     lookingToBuild={row.looking_to_build}
                     details={row.project_details}
                   />
@@ -112,13 +113,14 @@ export default function InquiriesTable({
 function Cols() {
   return (
     <colgroup>
+      <col style={{ width: "4%" }} />
       <col style={{ width: "7%" }} />
-      <col style={{ width: "9%" }} />
-      <col style={{ width: "14%" }} />
-      <col style={{ width: "16%" }} />
-      <col style={{ width: "22%" }} />
-      <col style={{ width: "14%" }} />
-      <col style={{ width: "12%" }} />
+      <col style={{ width: "11%" }} />
+      <col style={{ width: "11%" }} />
+      <col style={{ width: "23%" }} />
+      <col style={{ width: "13%" }} />
+      <col style={{ width: "10%" }} />
+      <col style={{ width: "15%" }} />
       <col style={{ width: "6%" }} />
     </colgroup>
   );
