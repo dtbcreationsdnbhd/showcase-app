@@ -48,8 +48,10 @@ export function useInquiryPending() {
 
 export function InquiryTablePending({
   children,
+  label = "Loading inquiries",
 }: {
   children: React.ReactNode;
+  label?: string;
 }) {
   const { pending } = useInquiryPending();
 
@@ -65,7 +67,7 @@ export function InquiryTablePending({
     >
       {pending ? (
         <LinearProgress
-          aria-label="Loading inquiries"
+          aria-label={label}
           sx={{ position: "absolute", top: 0, right: 0, left: 0, zIndex: 2 }}
         />
       ) : null}
