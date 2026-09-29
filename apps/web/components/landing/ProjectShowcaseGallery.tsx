@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import { useCallback, useState } from "react";
 import ProjectCard from "@/components/landing/ProjectCard";
 import ProjectDetailPopup from "@/components/landing/ProjectDetailPopup";
-import { figmaPx } from "@/lib/landing-layout";
+import { SHOWCASE_COLUMNS, figmaPx } from "@/lib/landing-layout";
 import { projectTagLine, type ShowcaseProject } from "@/lib/projects";
 
 const CARD_W = figmaPx(276);
@@ -19,8 +19,10 @@ export default function ProjectShowcaseGallery({
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const close = useCallback(() => setSelectedId(null), []);
   const selected = projects.find((project) => project.id === selectedId) ?? null;
-  const rowWidth =
-    CARD_W * projects.length + CARD_GAP * Math.max(projects.length - 1, 0);
+  const columns = Math.min(SHOWCASE_COLUMNS, projects.length);
+  const rows = Math.ceil(projects.length / SHOWCASE_COLUMNS);
+  const rowWidth = CARD_W * columns + CARD_GAP * Math.max(columns - 1, 0);
+  const gridHeight = rows * CARD_H + CARD_GAP * Math.max(rows - 1, 0);
 
   return (
     <>
@@ -28,12 +30,14 @@ export default function ProjectShowcaseGallery({
         sx={{
           display: "flex",
           flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center",
+          flexWrap: "wrap",
+          justifyContent: "flex-start",
+          alignItems: "flex-start",
+          alignContent: "flex-start",
           p: 0,
           gap: `${CARD_GAP}px`,
           width: rowWidth,
-          height: CARD_H,
+          height: gridHeight,
           flexShrink: 0,
         }}
       >

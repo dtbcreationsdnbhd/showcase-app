@@ -19,10 +19,11 @@ import {
   landingFrameHeightCss,
 } from "@/lib/landing-layout";
 import { DESKTOP_ONLY, MOBILE_ONLY } from "@/lib/landing-layout-mobile";
-import { listProjects } from "@/lib/projects";
+import { listProjects, pickRandomProjects } from "@/lib/projects";
 
 export default async function Home() {
   const projects = await listProjects();
+  const featuredProjects = pickRandomProjects(projects);
   const logoSrc = getLandingLogoSrc();
   const heroSrc = getLandingHeroSrc();
   const heroMobileSrc = getLandingHeroMobileSrc();
@@ -71,7 +72,7 @@ export default async function Home() {
           <Hero heroSrc={heroSrc} />
           <TargetedSolutions />
           <HowWeWork />
-          <ProjectShowcase projects={projects} arrowHref="/projects" />
+          <ProjectShowcase projects={featuredProjects} arrowHref="/projects" />
           <ContactCta />
           <ContactForm waveSrc={contactWaveSrc} />
           <Footer />
@@ -79,7 +80,7 @@ export default async function Home() {
       </Box>
 
       <Box sx={{ [DESKTOP_ONLY]: { display: "none" } }}>
-        <MobileLanding heroSrc={heroMobileSrc} projects={projects} />
+        <MobileLanding heroSrc={heroMobileSrc} projects={featuredProjects} />
       </Box>
     </Box>
   );

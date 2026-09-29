@@ -41,6 +41,22 @@ export function projectTagLine(tags: readonly string[]) {
   return tags.join(" • ");
 }
 
+/** Random subset, kept in the original list order. */
+export function pickRandomProjects<T>(projects: readonly T[], count = 3): T[] {
+  if (projects.length <= count) return [...projects];
+
+  const indexes = projects.map((_, index) => index);
+  for (let i = indexes.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indexes[i], indexes[j]] = [indexes[j], indexes[i]];
+  }
+
+  return indexes
+    .slice(0, count)
+    .sort((a, b) => a - b)
+    .map((index) => projects[index]);
+}
+
 export async function listProjects(): Promise<ShowcaseProject[]> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;

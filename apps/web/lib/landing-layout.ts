@@ -54,6 +54,15 @@ export const SHOWCASE_PAD_BOTTOM = figmaPx(90);
 /** padding + header 70 + gap 50 + cards 414.75 */
 export const SHOWCASE_HEIGHT =
   SHOWCASE_PAD_TOP + figmaPx(70 + 50 + 414.75) + SHOWCASE_PAD_BOTTOM;
+export const SHOWCASE_COLUMNS = 3;
+const SHOWCASE_CARD_H = figmaPx(414.75);
+const SHOWCASE_CARD_GAP = figmaPx(24);
+
+/** One showcase row, plus each extra row of cards on the projects page. */
+export function showcaseSectionHeight(projectCount: number) {
+  const rows = Math.max(1, Math.ceil(projectCount / SHOWCASE_COLUMNS));
+  return SHOWCASE_HEIGHT + (rows - 1) * (SHOWCASE_CARD_H + SHOWCASE_CARD_GAP);
+}
 /** Contact CTA: one viewport page for the pinned title plus its hold. */
 export const CONTACT_CTA_VIEWPORT_PAGES = 1 + TITLE_HOLD_PAGES;
 /** Contact form is one full viewport on the scaled stage (not fixed Figma px). */

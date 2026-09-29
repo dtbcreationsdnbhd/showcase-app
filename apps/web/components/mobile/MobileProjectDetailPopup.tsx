@@ -3,7 +3,7 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type TouchEvent } from "react";
 import { createPortal } from "react-dom";
 import {
   mobileSheetMotion,
@@ -44,11 +44,15 @@ const labelSx = {
 const bodySx = {
   ...barlow,
   m: 0,
+  width: "100%",
+  minWidth: 0,
   fontWeight: 500,
   fontSize: 16,
   lineHeight: "160%",
   letterSpacing: "0.02em",
   color: "#FFFFFF",
+  overflowWrap: "anywhere",
+  whiteSpace: "pre-wrap",
 } as const;
 
 function ChevronDownIcon() {
@@ -99,6 +103,16 @@ export default function MobileProjectDetailPopup({
   if (project) held.current = project;
   const detail = held.current;
   const [thumb, setThumb] = useState(0);
+  const [dragX, setDragX] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const swipeStart = useRef<{ x: number; y: number; axis: "x" | "y" | null } | null>(null);
+  const photoRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setThumb(0);
+    setDragX(0);
+    setDragging(false);
+  }, [detail?.id]);
 
   useEffect(() => {
     if (!present) return;
@@ -127,6 +141,60 @@ export default function MobileProjectDetailPopup({
   }, [present, onClose]);
 
   if (!present || !detail || typeof document === "undefined") return null;
+
+  const imageCount = detail.detailImageUrls.length;
+
+  function localDrag(dx: number) {
+    const photo = photoRef.current;
+    const visual = photo?.getBoundingClientRect().width ?? 0;
+    if (!photo || !visual) return dx;
+    return dx * (photo.offsetWidth / visual);
+  }
+
+  function onPhotoTouchStart(event: TouchEvent) {
+    if (imageCount < 2) return;
+    const touch = event.changedTouches[0];
+    swipeStart.current = { x: touch.clientX, y: touch.clientY, axis: null };
+  }
+
+  function onPhotoTouchMove(event: TouchEvent) {
+    const start = swipeStart.current;
+    if (!start || imageCount < 2) return;
+
+    const touch = event.changedTouches[0];
+    const dx = touch.clientX - start.x;
+    const dy = touch.clientY - start.y;
+    if (!start.axis) {
+      if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+      start.axis = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
+    }
+    if (start.axis !== "x") return;
+
+    let offset = localDrag(dx);
+    const atStart = thumb === 0 && offset > 0;
+    const atEnd = thumb === imageCount - 1 && offset < 0;
+    if (atStart || atEnd) offset *= 0.35;
+    setDragging(true);
+    setDragX(offset);
+  }
+
+  function onPhotoTouchEnd(event: TouchEvent) {
+    const start = swipeStart.current;
+    swipeStart.current = null;
+    setDragging(false);
+    setDragX(0);
+    if (!start || start.axis !== "x" || imageCount < 2) return;
+
+    const touch = event.changedTouches[0];
+    const dx = touch.clientX - start.x;
+    const width = photoRef.current?.getBoundingClientRect().width ?? 1;
+    if (Math.abs(dx) < Math.max(40, width * 0.18)) return;
+
+    setThumb((current) => {
+      if (dx < 0) return Math.min(current + 1, imageCount - 1);
+      return Math.max(current - 1, 0);
+    });
+  }
 
   return createPortal(
     <div
@@ -196,20 +264,59 @@ export default function MobileProjectDetailPopup({
           </Typography>
         </Box>
 
-        <Box sx={{ position: "relative", width: "100%", height: PHOTO_H }}>
-          {detail.detailImageUrls[thumb] ? (
-            <Image
-              src={detail.detailImageUrls[thumb]}
-              alt={detail.name}
-              fill
-              sizes="100vw"
-              style={{ objectFit: "cover", objectPosition: "center" }}
-            />
-          ) : null}
+        <Box
+          ref={photoRef}
+          onTouchStart={onPhotoTouchStart}
+          onTouchMove={onPhotoTouchMove}
+          onTouchEnd={onPhotoTouchEnd}
+          onTouchCancel={onPhotoTouchEnd}
+          sx={{
+            position: "relative",
+            width: "100%",
+            height: PHOTO_H,
+            overflow: "hidden",
+            touchAction: "pan-y",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              height: "100%",
+              width: imageCount > 0 ? `${imageCount * 100}%` : "100%",
+              transform:
+                imageCount > 0
+                  ? `translateX(calc(${(-thumb * 100) / imageCount}% + ${dragX}px))`
+                  : "none",
+              transition: dragging || reduced ? "none" : "transform 320ms cubic-bezier(0.22, 1, 0.36, 1)",
+            }}
+          >
+            {detail.detailImageUrls.map((src, index) => (
+              <Box
+                key={`${detail.id}-${index}`}
+                sx={{
+                  position: "relative",
+                  width: `${100 / Math.max(imageCount, 1)}%`,
+                  height: "100%",
+                  flexShrink: 0,
+                }}
+              >
+                {src ? (
+                  <Image
+                    src={src}
+                    alt=""
+                    fill
+                    sizes="100vw"
+                    style={{ objectFit: "cover", objectPosition: "center" }}
+                  />
+                ) : null}
+              </Box>
+            ))}
+          </Box>
 
           <Box
             sx={{
               position: "absolute",
+              zIndex: 1,
               left: 0,
               right: 0,
               bottom: `${PANEL_OVERLAP + 16}px`,
@@ -246,9 +353,11 @@ export default function MobileProjectDetailPopup({
           sx={{
             position: "relative",
             mt: `-${PANEL_OVERLAP}px`,
+            minWidth: 0,
             px: `${MOBILE_GUTTER}px`,
             pt: "34px",
             pb: "80px",
+            overflow: "hidden",
             borderRadius: `${PANEL_RADIUS}px ${PANEL_RADIUS}px 0 0`,
             // The panel is the page colour with a faint lift along its top edge.
             background: `linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 70px), ${MOBILE_SECTION_BG}`,
@@ -265,6 +374,7 @@ export default function MobileProjectDetailPopup({
               fontWeight: 600,
               fontSize: 26,
               lineHeight: "36px",
+              overflowWrap: "anywhere",
               backgroundImage:
                 "linear-gradient(96.02deg, #FA9DFF 2.09%, #977EFF 97.91%)",
               backgroundClip: "text",

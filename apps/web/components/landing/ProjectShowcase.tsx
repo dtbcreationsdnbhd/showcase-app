@@ -1,7 +1,14 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import type { SxProps, Theme } from "@mui/material/styles";
-import { SHOWCASE_HEIGHT, SHOWCASE_PAD_BOTTOM, SHOWCASE_PAD_TOP, figmaPx } from "@/lib/landing-layout";
+import {
+  SHOWCASE_COLUMNS,
+  SHOWCASE_HEIGHT,
+  SHOWCASE_PAD_BOTTOM,
+  SHOWCASE_PAD_TOP,
+  figmaPx,
+  showcaseSectionHeight,
+} from "@/lib/landing-layout";
 import ProjectCard from "@/components/landing/ProjectCard";
 import ProjectShowcaseGallery from "@/components/landing/ProjectShowcaseGallery";
 import { SHOWCASE_TITLE } from "@/lib/landing-content";
@@ -58,9 +65,14 @@ export default function ProjectShowcase({
 }) {
   if (projects.length === 0) return null;
 
-  const cardRowWidth =
-    CARD_W * projects.length + CARD_GAP * (projects.length - 1);
+  const columns = followCursor
+    ? Math.min(SHOWCASE_COLUMNS, projects.length)
+    : projects.length;
+  const cardRowWidth = CARD_W * columns + CARD_GAP * Math.max(columns - 1, 0);
   const headerWidth = Math.max(ROW_W, cardRowWidth);
+  const sectionHeight = followCursor
+    ? showcaseSectionHeight(projects.length)
+    : SHOWCASE_HEIGHT;
 
   return (
     <Box
@@ -77,7 +89,7 @@ export default function ProjectShowcase({
         px: 0,
         gap: `${figmaPx(50)}px`,
         width: "100%",
-        height: SHOWCASE_HEIGHT,
+        height: sectionHeight,
         bgcolor: "#050B13",
         position: "relative",
         scrollMarginTop: `${figmaPx(20)}px`,

@@ -5,8 +5,8 @@ import MobileProjectsPage from "@/components/mobile/MobileProjectsPage";
 import { getLandingLogoSrc } from "@/lib/landing-assets";
 import {
   LANDING_DESIGN_WIDTH,
-  PROJECTS_PAGE_HEIGHT,
   PROJECTS_PAGE_NAV_HEIGHT,
+  showcaseSectionHeight,
 } from "@/lib/landing-layout";
 import { DESKTOP_ONLY, MOBILE_ONLY } from "@/lib/landing-layout-mobile";
 import { listProjects } from "@/lib/projects";
@@ -24,7 +24,7 @@ export default async function ProjectsPage() {
           height:
             projects.length === 0
               ? "100vh"
-              : `max(100vh, calc(100vw * ${PROJECTS_PAGE_HEIGHT} / ${LANDING_DESIGN_WIDTH}))`,
+              : `max(100vh, calc(100vw * ${PROJECTS_PAGE_NAV_HEIGHT + showcaseSectionHeight(projects.length)} / ${LANDING_DESIGN_WIDTH}))`,
           backgroundColor: "#050B13",
         }}
         sx={{
