@@ -1,11 +1,18 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import type { SxProps, Theme } from "@mui/material/styles";
-import { getLandingProjectDetailSrc, getLandingProjectShowcaseSrc } from "@/lib/landing-assets";
-import { SHOWCASE_HEIGHT, SHOWCASE_PAD_BOTTOM, SHOWCASE_PAD_TOP, figmaPx } from "@/lib/landing-layout";
+import {
+  SHOWCASE_COLUMNS,
+  SHOWCASE_HEIGHT,
+  SHOWCASE_PAD_BOTTOM,
+  SHOWCASE_PAD_TOP,
+  figmaPx,
+  showcaseSectionHeight,
+} from "@/lib/landing-layout";
 import ProjectCard from "@/components/landing/ProjectCard";
 import ProjectShowcaseGallery from "@/components/landing/ProjectShowcaseGallery";
-import { PROJECTS, SHOWCASE_TITLE } from "@/lib/landing-content";
+import { SHOWCASE_TITLE } from "@/lib/landing-content";
+import { projectTagLine, type ShowcaseProject } from "@/lib/projects";
 
 const barlow = {
   fontFamily:
@@ -46,16 +53,26 @@ function ArrowRightIcon({ upRight = false, sx }: { upRight?: boolean; sx?: SxPro
 }
 
 export default function ProjectShowcase({
+  projects,
   arrowHref = "#",
   followCursor = false,
   arrowUpRight = false,
 }: {
+  projects: readonly ShowcaseProject[];
   arrowHref?: string;
   followCursor?: boolean;
   arrowUpRight?: boolean;
 }) {
-  const imageSrc = getLandingProjectShowcaseSrc();
-  const detailImageSrc = getLandingProjectDetailSrc();
+  if (projects.length === 0) return null;
+
+  const columns = followCursor
+    ? Math.min(SHOWCASE_COLUMNS, projects.length)
+    : projects.length;
+  const cardRowWidth = CARD_W * columns + CARD_GAP * Math.max(columns - 1, 0);
+  const headerWidth = Math.max(ROW_W, cardRowWidth);
+  const sectionHeight = followCursor
+    ? showcaseSectionHeight(projects.length)
+    : SHOWCASE_HEIGHT;
 
   return (
     <Box
@@ -72,7 +89,7 @@ export default function ProjectShowcase({
         px: 0,
         gap: `${figmaPx(50)}px`,
         width: "100%",
-        height: SHOWCASE_HEIGHT,
+        height: sectionHeight,
         bgcolor: "#050B13",
         position: "relative",
         scrollMarginTop: `${figmaPx(20)}px`,
@@ -85,7 +102,7 @@ export default function ProjectShowcase({
           justifyContent: "space-between",
           alignItems: "center",
           p: 0,
-          width: ROW_W,
+          width: headerWidth,
           height: figmaPx(70),
           flexShrink: 0,
         }}
@@ -156,12 +173,8 @@ export default function ProjectShowcase({
         </Box>
       </Box>
 
-      {followCursor ? (
-        <ProjectShowcaseGallery
-          projects={PROJECTS}
-          imageSrc={imageSrc}
-          detailImageSrc={detailImageSrc}
-        />
+      {projects.length === 0 ? null : followCursor ? (
+        <ProjectShowcaseGallery projects={projects} />
       ) : (
         <Box
           sx={{
@@ -171,17 +184,17 @@ export default function ProjectShowcase({
             alignItems: "center",
             p: 0,
             gap: `${CARD_GAP}px`,
-            width: ROW_W,
+            width: cardRowWidth,
             height: CARD_H,
             flexShrink: 0,
           }}
         >
-          {PROJECTS.map((project) => (
+          {projects.map((project) => (
             <ProjectCard
-              key={project.title}
-              title={project.title}
-              description={project.description}
-              imageSrc={imageSrc}
+              key={project.id}
+              title={project.name}
+              description={projectTagLine(project.tags)}
+              imageSrc={project.mainImageUrl}
               cursorLabel="Next"
               href={arrowHref}
             />

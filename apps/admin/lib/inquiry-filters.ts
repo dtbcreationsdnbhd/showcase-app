@@ -51,7 +51,7 @@ export function inquiryPageHref(
     params.set("size", String(pageSize));
   }
   const search = params.toString();
-  return search ? `/inquiries?${search}` : "/inquiries";
+  return search ? `/?${search}` : "/";
 }
 
 export function isPageSize(

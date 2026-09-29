@@ -3,7 +3,8 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { useState } from "react";
-import { PROJECTS, SHOWCASE_TITLE } from "@/lib/landing-content";
+import { SHOWCASE_TITLE } from "@/lib/landing-content";
+import { projectTagLine, type ShowcaseProject } from "@/lib/projects";
 import {
   MOBILE_ACCENT_GRADIENT,
   MOBILE_GUTTER,
@@ -51,20 +52,20 @@ function ArrowRightIcon({ upRight }: { upRight: boolean }) {
 }
 
 export default function MobileProjectShowcase({
-  imageSrc,
-  detailImageSrc,
+  projects,
   /** Omit for the landing rail, which has no arrow. */
   arrowHref,
   arrowLabel,
   arrowUpRight = false,
 }: {
-  imageSrc: string | null;
-  detailImageSrc: string | null;
+  projects: readonly ShowcaseProject[];
   arrowHref?: string;
   arrowLabel?: string;
   arrowUpRight?: boolean;
 }) {
-  const [openKey, setOpenKey] = useState<string | null>(null);
+  const [openProject, setOpenProject] = useState<ShowcaseProject | null>(null);
+
+  if (projects.length === 0) return null;
 
   return (
     <Box
@@ -147,36 +148,37 @@ export default function MobileProjectShowcase({
         ) : null}
       </Box>
 
-      <Box
-        sx={{
-          mt: "34px",
-          display: "flex",
-          gap: `${RAIL_GAP}px`,
-          px: `${RAIL_INSET}px`,
-          height: MOBILE_CARD_H,
-          overflowX: "auto",
-          scrollSnapType: "x mandatory",
-          scrollbarWidth: "none",
-          "&::-webkit-scrollbar": { display: "none" },
-        }}
-      >
-        {PROJECTS.map((project) => (
-          <MobileProjectCard
-            key={project.title}
-            title={project.title}
-            description={project.description}
-            imageSrc={imageSrc}
-            onOpen={() => setOpenKey(project.title)}
-          />
-        ))}
-        {/* Lets the last card snap clear of the right edge. */}
-        <Box aria-hidden sx={{ flexShrink: 0, width: `${RAIL_INSET}px` }} />
-      </Box>
+      {projects.length > 0 ? (
+        <Box
+          sx={{
+            mt: "34px",
+            display: "flex",
+            gap: `${RAIL_GAP}px`,
+            px: `${RAIL_INSET}px`,
+            height: MOBILE_CARD_H,
+            overflowX: "auto",
+            scrollSnapType: "x mandatory",
+            scrollbarWidth: "none",
+            "&::-webkit-scrollbar": { display: "none" },
+          }}
+        >
+          {projects.map((project) => (
+            <MobileProjectCard
+              key={project.id}
+              title={project.name}
+              description={projectTagLine(project.tags)}
+              imageSrc={project.mainImageUrl}
+              onOpen={() => setOpenProject(project)}
+            />
+          ))}
+          {/* Lets the last card snap clear of the right edge. */}
+          <Box aria-hidden sx={{ flexShrink: 0, width: `${RAIL_INSET}px` }} />
+        </Box>
+      ) : null}
 
       <MobileProjectDetailPopup
-        projectKey={openKey}
-        onClose={() => setOpenKey(null)}
-        imageSrc={detailImageSrc}
+        project={openProject}
+        onClose={() => setOpenProject(null)}
       />
     </Box>
   );

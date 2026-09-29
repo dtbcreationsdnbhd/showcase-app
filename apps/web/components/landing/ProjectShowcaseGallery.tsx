@@ -4,24 +4,25 @@ import Box from "@mui/material/Box";
 import { useCallback, useState } from "react";
 import ProjectCard from "@/components/landing/ProjectCard";
 import ProjectDetailPopup from "@/components/landing/ProjectDetailPopup";
-import { figmaPx } from "@/lib/landing-layout";
+import { SHOWCASE_COLUMNS, figmaPx } from "@/lib/landing-layout";
+import { projectTagLine, type ShowcaseProject } from "@/lib/projects";
 
 const CARD_W = figmaPx(276);
 const CARD_H = figmaPx(414.75);
 const CARD_GAP = figmaPx(24);
-const ROW_W = CARD_W * 3 + CARD_GAP * 2;
 
 export default function ProjectShowcaseGallery({
   projects,
-  imageSrc,
-  detailImageSrc,
 }: {
-  projects: readonly { title: string; description: string }[];
-  imageSrc: string | null;
-  detailImageSrc: string | null;
+  projects: readonly ShowcaseProject[];
 }) {
-  const [selected, setSelected] = useState<string | null>(null);
-  const close = useCallback(() => setSelected(null), []);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const close = useCallback(() => setSelectedId(null), []);
+  const selected = projects.find((project) => project.id === selectedId) ?? null;
+  const columns = Math.min(SHOWCASE_COLUMNS, projects.length);
+  const rows = Math.ceil(projects.length / SHOWCASE_COLUMNS);
+  const rowWidth = CARD_W * columns + CARD_GAP * Math.max(columns - 1, 0);
+  const gridHeight = rows * CARD_H + CARD_GAP * Math.max(rows - 1, 0);
 
   return (
     <>
@@ -29,32 +30,30 @@ export default function ProjectShowcaseGallery({
         sx={{
           display: "flex",
           flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center",
+          flexWrap: "wrap",
+          justifyContent: "flex-start",
+          alignItems: "flex-start",
+          alignContent: "flex-start",
           p: 0,
           gap: `${CARD_GAP}px`,
-          width: ROW_W,
-          height: CARD_H,
+          width: rowWidth,
+          height: gridHeight,
           flexShrink: 0,
         }}
       >
         {projects.map((project) => (
           <ProjectCard
-            key={project.title}
-            title={project.title}
-            description={project.description}
-            imageSrc={imageSrc}
+            key={project.id}
+            title={project.name}
+            description={projectTagLine(project.tags)}
+            imageSrc={project.mainImageUrl}
             cursorLabel="View Project"
-            onOpen={() => setSelected(project.title)}
+            onOpen={() => setSelectedId(project.id)}
           />
         ))}
       </Box>
       {selected ? (
-        <ProjectDetailPopup
-          projectKey={selected}
-          onClose={close}
-          imageSrc={detailImageSrc}
-        />
+        <ProjectDetailPopup project={selected} onClose={close} />
       ) : null}
     </>
   );

@@ -8,11 +8,8 @@ import MobileNavbar from "@/components/mobile/MobileNavbar";
 import MobileProjectShowcase from "@/components/mobile/MobileProjectShowcase";
 import MobileServicePages from "@/components/mobile/MobileServicePages";
 import { SERVICE_ROWS } from "@/lib/landing-content";
-import {
-  getLandingProjectDetailSrc,
-  getLandingProjectShowcaseSrc,
-  getLandingServiceIconLottieSrc,
-} from "@/lib/landing-assets";
+import { getLandingServiceIconLottieSrc } from "@/lib/landing-assets";
+import type { ShowcaseProject } from "@/lib/projects";
 import MobileTargetedSolutions from "@/components/mobile/MobileTargetedSolutions";
 import {
   MOBILE_DESIGN_WIDTH,
@@ -21,8 +18,10 @@ import {
 
 export default function MobileLanding({
   heroSrc,
+  projects,
 }: {
   heroSrc: string | null;
+  projects: readonly ShowcaseProject[];
 }) {
   return (
     <Box sx={{ position: "relative", width: "100%", overflowX: "clip" }}>
@@ -58,10 +57,7 @@ export default function MobileLanding({
           }))}
         />
         <MobileHowWeWork />
-        <MobileProjectShowcase
-          imageSrc={getLandingProjectShowcaseSrc()}
-          detailImageSrc={getLandingProjectDetailSrc()}
-        />
+        <MobileProjectShowcase projects={projects} />
         <MobileContactCta />
         <MobileContactForm />
         <MobileFooter />
