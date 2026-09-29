@@ -1,6 +1,13 @@
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
+
 import { signIn } from "@/app/login/actions";
+import LoginFields from "@/app/login/login-fields";
 import AuthNoticeBanner from "@/components/AuthNoticeBanner";
 import { noticeFromParam } from "@/lib/notices";
+import { cardShadow, cornerRadius } from "@/lib/ui";
 
 export default async function LoginPage({
   searchParams,
@@ -11,46 +18,53 @@ export default async function LoginPage({
   const notice = noticeFromParam(params.notice);
 
   return (
-    <main className="flex min-h-dvh flex-1 items-center justify-center bg-[#F4F1FB] px-6 py-16 text-[#171717]">
+    <Box
+      component="main"
+      sx={{
+        display: "flex",
+        minHeight: "100dvh",
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        bgcolor: "background.default",
+        px: 3,
+        py: 8,
+        color: "text.primary",
+      }}
+    >
       <AuthNoticeBanner notice={notice} />
-      <form
+      <Paper
+        component="form"
         action={signIn}
-        className="w-full max-w-sm rounded-[28px] bg-white px-8 py-8 shadow-[0_8px_30px_rgba(80,60,140,0.06)]"
+        autoComplete="off"
+        elevation={0}
+        sx={{
+          width: "100%",
+          maxWidth: 400,
+          borderRadius: cornerRadius,
+          px: 4,
+          py: 4,
+          boxShadow: cardShadow,
+        }}
       >
-        <h1 className="text-2xl font-semibold tracking-tight">
+        <Typography variant="h5" sx={{ fontWeight: 600, letterSpacing: "-0.01em" }}>
           Show Case Back Office
-        </h1>
-        <p className="mt-2 text-sm text-[#6B6578]">Sign in to continue</p>
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+          Sign in to continue
+        </Typography>
 
-        <label className="mt-6 block text-sm font-medium">
-          Username
-          <input
-            name="username"
-            type="text"
-            autoComplete="username"
-            required
-            className="mt-2 h-11 w-full rounded-full bg-[#F4F1FB] px-4 text-sm text-[#171717] outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7B61FF]"
-          />
-        </label>
+        <LoginFields />
 
-        <label className="mt-4 block text-sm font-medium">
-          Password
-          <input
-            name="password"
-            type="password"
-            autoComplete="current-password"
-            required
-            className="mt-2 h-11 w-full rounded-full bg-[#F4F1FB] px-4 text-sm text-[#171717] outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7B61FF]"
-          />
-        </label>
-
-        <button
+        <Button
           type="submit"
-          className="mt-6 h-11 w-full cursor-pointer rounded-full bg-[#7B61FF] px-4 text-sm font-medium text-white hover:bg-[#6A52F0] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#7B61FF]"
+          variant="contained"
+          fullWidth
+          sx={{ mt: 3, height: 40 }}
         >
           Sign in
-        </button>
-      </form>
-    </main>
+        </Button>
+      </Paper>
+    </Box>
   );
 }

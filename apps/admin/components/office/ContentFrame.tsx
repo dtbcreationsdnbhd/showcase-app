@@ -1,25 +1,60 @@
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+
+import { cardShadow, cornerRadius } from "@/lib/ui";
+
 export default function ContentFrame({
   header,
   children,
   footer,
+  flush = false,
 }: {
   header?: React.ReactNode;
   children: React.ReactNode;
   footer?: React.ReactNode;
+  flush?: boolean;
 }) {
   return (
-    <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl bg-white shadow-[0_8px_30px_rgba(80,60,140,0.06)]">
+    <Paper
+      component="section"
+      elevation={0}
+      sx={{
+        display: "flex",
+        minHeight: 0,
+        flex: 1,
+        flexDirection: "column",
+        overflow: "hidden",
+        borderRadius: cornerRadius,
+        boxShadow: cardShadow,
+      }}
+    >
       {header ? (
-        <div className="shrink-0 border-b border-[#F0EDF7] px-6 pt-6 pb-4">
+        <Box
+          sx={{
+            flexShrink: 0,
+            px: 4,
+            pt: 4,
+            pb: 3,
+          }}
+        >
           {header}
-        </div>
+        </Box>
       ) : null}
-      <div
-        className={`min-h-0 flex-1 overflow-auto px-6 pb-6 ${header ? "pt-4" : "pt-2"}`}
+      <Box
+        sx={{
+          minHeight: 0,
+          flex: 1,
+          display: flush ? "flex" : "block",
+          flexDirection: "column",
+          overflow: flush ? "hidden" : "auto",
+          px: flush ? 0 : 3,
+          pb: flush ? 0 : 3,
+          pt: flush ? 0 : header ? 2 : 1,
+        }}
       >
         {children}
-      </div>
+      </Box>
       {footer}
-    </section>
+    </Paper>
   );
 }
