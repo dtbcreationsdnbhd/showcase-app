@@ -1,14 +1,17 @@
 "use client";
 
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import SearchIcon from "@mui/icons-material/Search";
 import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+
+import { useInquiryPending } from "@/components/office/InquiryPending";
 
 import {
   INQUIRY_BUDGETS,
@@ -60,7 +63,7 @@ export default function InquirySearch({
   filters: InquiryQuery;
   pageSize: number;
 }) {
-  const router = useRouter();
+  const { replace } = useInquiryPending();
   const [value, setValue] = useState(filters.query);
   const [previousQuery, setPreviousQuery] = useState(filters.query);
 
@@ -74,14 +77,33 @@ export default function InquirySearch({
     if (next === filters.query) return;
 
     const timer = window.setTimeout(() => {
-      router.replace(inquiryPageHref(1, { ...filters, query: next }, pageSize));
+      replace(inquiryPageHref(1, { ...filters, query: next }, pageSize));
     }, 300);
 
     return () => window.clearTimeout(timer);
-  }, [filters, pageSize, router, value]);
+  }, [filters, pageSize, replace, value]);
+
+  const filtering = Boolean(
+    value.trim() ||
+      filters.source ||
+      filters.service ||
+      filters.budget ||
+      filters.cycle,
+  );
+
+  function resetFilters() {
+    setValue("");
+    replace(
+      inquiryPageHref(
+        1,
+        { query: "", source: "", service: "", budget: "", cycle: "" },
+        pageSize,
+      ),
+    );
+  }
 
   function apply(next: Partial<InquiryQuery>) {
-    router.replace(
+    replace(
       inquiryPageHref(
         1,
         {
@@ -109,7 +131,8 @@ export default function InquirySearch({
         sx={{
           mt: 2.5,
           display: "grid",
-          gridTemplateColumns: { xs: "1fr", md: "2fr repeat(4, 1fr)" },
+          gridTemplateColumns: { xs: "1fr", md: "2fr repeat(4, 1fr) auto" },
+          alignItems: "center",
           gap: 1.5,
         }}
       >
@@ -162,6 +185,20 @@ export default function InquirySearch({
           options={cycleOptions}
           onChange={(cycle) => apply({ cycle })}
         />
+        <IconButton
+          type="button"
+          aria-label="Reset filters"
+          disabled={!filtering}
+          onClick={resetFilters}
+          sx={{
+            width: 44,
+            height: 44,
+            color: "#6B6578",
+            "&.Mui-disabled": { color: "#C4BFCE" },
+          }}
+        >
+          <RestartAltIcon />
+        </IconButton>
       </Box>
     </Box>
   );

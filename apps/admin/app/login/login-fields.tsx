@@ -1,8 +1,11 @@
 "use client";
 
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import { useState } from "react";
+import { useFormStatus } from "react-dom";
 
 import { cornerRadius } from "@/lib/ui";
 
@@ -18,6 +21,7 @@ const fieldSx = {
 };
 
 export default function LoginFields() {
+  const { pending } = useFormStatus();
   const [ready, setReady] = useState(false);
 
   return (
@@ -29,6 +33,7 @@ export default function LoginFields() {
         variant="outlined"
         size="small"
         fullWidth
+        disabled={pending}
         autoComplete="off"
         sx={fieldSx}
         slotProps={{
@@ -47,6 +52,7 @@ export default function LoginFields() {
         variant="outlined"
         size="small"
         fullWidth
+        disabled={pending}
         autoComplete="off"
         sx={fieldSx}
         slotProps={{
@@ -58,5 +64,21 @@ export default function LoginFields() {
         }}
       />
     </Stack>
+  );
+}
+
+export function SignInButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button
+      type="submit"
+      variant="contained"
+      fullWidth
+      disabled={pending}
+      sx={{ mt: 3, height: 40 }}
+    >
+      {pending ? <CircularProgress size={18} color="inherit" /> : "Sign in"}
+    </Button>
   );
 }

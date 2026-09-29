@@ -1,7 +1,8 @@
 "use client";
 
 import TablePagination from "@mui/material/TablePagination";
-import { useRouter } from "next/navigation";
+
+import { useInquiryPending } from "@/components/office/InquiryPending";
 
 import {
   INQUIRY_PAGE_SIZES,
@@ -20,7 +21,7 @@ export default function InquiryPagination({
   total: number;
   filters: InquiryQuery;
 }) {
-  const router = useRouter();
+  const { pending, push } = useInquiryPending();
 
   if (total === 0) return null;
 
@@ -30,11 +31,13 @@ export default function InquiryPagination({
       count={total}
       page={page - 1}
       onPageChange={(_, nextPage) => {
-        router.push(inquiryPageHref(nextPage + 1, filters, pageSize));
+        if (pending) return;
+        push(inquiryPageHref(nextPage + 1, filters, pageSize));
       }}
       rowsPerPage={pageSize}
       onRowsPerPageChange={(event) => {
-        router.push(inquiryPageHref(1, filters, Number(event.target.value)));
+        if (pending) return;
+        push(inquiryPageHref(1, filters, Number(event.target.value)));
       }}
       rowsPerPageOptions={[...INQUIRY_PAGE_SIZES]}
       sx={{ px: 4 }}

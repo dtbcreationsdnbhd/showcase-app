@@ -1,10 +1,9 @@
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 
 import { signIn } from "@/app/login/actions";
-import LoginFields from "@/app/login/login-fields";
+import LoginFields, { SignInButton } from "@/app/login/login-fields";
 import AuthNoticeBanner from "@/components/AuthNoticeBanner";
 import { noticeFromParam } from "@/lib/notices";
 import { cardShadow, cornerRadius } from "@/lib/ui";
@@ -56,14 +55,7 @@ export default async function LoginPage({
 
         <LoginFields />
 
-        <Button
-          type="submit"
-          variant="contained"
-          fullWidth
-          sx={{ mt: 3, height: 40 }}
-        >
-          Sign in
-        </Button>
+        <SignInButton />
       </Paper>
     </Box>
   );

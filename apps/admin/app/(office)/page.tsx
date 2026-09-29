@@ -3,6 +3,10 @@ import { redirect } from "next/navigation";
 
 import AuthNoticeBanner from "@/components/AuthNoticeBanner";
 import ContentFrame from "@/components/office/ContentFrame";
+import {
+  InquiryPendingProvider,
+  InquiryTablePending,
+} from "@/components/office/InquiryPending";
 import InquiriesTable from "@/components/office/InquiriesTable";
 import InquiryPagination from "@/components/office/InquiryPagination";
 import InquirySearch from "@/components/office/InquirySearch";
@@ -56,35 +60,41 @@ export default async function DashboardPage({
   );
 
   return (
-    <ContentFrame
-      flush
-      header={<InquirySearch filters={filters} pageSize={pageSize} />}
-      footer={
-        result.ok ? (
-          <InquiryPagination
-            page={result.page}
-            pageSize={result.pageSize}
-            total={result.total}
-            filters={filters}
-          />
-        ) : null
-      }
-    >
-      <AuthNoticeBanner notice={noticeFromParam(params.notice)} />
-      {result.ok ? (
-        <InquiriesTable
-          rows={result.rows}
-          start={(result.page - 1) * result.pageSize + 1}
-          emptyLabel={
-            filtering ? "No matching submissions." : "No form submissions yet."
-          }
-        />
-      ) : (
-        <Typography variant="body2" color="error" role="alert">
-          {result.message}
-        </Typography>
-      )}
-    </ContentFrame>
+    <InquiryPendingProvider>
+      <ContentFrame
+        flush
+        header={<InquirySearch filters={filters} pageSize={pageSize} />}
+        footer={
+          result.ok ? (
+            <InquiryPagination
+              page={result.page}
+              pageSize={result.pageSize}
+              total={result.total}
+              filters={filters}
+            />
+          ) : null
+        }
+      >
+        <AuthNoticeBanner notice={noticeFromParam(params.notice)} />
+        <InquiryTablePending>
+          {result.ok ? (
+            <InquiriesTable
+              rows={result.rows}
+              start={(result.page - 1) * result.pageSize + 1}
+              emptyLabel={
+                filtering
+                  ? "No matching submissions."
+                  : "No form submissions yet."
+              }
+            />
+          ) : (
+            <Typography variant="body2" color="error" role="alert">
+              {result.message}
+            </Typography>
+          )}
+        </InquiryTablePending>
+      </ContentFrame>
+    </InquiryPendingProvider>
   );
 }
 
