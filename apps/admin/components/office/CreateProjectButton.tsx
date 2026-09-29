@@ -303,7 +303,7 @@ function ImageField({
     applyFiles(filesRef.current.filter((_, item) => item !== index));
   }
 
-  function onDrop(event: DragEvent<HTMLDivElement>) {
+  function onDrop(event: DragEvent<HTMLLabelElement>) {
     event.preventDefault();
     setDragging(false);
     if (disabled) return;
@@ -317,7 +317,7 @@ function ImageField({
       </Typography>
       <Box
         component="label"
-        htmlFor={disabled ? undefined : inputId}
+        htmlFor={inputId}
         onDragOver={(event) => {
           event.preventDefault();
           if (!disabled) setDragging(true);
