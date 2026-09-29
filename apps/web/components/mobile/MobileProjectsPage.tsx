@@ -6,13 +6,12 @@ import {
   MOBILE_STAGE_ZOOM,
   mobileAnchorId,
 } from "@/lib/landing-layout-mobile";
+import type { ShowcaseProject } from "@/lib/projects";
 
 export default function MobileProjectsPage({
-  imageSrc,
-  detailImageSrc,
+  projects,
 }: {
-  imageSrc: string | null;
-  detailImageSrc: string | null;
+  projects: readonly ShowcaseProject[];
 }) {
   return (
     <Box sx={{ position: "relative", width: "100%", overflowX: "clip" }}>
@@ -40,8 +39,7 @@ export default function MobileProjectsPage({
 
       <Box sx={{ width: MOBILE_DESIGN_WIDTH, zoom: MOBILE_STAGE_ZOOM }}>
         <MobileProjectShowcase
-          imageSrc={imageSrc}
-          detailImageSrc={detailImageSrc}
+          projects={projects}
           arrowHref={`/#${mobileAnchorId("projects")}`}
           arrowLabel="Back to home"
           arrowUpRight

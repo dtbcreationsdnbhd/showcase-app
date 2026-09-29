@@ -5,23 +5,22 @@ import { useCallback, useState } from "react";
 import ProjectCard from "@/components/landing/ProjectCard";
 import ProjectDetailPopup from "@/components/landing/ProjectDetailPopup";
 import { figmaPx } from "@/lib/landing-layout";
+import { projectTagLine, type ShowcaseProject } from "@/lib/projects";
 
 const CARD_W = figmaPx(276);
 const CARD_H = figmaPx(414.75);
 const CARD_GAP = figmaPx(24);
-const ROW_W = CARD_W * 3 + CARD_GAP * 2;
 
 export default function ProjectShowcaseGallery({
   projects,
-  imageSrc,
-  detailImageSrc,
 }: {
-  projects: readonly { title: string; description: string }[];
-  imageSrc: string | null;
-  detailImageSrc: string | null;
+  projects: readonly ShowcaseProject[];
 }) {
-  const [selected, setSelected] = useState<string | null>(null);
-  const close = useCallback(() => setSelected(null), []);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const close = useCallback(() => setSelectedId(null), []);
+  const selected = projects.find((project) => project.id === selectedId) ?? null;
+  const rowWidth =
+    CARD_W * projects.length + CARD_GAP * Math.max(projects.length - 1, 0);
 
   return (
     <>
@@ -33,28 +32,24 @@ export default function ProjectShowcaseGallery({
           alignItems: "center",
           p: 0,
           gap: `${CARD_GAP}px`,
-          width: ROW_W,
+          width: rowWidth,
           height: CARD_H,
           flexShrink: 0,
         }}
       >
         {projects.map((project) => (
           <ProjectCard
-            key={project.title}
-            title={project.title}
-            description={project.description}
-            imageSrc={imageSrc}
+            key={project.id}
+            title={project.name}
+            description={projectTagLine(project.tags)}
+            imageSrc={project.mainImageUrl}
             cursorLabel="View Project"
-            onOpen={() => setSelected(project.title)}
+            onOpen={() => setSelectedId(project.id)}
           />
         ))}
       </Box>
       {selected ? (
-        <ProjectDetailPopup
-          projectKey={selected}
-          onClose={close}
-          imageSrc={detailImageSrc}
-        />
+        <ProjectDetailPopup project={selected} onClose={close} />
       ) : null}
     </>
   );

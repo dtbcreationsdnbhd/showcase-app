@@ -119,7 +119,7 @@ export default function InquirySearch({
   return (
     <Box component="section">
       <Typography variant="h5" sx={{ fontWeight: 600, letterSpacing: "-0.01em" }}>
-        Dashboard
+        Inquiries
       </Typography>
       <Box
         component="form"

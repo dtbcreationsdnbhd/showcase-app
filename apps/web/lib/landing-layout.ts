@@ -96,6 +96,10 @@ export const LANDING_DESIGN_HEIGHT =
   SOLUTIONS_RELEASE_HEIGHT;
 
 /** Screen-space height of the scaled landing frame (vh pages + fixed stage sections). */
-export function landingFrameHeightCss(): string {
-  return `calc(100vw * ${LANDING_HEIGHT_WITHOUT_SOLUTIONS + SOLUTIONS_RELEASE_HEIGHT} / ${LANDING_DESIGN_WIDTH} + ${SOLUTIONS_PAGE_COUNT + PROCESS_INTRO_PAGES + PROCESS_PAGE_COUNT + CONTACT_CTA_VIEWPORT_PAGES + CONTACT_FORM_VIEWPORT_PAGES} * 100vh)`;
+export function landingFrameHeightCss(includeShowcase = true): string {
+  const fixed =
+    LANDING_HEIGHT_WITHOUT_SOLUTIONS +
+    SOLUTIONS_RELEASE_HEIGHT -
+    (includeShowcase ? 0 : SHOWCASE_HEIGHT);
+  return `calc(100vw * ${fixed} / ${LANDING_DESIGN_WIDTH} + ${SOLUTIONS_PAGE_COUNT + PROCESS_INTRO_PAGES + PROCESS_PAGE_COUNT + CONTACT_CTA_VIEWPORT_PAGES + CONTACT_FORM_VIEWPORT_PAGES} * 100vh)`;
 }

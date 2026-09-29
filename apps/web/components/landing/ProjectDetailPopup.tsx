@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Fragment, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { LANDING_DESIGN_WIDTH, figmaPx } from "@/lib/landing-layout";
-import { PROJECT_DETAILS } from "@/lib/landing-content";
+import type { ShowcaseProject } from "@/lib/projects";
 
 const barlow = {
   fontFamily:
@@ -35,6 +35,8 @@ const bodySx = {
   lineHeight: "160%",
   letterSpacing: "0.02em",
   color: "#FFFFFF",
+  overflowWrap: "anywhere",
+  minWidth: 0,
 } as const;
 
 function ProjectPhoto({
@@ -134,17 +136,17 @@ function ImagePlaceholder({
 }
 
 export default function ProjectDetailPopup({
-  projectKey,
+  project,
   onClose,
-  imageSrc,
 }: {
-  projectKey: string;
+  project: ShowcaseProject;
   onClose: () => void;
-  imageSrc: string | null;
 }) {
-  const detail = PROJECT_DETAILS[projectKey];
+  const detail = project;
+  const images = project.detailImageUrls;
   const [thumb, setThumb] = useState(0);
   const [mounted, setMounted] = useState(false);
+  const imageSrc = images[thumb] ?? images[0] ?? null;
 
   useEffect(() => {
     setMounted(true);
@@ -152,7 +154,7 @@ export default function ProjectDetailPopup({
 
   useEffect(() => {
     setThumb(0);
-  }, [projectKey]);
+  }, [project.id]);
 
   useEffect(() => {
     function onKey(event: KeyboardEvent) {
@@ -164,7 +166,7 @@ export default function ProjectDetailPopup({
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  if (!detail || !mounted) {
+  if (!mounted) {
     return null;
   }
 
@@ -300,9 +302,9 @@ export default function ProjectDetailPopup({
                 height: figmaPx(67.5),
               }}
             >
-              {[0, 1, 2, 3].map((index) => (
+              {images.map((src, index) => (
                 <Box
-                  key={index}
+                  key={src}
                   component="button"
                   type="button"
                   aria-label={`Image ${index + 1}`}
@@ -320,7 +322,7 @@ export default function ProjectDetailPopup({
                   }}
                 >
                   <ProjectPhoto
-                    src={imageSrc}
+                    src={src}
                     width={figmaPx(90)}
                     height={figmaPx(67.5)}
                     alt=""
@@ -339,6 +341,8 @@ export default function ProjectDetailPopup({
               gap: `${figmaPx(30)}px`,
               width: figmaPx(358.5),
               height: figmaPx(351.75),
+              minWidth: 0,
+              overflow: "hidden",
               flexShrink: 0,
             }}
           >

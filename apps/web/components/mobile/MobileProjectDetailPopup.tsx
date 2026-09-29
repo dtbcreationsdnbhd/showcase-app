@@ -9,7 +9,7 @@ import {
   mobileSheetMotion,
   useMobileSheet,
 } from "@/components/mobile/use-mobile-sheet";
-import { PROJECT_DETAILS } from "@/lib/landing-content";
+import type { ShowcaseProject } from "@/lib/projects";
 import {
   MOBILE_BREAKPOINT,
   MOBILE_DESIGN_WIDTH,
@@ -30,7 +30,6 @@ const PANEL_RADIUS = 28;
 /** The sheet is full bleed and rides up over the photo, so the photo shows
  *  only through the two rounded corner cutouts. */
 const PANEL_OVERLAP = 40;
-const THUMB_COUNT = 4;
 
 const labelSx = {
   ...barlow,
@@ -88,19 +87,17 @@ function Section({
 }
 
 export default function MobileProjectDetailPopup({
-  projectKey,
+  project,
   onClose,
-  imageSrc,
 }: {
-  projectKey: string | null;
+  project: ShowcaseProject | null;
   onClose: () => void;
-  imageSrc: string | null;
 }) {
-  const open = projectKey !== null;
+  const open = project !== null;
   const { present, shown, reduced, onTransitionEnd } = useMobileSheet(open);
-  const heldKey = useRef(projectKey);
-  if (projectKey) heldKey.current = projectKey;
-  const detail = heldKey.current ? PROJECT_DETAILS[heldKey.current] : undefined;
+  const held = useRef(project);
+  if (project) held.current = project;
+  const detail = held.current;
   const [thumb, setThumb] = useState(0);
 
   useEffect(() => {
@@ -200,9 +197,9 @@ export default function MobileProjectDetailPopup({
         </Box>
 
         <Box sx={{ position: "relative", width: "100%", height: PHOTO_H }}>
-          {imageSrc ? (
+          {detail.detailImageUrls[thumb] ? (
             <Image
-              src={imageSrc}
+              src={detail.detailImageUrls[thumb]}
               alt={detail.name}
               fill
               sizes="100vw"
@@ -221,7 +218,7 @@ export default function MobileProjectDetailPopup({
               gap: "10px",
             }}
           >
-            {Array.from({ length: THUMB_COUNT }, (_, index) => (
+            {detail.detailImageUrls.map((_, index) => (
               <Box
                 key={index}
                 component="button"

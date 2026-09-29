@@ -1,11 +1,11 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import type { SxProps, Theme } from "@mui/material/styles";
-import { getLandingProjectDetailSrc, getLandingProjectShowcaseSrc } from "@/lib/landing-assets";
 import { SHOWCASE_HEIGHT, SHOWCASE_PAD_BOTTOM, SHOWCASE_PAD_TOP, figmaPx } from "@/lib/landing-layout";
 import ProjectCard from "@/components/landing/ProjectCard";
 import ProjectShowcaseGallery from "@/components/landing/ProjectShowcaseGallery";
-import { PROJECTS, SHOWCASE_TITLE } from "@/lib/landing-content";
+import { SHOWCASE_TITLE } from "@/lib/landing-content";
+import { projectTagLine, type ShowcaseProject } from "@/lib/projects";
 
 const barlow = {
   fontFamily:
@@ -46,16 +46,21 @@ function ArrowRightIcon({ upRight = false, sx }: { upRight?: boolean; sx?: SxPro
 }
 
 export default function ProjectShowcase({
+  projects,
   arrowHref = "#",
   followCursor = false,
   arrowUpRight = false,
 }: {
+  projects: readonly ShowcaseProject[];
   arrowHref?: string;
   followCursor?: boolean;
   arrowUpRight?: boolean;
 }) {
-  const imageSrc = getLandingProjectShowcaseSrc();
-  const detailImageSrc = getLandingProjectDetailSrc();
+  if (projects.length === 0) return null;
+
+  const cardRowWidth =
+    CARD_W * projects.length + CARD_GAP * (projects.length - 1);
+  const headerWidth = Math.max(ROW_W, cardRowWidth);
 
   return (
     <Box
@@ -85,7 +90,7 @@ export default function ProjectShowcase({
           justifyContent: "space-between",
           alignItems: "center",
           p: 0,
-          width: ROW_W,
+          width: headerWidth,
           height: figmaPx(70),
           flexShrink: 0,
         }}
@@ -156,12 +161,8 @@ export default function ProjectShowcase({
         </Box>
       </Box>
 
-      {followCursor ? (
-        <ProjectShowcaseGallery
-          projects={PROJECTS}
-          imageSrc={imageSrc}
-          detailImageSrc={detailImageSrc}
-        />
+      {projects.length === 0 ? null : followCursor ? (
+        <ProjectShowcaseGallery projects={projects} />
       ) : (
         <Box
           sx={{
@@ -171,17 +172,17 @@ export default function ProjectShowcase({
             alignItems: "center",
             p: 0,
             gap: `${CARD_GAP}px`,
-            width: ROW_W,
+            width: cardRowWidth,
             height: CARD_H,
             flexShrink: 0,
           }}
         >
-          {PROJECTS.map((project) => (
+          {projects.map((project) => (
             <ProjectCard
-              key={project.title}
-              title={project.title}
-              description={project.description}
-              imageSrc={imageSrc}
+              key={project.id}
+              title={project.name}
+              description={projectTagLine(project.tags)}
+              imageSrc={project.mainImageUrl}
               cursorLabel="Next"
               href={arrowHref}
             />

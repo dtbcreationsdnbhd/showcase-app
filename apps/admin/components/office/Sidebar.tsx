@@ -1,6 +1,7 @@
 "use client";
 
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
+import CollectionsOutlinedIcon from "@mui/icons-material/CollectionsOutlined";
 import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import Link from "next/link";
@@ -10,6 +11,7 @@ import { cornerRadius } from "@/lib/ui";
 
 const links = [
   { href: "/", label: "Dashboard", icon: DashboardOutlinedIcon },
+  { href: "/projects", label: "Showcase Project", icon: CollectionsOutlinedIcon },
 ] as const;
 
 export default function Sidebar() {

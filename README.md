@@ -46,6 +46,7 @@ pnpm --filter admin build
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase → Project Settings → API → Project URL |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase → Project Settings → API → publishable key |
 | `NEXT_PUBLIC_INQUIRY_TABLE` | `staging_inquiries` locally and on Vercel Preview; `production_inquiries` on Vercel Production |
+| `NEXT_PUBLIC_PROJECT_TABLE` | `staging_projects` locally and on Vercel Preview; `production_projects` on Vercel Production |
 
 Use **one** Supabase project for `web` and `admin`. Do not commit `.env`.
 
@@ -77,6 +78,16 @@ Desktop and mobile submissions share one table per environment. A `source` colum
 
 The script creates both tables, turns on row level security, and allows anonymous insert only. Visitors cannot read other rows. The publishable key cannot create tables, so this SQL step is manual.
 
+### Showcase projects
+
+Desktop and mobile project cards read one table per environment. Signed-in admin users create the rows and upload the images.
+
+1. Open the Supabase project → **SQL Editor** → New query.
+2. Paste and run [apps/web/supabase/projects.sql](apps/web/supabase/projects.sql).
+3. Table Editor should list `staging_projects` and `production_projects`. Storage should list a public bucket named `project-images`.
+
+Visitors can read projects. Only a signed-in admin user can insert a row or upload an image. Set `NEXT_PUBLIC_PROJECT_TABLE` to `staging_projects` locally and on Vercel Preview, and `production_projects` on Vercel Production. Use the same value in `web` and `admin`.
+
 ## Production: Vercel (web)
 
 1. Push this repo to GitHub.
@@ -89,8 +100,8 @@ The script creates both tables, turns on row level security, and allows anonymou
      or leave Vercel’s detected Next.js build for `apps/web`.
 6. Environment Variables:
    - Production and Preview: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
-   - Production only: `NEXT_PUBLIC_INQUIRY_TABLE` = `production_inquiries`
-   - Preview: `NEXT_PUBLIC_INQUIRY_TABLE` = `staging_inquiries`
+   - Production only: `NEXT_PUBLIC_INQUIRY_TABLE` = `production_inquiries`, `NEXT_PUBLIC_PROJECT_TABLE` = `production_projects`
+   - Preview: `NEXT_PUBLIC_INQUIRY_TABLE` = `staging_inquiries`, `NEXT_PUBLIC_PROJECT_TABLE` = `staging_projects`
 7. Deploy → open `*.vercel.app`.
 
 ### First deploy checklist
@@ -108,6 +119,7 @@ Create a **second** Vercel project from the same repo:
 
 - Root Directory: `apps/admin`
 - Environment variables (Production and Preview): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (same values as web)
+- `NEXT_PUBLIC_PROJECT_TABLE`: `production_projects` on Production, `staging_projects` on Preview
 
 ## Repo layout
 
