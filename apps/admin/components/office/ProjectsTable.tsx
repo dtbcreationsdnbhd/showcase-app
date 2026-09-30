@@ -7,6 +7,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 
+import EditProjectButton from "@/components/office/EditProjectButton";
 import ProjectDetailsButton from "@/components/office/ProjectDetailsButton";
 import ProjectPhotosButton from "@/components/office/ProjectPhotosButton";
 import { formatProjectDate, type ShowcaseProject } from "@/lib/projects";
@@ -117,11 +118,14 @@ export default function ProjectsTable({
                 <TableCell>{formatProjectDate(row.createdAt)}</TableCell>
                 <TableCell>{formatProjectDate(row.updatedAt)}</TableCell>
                 <TableCell>
-                  <ProjectDetailsButton
-                    name={row.name}
-                    challenge={row.challenge}
-                    solution={row.solution}
-                  />
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <EditProjectButton project={row} />
+                    <ProjectDetailsButton
+                      name={row.name}
+                      challenge={row.challenge}
+                      solution={row.solution}
+                    />
+                  </Box>
                 </TableCell>
               </TableRow>
             ))}
@@ -146,12 +150,12 @@ function Cols() {
     <colgroup>
       <col style={{ width: "5%" }} />
       <col style={{ width: "16%" }} />
-      <col style={{ width: "22%" }} />
+      <col style={{ width: "19%" }} />
       <col style={{ width: "11%" }} />
       <col style={{ width: "11%" }} />
       <col style={{ width: "14%" }} />
       <col style={{ width: "14%" }} />
-      <col style={{ width: "7%" }} />
+      <col style={{ width: "10%" }} />
     </colgroup>
   );
 }
