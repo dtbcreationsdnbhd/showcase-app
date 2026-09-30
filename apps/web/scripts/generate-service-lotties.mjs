@@ -353,6 +353,7 @@ writeFileSync(
   join(root, "public", "landing", "services-morph.json"),
   JSON.stringify(morph),
 );
+
 console.log(
   `morph: ${morph.layers[0].shapes.length} dots, op=${morph.op} (hold=${HOLD} morph=${MORPH})`,
 );
