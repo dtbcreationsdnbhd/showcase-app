@@ -265,7 +265,7 @@ export async function updateShowcaseProject(
   );
   const detailUrls = [...keptDetailUrls, ...uploadedDetailUrls];
 
-  const { error } = await supabase
+  const { data: updated, error } = await supabase
     .from(table)
     .update({
       name,
@@ -275,11 +275,17 @@ export async function updateShowcaseProject(
       main_image_url: mainUrl,
       detail_image_urls: detailUrls,
     })
-    .eq("id", id);
+    .eq("id", id)
+    .select("id");
 
-  if (error) {
+  if (error || !updated || updated.length === 0) {
     await supabase.storage.from(BUCKET).remove(uploaded);
-    return { ok: false, message: saveError(error.message) };
+    return {
+      ok: false,
+      message: error
+        ? saveError(error.message)
+        : "Could not save the project. Run the showcase SQL in the Supabase SQL Editor first.",
+    };
   }
 
   const dropped = [
