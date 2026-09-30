@@ -1,5 +1,7 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+
 import { projectTable } from "@/lib/projects";
 import { createClient } from "@/lib/supabase/server";
 
@@ -115,6 +117,7 @@ export async function createShowcaseProject(
     return { ok: false, message: saveError(error.message) };
   }
 
+  revalidatePath("/projects");
   return { ok: true };
 }
 
