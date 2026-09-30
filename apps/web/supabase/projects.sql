@@ -2,6 +2,7 @@
 -- Local and Vercel Preview read and write staging_projects.
 -- Vercel Production reads and writes production_projects.
 -- Visitors may read rows. Signed-in back-office users may insert and update rows.
+-- Visitors may read rows. Signed-in back-office users may insert and delete rows.
 -- Images go in the public project-images bucket.
 -- Re-running this file keeps existing rows.
 
@@ -94,8 +95,11 @@ alter table public.production_projects enable row level security;
 
 grant select on public.staging_projects to anon, authenticated;
 grant select on public.production_projects to anon, authenticated;
+
 grant insert, update on public.staging_projects to authenticated;
 grant insert, update on public.production_projects to authenticated;
+grant insert, delete on public.staging_projects to authenticated;
+grant insert, delete on public.production_projects to authenticated;
 
 drop policy if exists "anyone can read staging projects" on public.staging_projects;
 create policy "anyone can read staging projects"
@@ -140,6 +144,20 @@ create policy "authenticated can update production projects"
   to authenticated
   using (true)
   with check (true);
+
+drop policy if exists "authenticated can delete staging projects" on public.staging_projects;
+create policy "authenticated can delete staging projects"
+  on public.staging_projects
+  for delete
+  to authenticated
+  using (true);
+
+drop policy if exists "authenticated can delete production projects" on public.production_projects;
+create policy "authenticated can delete production projects"
+  on public.production_projects
+  for delete
+  to authenticated
+  using (true);
 
 insert into storage.buckets (id, name, public, file_size_limit)
 values ('project-images', 'project-images', true, 5242880)
