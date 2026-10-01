@@ -9,11 +9,14 @@ const IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 const BUCKET = "project-images";
 
-type CreateResult = { ok: true } | { ok: false; message: string };
+type ActionResult = { ok: true } | { ok: false; message: string };
+
+const PROJECT_ID =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export async function createShowcaseProject(
   formData: FormData,
-): Promise<CreateResult> {
+): Promise<ActionResult> {
   const name = String(formData.get("name") ?? "").trim();
   const tags = String(formData.get("tags") ?? "")
     .split(",")
@@ -123,7 +126,7 @@ export async function createShowcaseProject(
 
 export async function updateShowcaseProject(
   formData: FormData,
-): Promise<CreateResult> {
+): Promise<ActionResult> {
   const id = String(formData.get("id") ?? "").trim();
   const name = String(formData.get("name") ?? "").trim();
   const tags = String(formData.get("tags") ?? "")
@@ -304,6 +307,54 @@ export async function updateShowcaseProject(
   return { ok: true };
 }
 
+export async function deleteShowcaseProject(id: string): Promise<ActionResult> {
+  if (!PROJECT_ID.test(id)) {
+    return { ok: false, message: "Could not delete the project." };
+  }
+
+  let table: ReturnType<typeof projectTable>;
+  try {
+    table = projectTable();
+  } catch {
+    return {
+      ok: false,
+      message: "Missing NEXT_PUBLIC_PROJECT_TABLE.",
+    };
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return { ok: false, message: "Sign in to delete a project." };
+  }
+
+  const { data, error } = await supabase
+    .from(table)
+    .delete()
+    .eq("id", id)
+    .select("id");
+
+  if (error || !data?.length) {
+    return {
+      ok: false,
+      message: error ? deleteError(error.message) : "Could not delete the project.",
+    };
+  }
+
+  const listed = await supabase.storage.from(BUCKET).list(id);
+  if (!listed.error && listed.data?.length) {
+    await supabase.storage.from(BUCKET).remove(
+      listed.data.map((file) => `${id}/${file.name}`),
+    );
+  }
+
+  revalidatePath("/projects");
+  return { ok: true };
+}
+
 function imageFile(value: FormDataEntryValue | null) {
   if (!(value instanceof File) || value.size === 0) return null;
   return value;
@@ -348,4 +399,12 @@ function saveError(message: string) {
   }
 
   return "Could not save the project.";
+}
+
+function deleteError(message: string) {
+  if (/does not exist|permission denied|row-level security/i.test(message)) {
+    return "Could not delete the project. Run the showcase SQL in the Supabase SQL Editor first.";
+  }
+
+  return "Could not delete the project.";
 }

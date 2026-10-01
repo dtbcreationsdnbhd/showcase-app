@@ -8,6 +8,7 @@ import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 
 import EditProjectButton from "@/components/office/EditProjectButton";
+import DeleteProjectButton from "@/components/office/DeleteProjectButton";
 import ProjectDetailsButton from "@/components/office/ProjectDetailsButton";
 import ProjectPhotosButton from "@/components/office/ProjectPhotosButton";
 import { formatProjectDate, type ShowcaseProject } from "@/lib/projects";
@@ -118,13 +119,14 @@ export default function ProjectsTable({
                 <TableCell>{formatProjectDate(row.createdAt)}</TableCell>
                 <TableCell>{formatProjectDate(row.updatedAt)}</TableCell>
                 <TableCell>
-                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                     <EditProjectButton project={row} />
                     <ProjectDetailsButton
                       name={row.name}
                       challenge={row.challenge}
                       solution={row.solution}
                     />
+                    <DeleteProjectButton id={row.id} name={row.name} />
                   </Box>
                 </TableCell>
               </TableRow>
