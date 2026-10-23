@@ -298,6 +298,10 @@ export default function MobileProjectDetailPopup({
                   width: `${100 / Math.max(imageCount, 1)}%`,
                   height: "100%",
                   flexShrink: 0,
+                  background:
+                    "linear-gradient(180deg, rgba(255, 255, 255, 0.52) 0%, rgba(198, 206, 214, 0.36) 42%, rgba(132, 140, 150, 0.42) 100%)",
+                  backdropFilter: "blur(22px) saturate(1.35)",
+                  WebkitBackdropFilter: "blur(22px) saturate(1.35)",
                 }}
               >
                 {src ? (
@@ -306,7 +310,12 @@ export default function MobileProjectDetailPopup({
                     alt=""
                     fill
                     sizes="100vw"
-                    style={{ objectFit: "cover", objectPosition: "center" }}
+                    style={{
+                      objectFit: "contain",
+                      objectPosition: "center",
+                      filter:
+                        "drop-shadow(0 0 1px rgba(255, 255, 255, 0.55)) drop-shadow(0 12px 22px rgba(0, 0, 0, 0.4))",
+                    }}
                   />
                 ) : null}
               </Box>

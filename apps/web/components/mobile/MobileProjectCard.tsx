@@ -42,7 +42,12 @@ export default function MobileProjectCard({
         cursor: "pointer",
         borderRadius: "18px",
         overflow: "hidden",
-        bgcolor: "#0C1622",
+        background:
+          "linear-gradient(180deg, rgba(255, 255, 255, 0.52) 0%, rgba(198, 206, 214, 0.36) 42%, rgba(132, 140, 150, 0.42) 100%)",
+        backdropFilter: "blur(22px) saturate(1.35)",
+        WebkitBackdropFilter: "blur(22px) saturate(1.35)",
+        boxShadow:
+          "inset 0 1px 0 rgba(255, 255, 255, 0.72), inset 0 -16px 28px rgba(8, 12, 18, 0.18)",
         scrollSnapAlign: "center",
       }}
     >
@@ -52,7 +57,13 @@ export default function MobileProjectCard({
           alt={title}
           fill
           sizes="85vw"
-          style={{ objectFit: "cover", objectPosition: "center" }}
+          style={{
+            objectFit: "contain",
+            objectPosition: "center",
+            zIndex: 1,
+            filter:
+              "drop-shadow(0 0 1px rgba(255, 255, 255, 0.85)) drop-shadow(0 18px 28px rgba(0, 0, 0, 0.55))",
+          }}
         />
       ) : null}
 
@@ -62,7 +73,8 @@ export default function MobileProjectCard({
           position: "absolute",
           inset: 0,
           background:
-            "linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.5) 74%)",
+            "linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 28%)",
+          zIndex: 0,
         }}
       />
 
@@ -72,11 +84,32 @@ export default function MobileProjectCard({
           left: 0,
           right: 0,
           bottom: 0,
+          zIndex: 2,
           px: `${CARD_PAD}px`,
+          pt: "28px",
           pb: `${CARD_PAD}px`,
           boxSizing: "border-box",
         }}
       >
+        <Box
+          aria-hidden
+          sx={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            top: "-220px",
+            bottom: 0,
+            background:
+              "linear-gradient(180deg, rgba(8, 12, 18, 0) 0%, rgba(8, 12, 18, 0.22) 58%, rgba(8, 12, 18, 0.4) 100%)",
+            backdropFilter: "blur(14px)",
+            WebkitBackdropFilter: "blur(14px)",
+            maskImage:
+              "linear-gradient(180deg, transparent 0%, transparent 12%, rgba(0, 0, 0, 0.12) 38%, rgba(0, 0, 0, 0.4) 62%, #000 90%)",
+            WebkitMaskImage:
+              "linear-gradient(180deg, transparent 0%, transparent 12%, rgba(0, 0, 0, 0.12) 38%, rgba(0, 0, 0, 0.4) 62%, #000 90%)",
+            pointerEvents: "none",
+          }}
+        />
         <Typography
           component="h3"
           sx={{
