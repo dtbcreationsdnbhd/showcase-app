@@ -62,7 +62,10 @@ function ProjectPhoto({
         width,
         height,
         overflow: "hidden",
-        bgcolor: "#050B13",
+        background:
+          "linear-gradient(180deg, rgba(255, 255, 255, 0.52) 0%, rgba(198, 206, 214, 0.36) 42%, rgba(132, 140, 150, 0.42) 100%)",
+        backdropFilter: "blur(22px) saturate(1.35)",
+        WebkitBackdropFilter: "blur(22px) saturate(1.35)",
         border: "1px solid rgba(255, 255, 255, 0.05)",
         borderRadius: `${figmaPx(12)}px`,
         flexShrink: 0,
@@ -73,7 +76,12 @@ function ProjectPhoto({
         alt={alt}
         fill
         sizes={`${width}px`}
-        style={{ objectFit: "cover", objectPosition: "center" }}
+        style={{
+          objectFit: "contain",
+          objectPosition: "center",
+          filter:
+            "drop-shadow(0 0 1px rgba(255, 255, 255, 0.55)) drop-shadow(0 12px 22px rgba(0, 0, 0, 0.4))",
+        }}
       />
     </Box>
   );
@@ -340,9 +348,7 @@ export default function ProjectDetailPopup({
               p: 0,
               gap: `${figmaPx(30)}px`,
               width: figmaPx(358.5),
-              height: figmaPx(351.75),
               minWidth: 0,
-              overflow: "hidden",
               flexShrink: 0,
             }}
           >

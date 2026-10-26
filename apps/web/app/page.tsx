@@ -80,7 +80,7 @@ export default async function Home() {
       </Box>
 
       <Box sx={{ [DESKTOP_ONLY]: { display: "none" } }}>
-        <MobileLanding heroSrc={heroMobileSrc} projects={featuredProjects} />
+        <MobileLanding heroSrc={heroMobileSrc} projects={projects} />
       </Box>
     </Box>
   );
