@@ -77,7 +77,7 @@ export default async function ProjectsPage() {
       </Box>
 
       <Box sx={{ [DESKTOP_ONLY]: { display: "none" } }}>
-        <MobileProjectsPage projects={projects} />
+        <MobileProjectsPage projects={projects} logoSrc={logoSrc} />
       </Box>
     </Box>
   );

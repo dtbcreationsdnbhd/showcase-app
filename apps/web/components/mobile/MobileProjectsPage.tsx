@@ -10,8 +10,10 @@ import type { ShowcaseProject } from "@/lib/projects";
 
 export default function MobileProjectsPage({
   projects,
+  logoSrc,
 }: {
   projects: readonly ShowcaseProject[];
+  logoSrc: string | null;
 }) {
   return (
     <Box sx={{ position: "relative", width: "100%", overflowX: "clip" }}>
@@ -33,7 +35,7 @@ export default function MobileProjectsPage({
             pointerEvents: "auto",
           }}
         >
-          <MobileNavbar hrefPrefix="/" />
+          <MobileNavbar hrefPrefix="/" logoSrc={logoSrc} />
         </Box>
       </Box>
 

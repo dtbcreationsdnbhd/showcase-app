@@ -2,6 +2,7 @@
 
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import PillButton from "@/components/landing/PillButton";
@@ -30,10 +31,12 @@ export default function MobileMenu({
   open,
   onClose,
   hrefPrefix = "",
+  logoSrc = null,
 }: {
   open: boolean;
   onClose: () => void;
   hrefPrefix?: string;
+  logoSrc?: string | null;
 }) {
   const { present, shown, reduced, onTransitionEnd } = useMobileSheet(open);
   /** Scroll to restore when the lock lifts. Set when a link moves the pinned page. */
@@ -182,19 +185,29 @@ export default function MobileMenu({
             WebkitBackdropFilter: "blur(48px)",
           }}
         >
-          <Typography
-            component="span"
-            sx={{
-              ...barlow,
-              fontWeight: 700,
-              fontSize: 24,
-              lineHeight: "29px",
-              letterSpacing: "0.02em",
-              color: "#FFFFFF",
-            }}
-          >
-            LOGO
-          </Typography>
+          {logoSrc ? (
+            <Image
+              src={logoSrc}
+              alt="VisionCraft"
+              width={689}
+              height={116}
+              style={{ height: 48, width: "auto" }}
+            />
+          ) : (
+            <Typography
+              component="span"
+              sx={{
+                ...barlow,
+                fontWeight: 700,
+                fontSize: 24,
+                lineHeight: "29px",
+                letterSpacing: "0.02em",
+                color: "#FFFFFF",
+              }}
+            >
+              LOGO
+            </Typography>
+          )}
 
           <Box
             sx={{

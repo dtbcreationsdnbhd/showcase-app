@@ -100,12 +100,8 @@ export default function Navbar({
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
-            py: "6px",
-            px: "13px",
-            gap: "27px",
-            width: 146,
+            gap: logoSrc ? 0 : "27px",
             height: 54,
-            boxSizing: "border-box",
             color: "#FFFFFF",
             textDecoration: "none",
             cursor: "pointer",
@@ -115,37 +111,38 @@ export default function Navbar({
           {logoSrc ? (
             <Image
               src={logoSrc}
-              alt=""
-              width={42}
-              height={42}
-              style={{ width: 42, height: 42, borderRadius: "50%" }}
+              alt="VisionCraft"
+              width={689}
+              height={116}
+              priority
+              style={{ height: 52, width: "auto" }}
             />
           ) : (
-            <Box
-              component="span"
-              aria-hidden
-              sx={{
-                width: 42,
-                height: 42,
-                borderRadius: "50%",
-                bgcolor: "#393939",
-                flexShrink: 0,
-              }}
-            />
+            <>
+              <Box
+                component="span"
+                aria-hidden
+                sx={{
+                  width: 42,
+                  height: 42,
+                  borderRadius: "50%",
+                  bgcolor: "#393939",
+                  flexShrink: 0,
+                }}
+              />
+              <Typography
+                component="span"
+                sx={{
+                  ...headerFont,
+                  fontSize: 24,
+                  lineHeight: "29px",
+                  color: "#FFFFFF",
+                }}
+              >
+                LOGO
+              </Typography>
+            </>
           )}
-          <Typography
-            component="span"
-            sx={{
-              ...headerFont,
-              width: 51,
-              height: 29,
-              fontSize: 24,
-              lineHeight: "29px",
-              color: "#FFFFFF",
-            }}
-          >
-            LOGO
-          </Typography>
         </Box>
 
         <Box

@@ -2,6 +2,7 @@
 
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import Image from "next/image";
 import { useCallback, useState } from "react";
 import MobileMenu from "@/components/mobile/MobileMenu";
 import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
@@ -66,8 +67,10 @@ function MenuIcon({ open }: { open: boolean }) {
 
 export default function MobileNavbar({
   hrefPrefix = "",
+  logoSrc = null,
 }: {
   hrefPrefix?: string;
+  logoSrc?: string | null;
 }) {
   const [open, setOpen] = useState(false);
   const close = useCallback(() => setOpen(false), []);
@@ -114,19 +117,30 @@ export default function MobileNavbar({
           onClick={close}
           sx={{ position: "relative", zIndex: 1, textDecoration: "none", cursor: "pointer" }}
         >
-          <Typography
-            component="span"
-            sx={{
-              ...headerFont,
-              fontWeight: 700,
-              fontSize: 22,
-              lineHeight: "26px",
-              letterSpacing: "0.02em",
-              color: "#FFFFFF",
-            }}
-          >
-            LOGO
-          </Typography>
+          {logoSrc ? (
+            <Image
+              src={logoSrc}
+              alt="VisionCraft"
+              width={689}
+              height={116}
+              priority
+              style={{ height: 40, width: "auto" }}
+            />
+          ) : (
+            <Typography
+              component="span"
+              sx={{
+                ...headerFont,
+                fontWeight: 700,
+                fontSize: 22,
+                lineHeight: "26px",
+                letterSpacing: "0.02em",
+                color: "#FFFFFF",
+              }}
+            >
+              LOGO
+            </Typography>
+          )}
         </Box>
 
         <Box
@@ -157,7 +171,12 @@ export default function MobileNavbar({
         </Box>
       </Box>
 
-      <MobileMenu open={open} onClose={close} hrefPrefix={hrefPrefix} />
+      <MobileMenu
+        open={open}
+        onClose={close}
+        hrefPrefix={hrefPrefix}
+        logoSrc={logoSrc}
+      />
     </>
   );
 }

@@ -19,9 +19,11 @@ import {
 export default function MobileLanding({
   heroSrc,
   projects,
+  logoSrc,
 }: {
   heroSrc: string | null;
   projects: readonly ShowcaseProject[];
+  logoSrc: string | null;
 }) {
   return (
     <Box sx={{ position: "relative", width: "100%", overflowX: "clip" }}>
@@ -43,7 +45,7 @@ export default function MobileLanding({
             pointerEvents: "auto",
           }}
         >
-          <MobileNavbar />
+          <MobileNavbar logoSrc={logoSrc} />
         </Box>
       </Box>
 
