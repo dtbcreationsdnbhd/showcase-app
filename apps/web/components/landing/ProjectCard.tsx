@@ -23,6 +23,7 @@ export default function ProjectCard({
   cursorLabel,
   href,
   onOpen,
+  eager = false,
 }: {
   title: string;
   description: string;
@@ -30,6 +31,8 @@ export default function ProjectCard({
   cursorLabel?: string;
   href?: string;
   onOpen?: () => void;
+  /** Lazy loading misses cards that only slide into view via transform. */
+  eager?: boolean;
 }) {
   return (
     <Box
@@ -71,6 +74,7 @@ export default function ProjectCard({
             src={imageSrc}
             alt={title}
             fill
+            loading={eager ? "eager" : undefined}
             sizes={`${CARD_W}px`}
             style={{
               objectFit: "contain",
