@@ -11,6 +11,7 @@ import MobileLanding from "@/components/mobile/MobileLanding";
 import {
   getLandingContactWaveSrc,
   getLandingHeroMobileSrc,
+  getLandingHeroSlideSrc,
   getLandingHeroSrc,
   getLandingLogoSrc,
 } from "@/lib/landing-assets";
@@ -28,6 +29,30 @@ export default async function Home() {
   const heroSrc = getLandingHeroSrc();
   const heroMobileSrc = getLandingHeroMobileSrc();
   const contactWaveSrc = getLandingContactWaveSrc();
+  const heroSlides = [
+    {
+      key: "web",
+      category: "Website Design",
+      title: "Websites & Landing Pages",
+      href: "#projects",
+      src: getLandingHeroSlideSrc("hero-slide-web"),
+    },
+    {
+      key: "video",
+      category: "AI Video",
+      title: "Stories for Your Brand",
+      href: "#projects",
+      src: getLandingHeroSlideSrc("hero-slide-video"),
+      isVideo: true,
+    },
+    {
+      key: "teleflies",
+      category: "Digital Tools",
+      title: "TeleFlies",
+      href: "#projects",
+      src: getLandingHeroSlideSrc("hero-slide-teleflies"),
+    },
+  ];
 
   return (
     <Box component="main">
@@ -69,7 +94,7 @@ export default async function Home() {
             transformOrigin: "top left",
           }}
         >
-          <Hero heroSrc={heroSrc} />
+          <Hero heroSrc={heroSrc} slides={heroSlides} />
           <TargetedSolutions />
           <HowWeWork />
           <ProjectShowcase projects={featuredProjects} arrowHref="/projects" />

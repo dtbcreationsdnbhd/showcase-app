@@ -19,9 +19,9 @@ const barlowSemiCondensed = Barlow_Semi_Condensed({
 });
 
 export const metadata: Metadata = {
-  title: "Automate. Scale. OUTPACE YOUR COMPETITION.",
+  title: "Crafting Vision, Empowering Creation",
   description:
-    "Equip your business with cutting-edge AI-tools, customized apps, and intelligent data dashboards for full digital transformation.",
+    "Empower your business with next-gen AI-powered tools, video creation, and design assets. From creative content to automated workflows, we craft your vision for commercial success.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

@@ -14,9 +14,10 @@ export function getLandingLogoSrc(): string | null {
   return publicUrl("landing/logo.svg") ?? publicUrl("landing/logo.png");
 }
 
-/** Drop `hero.png` (or `.jpg` / `.webp`) into `apps/web/public/landing/`. */
+/** Drop `hero-bg.png` or `hero.png` (or `.jpg` / `.webp`) into `apps/web/public/landing/`. */
 export function getLandingHeroSrc(): string | null {
   return (
+    publicUrl("landing/hero-bg.png") ??
     publicUrl("landing/hero.png") ??
     publicUrl("landing/hero.jpg") ??
     publicUrl("landing/hero.webp")
@@ -29,6 +30,20 @@ export function getLandingHeroMobileSrc(): string | null {
     publicUrl("landing/hero-mobile.png") ??
     publicUrl("landing/hero-mobile.jpg") ??
     publicUrl("landing/hero-mobile.webp")
+  );
+}
+
+export type LandingHeroSlide =
+  | "hero-slide-web"
+  | "hero-slide-video"
+  | "hero-slide-teleflies";
+
+/** Drop `hero-slide-web.jpg` / `hero-slide-video.jpg` / `hero-slide-teleflies.jpg` into `apps/web/public/landing/`. */
+export function getLandingHeroSlideSrc(key: LandingHeroSlide): string | null {
+  return (
+    publicUrl(`landing/${key}.png`) ??
+    publicUrl(`landing/${key}.jpg`) ??
+    publicUrl(`landing/${key}.webp`)
   );
 }
 
