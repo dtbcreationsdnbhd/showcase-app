@@ -31,8 +31,8 @@ export const SOLUTIONS_RELEASE_HEIGHT = 0;
  * because the pin centres the title in a full viewport.
  */
 export const PROCESS_INTRO_PAGES = 1 + TITLE_HOLD_PAGES;
-/** Extra pages so each step holds long enough to read the copy. */
-export const PROCESS_CARD_PAGES = 7;
+/** Extra pages so each of the three cards holds long enough to read the copy. */
+export const PROCESS_CARD_PAGES = 5.5;
 /**
  * After the stack closes, dwell on the closed pile before the pin releases —
  * user scrolls a bit more, then the page continues.

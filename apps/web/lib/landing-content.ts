@@ -131,6 +131,46 @@ export const PROCESS_STEPS: {
   },
 ];
 
+export const WHY_US_TITLE = "Why Us";
+
+export const WHY_US_INTRO_SENTENCES = [
+  "A focused team, a modern stack and years of shipping.",
+  "Here is what you get when you build with us.",
+] as const;
+
+export type WhyUsImage = "why01" | "why02" | "why03";
+
+/** Desktop Why Us cards: the illustration has no text, so number and title
+ *  are drawn over it. */
+export const WHY_US_ITEMS: {
+  n: string;
+  image: WhyUsImage;
+  title: string;
+  description: string;
+}[] = [
+  {
+    n: "01",
+    image: "why01",
+    title: "Company Size",
+    description:
+      "A dedicated team of designers, engineers and strategists. Big enough to run several workstreams at once, small enough that you always talk to the people doing the work.",
+  },
+  {
+    n: "02",
+    image: "why02",
+    title: "Technology",
+    description:
+      "Modern stacks, AI-powered workflows and cloud infrastructure. We pick proven tools that keep your product fast, secure and easy to scale.",
+  },
+  {
+    n: "03",
+    image: "why03",
+    title: "Experience",
+    description:
+      "Years of shipping tools, platforms and AI content for clients across industries. We have solved most problems before, so your project moves without surprises.",
+  },
+];
+
 export type ServiceIconKey = "ai" | "web" | "star" | "refresh";
 
 export type ServiceCopy = {

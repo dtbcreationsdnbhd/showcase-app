@@ -54,14 +54,16 @@ const WAIT_X = 0;
 /** Matched open/close share of the scroll track — a bit longer so ends don’t feel rushed. */
 const EDGE = 0.15;
 
-function cardClipPath(): string {
+/** Card outline with the top-left notch the step number sits in. */
+const CARD_PATH = (() => {
   const w = CARD_W;
   const h = CARD_H;
   const nx = NOTCH_W;
   const ny = NOTCH_H;
   const r = CARD_R;
-  return `path("M ${nx} 0 H ${w - r} A ${r} ${r} 0 0 1 ${w} ${r} V ${h - r} A ${r} ${r} 0 0 1 ${w - r} ${h} H ${r} A ${r} ${r} 0 0 1 0 ${h - r} V ${ny + r} A ${r} ${r} 0 0 1 ${r} ${ny} H ${nx - r} A ${r} ${r} 0 0 0 ${nx} ${ny - r} V 0 Z")`;
-}
+  return `M ${nx} 0 H ${w - r} A ${r} ${r} 0 0 1 ${w} ${r} V ${h - r} A ${r} ${r} 0 0 1 ${w - r} ${h} H ${r} A ${r} ${r} 0 0 1 0 ${h - r} V ${ny + r} A ${r} ${r} 0 0 1 ${r} ${ny} H ${nx - r} A ${r} ${r} 0 0 0 ${nx} ${ny - r} V 0 Z`;
+})();
+const CARD_BG = "#070A14";
 
 export type ProcessStepView = {
   n: string;
@@ -101,10 +103,14 @@ function rangeProgress(value: number, start: number, end: number): number {
 }
 
 function ProcessCard({
+  n,
+  showNumber,
   src,
   title,
   style,
 }: {
+  n: string;
+  showNumber: boolean;
   src: string | null;
   title: string;
   style: React.CSSProperties;
@@ -123,30 +129,116 @@ function ProcessCard({
       }}
       style={style}
     >
-      {src ? (
-        <Image
-          src={src}
-          alt={title}
-          width={500}
-          height={257}
-          sizes={`${CARD_W}px`}
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "contain",
-            display: "block",
-          }}
-        />
-      ) : (
+      {/* clip-path drops box-shadow, so the glow is a filter on the parent. */}
+      <Box
+        sx={{
+          position: "absolute",
+          inset: 0,
+          filter: `drop-shadow(0 0 ${figmaPx(16)}px rgba(150, 110, 255, 0.35))`,
+        }}
+      >
         <Box
           sx={{
+            position: "absolute",
+            inset: 0,
+            bgcolor: CARD_BG,
+            clipPath: `path("${CARD_PATH}")`,
+          }}
+        >
+          {src ? (
+            <Box
+              sx={{
+                position: "absolute",
+                top: 0,
+                bottom: 0,
+                left: "18%",
+                right: 0,
+              }}
+            >
+              <Image
+                src={src}
+                alt=""
+                fill
+                sizes={`${CARD_W}px`}
+                style={{ objectFit: "cover", objectPosition: "50% 30%" }}
+              />
+            </Box>
+          ) : null}
+          <Box
+            aria-hidden
+            sx={{
+              position: "absolute",
+              inset: 0,
+              background: `linear-gradient(90deg, ${CARD_BG} 14%, rgba(7, 10, 20, 0) 34%), linear-gradient(180deg, rgba(7, 10, 20, 0) 50%, rgba(7, 10, 20, 0.92) 82%)`,
+            }}
+          />
+        </Box>
+        <Box
+          component="svg"
+          aria-hidden
+          viewBox={`0 0 ${CARD_W} ${CARD_H}`}
+          sx={{
+            position: "absolute",
+            inset: 0,
             width: "100%",
             height: "100%",
-            bgcolor: "#0C1622",
-            clipPath: cardClipPath(),
+            overflow: "visible",
           }}
-        />
-      )}
+        >
+          <defs>
+            <linearGradient id="process-card-stroke" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stopColor="#CC35CC" />
+              <stop offset="1" stopColor="#563DFE" />
+            </linearGradient>
+          </defs>
+          <path
+            d={CARD_PATH}
+            fill="none"
+            stroke="url(#process-card-stroke)"
+            strokeWidth={2}
+          />
+        </Box>
+      </Box>
+
+      <Box
+        aria-hidden
+        sx={{
+          ...barlow,
+          position: "absolute",
+          left: 0,
+          top: 0,
+          width: NOTCH_W,
+          height: NOTCH_H,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontWeight: 700,
+          fontSize: figmaPx(72),
+          lineHeight: 1,
+          color: "#D8C6FF",
+          opacity: showNumber ? 1 : 0,
+          transition: "opacity 0.2s ease",
+        }}
+      >
+        {n}
+      </Box>
+      <Typography
+        sx={{
+          ...barlow,
+          position: "absolute",
+          left: 0,
+          right: 0,
+          bottom: figmaPx(26),
+          m: 0,
+          textAlign: "center",
+          fontWeight: 600,
+          fontSize: figmaPx(28),
+          lineHeight: 1.2,
+          color: "#FFFFFF",
+        }}
+      >
+        {title}
+      </Typography>
     </Box>
   );
 }
@@ -160,6 +252,8 @@ function CardStage({
 }: {
   cardStyles: {
     key: string;
+    n: string;
+    showNumber: boolean;
     src: string | null;
     title: string;
     style: React.CSSProperties;
@@ -206,6 +300,8 @@ function CardStage({
         {cardStyles.map((card) => (
           <ProcessCard
             key={card.key}
+            n={card.n}
+            showNumber={card.showNumber}
             src={card.src}
             title={card.title}
             style={card.style}
@@ -437,11 +533,12 @@ export default function HowWeWorkStackedCards({
   const after = focusSpan;
 
   const cardStyles = useMemo(() => {
+    const mid = (cardCount - 1) / 2;
     return steps.map((step, i) => {
-      const stackY0 = (i - 1.5) * STACK_Y;
+      const stackY0 = (i - mid) * STACK_Y;
       const stackZ0 = -i * STACK_Z;
 
-      const colY = (i - 1.5) * COLUMN_Y;
+      const colY = (i - mid) * COLUMN_Y;
       const colZ = -i * COLUMN_Z;
 
       const openedY = lerp(stackY0, colY, spreadT);
@@ -555,8 +652,13 @@ export default function HowWeWorkStackedCards({
         opacity = p2opacity;
       }
 
+      // Numbers sit in the transparent notch, so stacked cards would show
+      // every number through each other: keep only the front/focused one.
+      const closed = after < 0.001 || outroT > 0.001;
       return {
         key: step.n,
+        n: step.n,
+        showNumber: closed ? i === 0 : i === activeIndex,
         src: step.src,
         title: step.title,
         style: {
