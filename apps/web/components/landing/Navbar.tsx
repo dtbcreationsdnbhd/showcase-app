@@ -2,7 +2,12 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import CenterHashLink from "@/components/landing/CenterHashLink";
-import { NAV_LINKS } from "@/lib/landing-nav";
+import ServicesMenu, {
+  SERVICES_BG,
+  SERVICES_MENU_CLASS,
+  ServicesCaret,
+} from "@/components/landing/ServicesMenu";
+import { DESKTOP_NAV_LINKS } from "@/lib/landing-nav";
 
 const headerFont = {
   fontFamily:
@@ -55,6 +60,12 @@ export default function Navbar({
         p: 0,
         gap: "10px",
         overflow: "visible",
+        transition: "background-color 0.2s ease 0.1s",
+        [`&:has(.${SERVICES_MENU_CLASS}:hover), &:has(.${SERVICES_MENU_CLASS} :focus-visible)`]:
+          {
+            backgroundColor: SERVICES_BG,
+            transitionDelay: "0s",
+          },
         ...headerFont,
       }}
     >
@@ -160,7 +171,7 @@ export default function Navbar({
             flexShrink: 0,
           }}
         >
-          {NAV_LINKS.map((link) => {
+          {DESKTOP_NAV_LINKS.map((link) => {
             const href = withPrefix(link.hash);
             const linkSx = {
               display: "flex",
@@ -189,6 +200,23 @@ export default function Navbar({
                 {link.label}
               </Typography>
             );
+            if (link.hash === "#services") {
+              return (
+                <ServicesMenu key={link.label}>
+                  <Box
+                    component="span"
+                    role="button"
+                    tabIndex={0}
+                    aria-haspopup="true"
+                    className="hover-grow-lg"
+                    sx={{ ...linkSx, position: "relative" }}
+                  >
+                    {label}
+                    <ServicesCaret />
+                  </Box>
+                </ServicesMenu>
+              );
+            }
             if (link.center) {
               return (
                 <CenterHashLink
