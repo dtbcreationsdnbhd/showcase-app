@@ -1,78 +1,20 @@
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import type { SxProps, Theme } from "@mui/material/styles";
 import {
-  SHOWCASE_COLUMNS,
-  SHOWCASE_HEIGHT,
+  SHOWCASE_HEIGHT_CSS,
   SHOWCASE_PAD_BOTTOM,
   SHOWCASE_PAD_TOP,
   figmaPx,
-  showcaseSectionHeight,
 } from "@/lib/landing-layout";
-import ProjectCard from "@/components/landing/ProjectCard";
-import ProjectShowcaseGallery from "@/components/landing/ProjectShowcaseGallery";
+import ProjectShowcaseSlider from "@/components/landing/ProjectShowcaseSlider";
 import { SHOWCASE_TITLE } from "@/lib/landing-content";
-import { projectTagLine, type ShowcaseProject } from "@/lib/projects";
-
-const barlow = {
-  fontFamily:
-    'var(--font-barlow-semi-condensed), "Barlow Semi Condensed", sans-serif',
-} as const;
-
-const CARD_W = figmaPx(276);
-const CARD_H = figmaPx(414.75);
-const CARD_GAP = figmaPx(24);
-const ROW_W = CARD_W * 3 + CARD_GAP * 2;
-
-function ArrowRightIcon({ upRight = false, sx }: { upRight?: boolean; sx?: SxProps<Theme> }) {
-  return (
-    <Box
-      component="svg"
-      viewBox="0 0 20 20"
-      aria-hidden
-      sx={[
-        {
-          width: figmaPx(18),
-          height: figmaPx(18),
-          display: "block",
-          transform: upRight ? "rotate(-45deg)" : "none",
-        },
-        ...(Array.isArray(sx) ? sx : sx ? [sx] : []),
-      ]}
-    >
-      <path
-        d="M3 10h12.5M11.2 4.8 17 10l-5.8 5.2"
-        fill="none"
-        stroke="#FFFFFF"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </Box>
-  );
-}
+import type { ShowcaseProject } from "@/lib/projects";
 
 export default function ProjectShowcase({
   projects,
-  arrowHref = "#",
-  followCursor = false,
-  arrowUpRight = false,
 }: {
   projects: readonly ShowcaseProject[];
-  arrowHref?: string;
-  followCursor?: boolean;
-  arrowUpRight?: boolean;
 }) {
   if (projects.length === 0) return null;
-
-  const columns = followCursor
-    ? Math.min(SHOWCASE_COLUMNS, projects.length)
-    : projects.length;
-  const cardRowWidth = CARD_W * columns + CARD_GAP * Math.max(columns - 1, 0);
-  const headerWidth = Math.max(ROW_W, cardRowWidth);
-  const sectionHeight = followCursor
-    ? showcaseSectionHeight(projects.length)
-    : SHOWCASE_HEIGHT;
 
   return (
     <Box
@@ -89,118 +31,13 @@ export default function ProjectShowcase({
         px: 0,
         gap: `${figmaPx(50)}px`,
         width: "100%",
-        height: sectionHeight,
+        height: SHOWCASE_HEIGHT_CSS,
         bgcolor: "#050B13",
         position: "relative",
         scrollMarginTop: `${figmaPx(20)}px`,
       }}
     >
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          p: 0,
-          width: headerWidth,
-          height: figmaPx(70),
-          flexShrink: 0,
-        }}
-      >
-        <Typography
-          component="h2"
-          sx={{
-            ...barlow,
-            width: figmaPx(564),
-            height: figmaPx(70),
-            m: 0,
-            fontStyle: "normal",
-            fontWeight: 600,
-            fontSize: figmaPx(36),
-            lineHeight: `${figmaPx(58)}px`,
-            letterSpacing: "-0.02em",
-            display: "flex",
-            alignItems: "center",
-            backgroundImage: "linear-gradient(90deg, #CC35CC 0%, #563DFE 100%)",
-            backgroundClip: "text",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            color: "transparent",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {SHOWCASE_TITLE}
-        </Typography>
-
-        <Box
-          component="a"
-          href={arrowHref}
-          aria-label={arrowHref === "/projects" ? "Next projects" : "Back to home"}
-          className="hover-grow-lg"
-          sx={{
-            position: "relative",
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-            width: figmaPx(52.5),
-            height: figmaPx(52.5),
-            flexShrink: 0,
-            textDecoration: "none",
-            cursor: "pointer",
-            "&:focus-visible": {
-              outline: "2px solid #CC35CC",
-              outlineOffset: 4,
-              borderRadius: "50%",
-            },
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-              width: figmaPx(33.75),
-              height: figmaPx(33.75),
-              background: "linear-gradient(90deg, #CC35CC 0%, #563DFE 100%)",
-              boxShadow: "0px 3px 12px rgba(236, 115, 255, 0.5)",
-              borderRadius: "50%",
-            }}
-          >
-            <ArrowRightIcon upRight={arrowUpRight} />
-          </Box>
-        </Box>
-      </Box>
-
-      {projects.length === 0 ? null : followCursor ? (
-        <ProjectShowcaseGallery projects={projects} />
-      ) : (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-            p: 0,
-            gap: `${CARD_GAP}px`,
-            width: cardRowWidth,
-            height: CARD_H,
-            flexShrink: 0,
-          }}
-        >
-          {projects.map((project) => (
-            <ProjectCard
-              key={project.id}
-              title={project.name}
-              description={projectTagLine(project.tags)}
-              imageSrc={project.mainImageUrl}
-              cursorLabel="Next"
-              href={arrowHref}
-            />
-          ))}
-        </Box>
-      )}
+      <ProjectShowcaseSlider projects={projects} title={SHOWCASE_TITLE} />
     </Box>
   );
 }

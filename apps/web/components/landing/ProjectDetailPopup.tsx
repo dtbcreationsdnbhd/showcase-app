@@ -13,13 +13,22 @@ const barlow = {
     'var(--font-barlow-semi-condensed), "Barlow Semi Condensed", sans-serif',
 } as const;
 
+const PAD_X = 44;
+const PAD_Y = 52;
+const PHOTO_W = 620;
+const PHOTO_H = 465;
+const THUMB_W = 120;
+const THUMB_H = 90;
+const COL_GAP = 60;
+const TEXT_W = 404;
+
 const labelSx = {
   ...barlow,
   m: 0,
   width: "100%",
   fontStyle: "normal",
   fontWeight: 500,
-  fontSize: figmaPx(12),
+  fontSize: figmaPx(14),
   lineHeight: "160%",
   letterSpacing: "0.02em",
   color: "rgba(255, 255, 255, 0.5)",
@@ -31,7 +40,7 @@ const bodySx = {
   width: "100%",
   fontStyle: "normal",
   fontWeight: 500,
-  fontSize: figmaPx(12),
+  fontSize: figmaPx(16),
   lineHeight: "160%",
   letterSpacing: "0.02em",
   color: "#FFFFFF",
@@ -174,12 +183,29 @@ export default function ProjectDetailPopup({
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
+  useEffect(() => {
+    const html = document.documentElement;
+    const previous = {
+      overflow: html.style.overflow,
+      gutter: html.style.scrollbarGutter,
+    };
+    // Keep the gutter so hiding the scrollbar doesn't nudge the page sideways.
+    html.style.scrollbarGutter = "stable";
+    html.style.overflow = "hidden";
+    return () => {
+      html.style.overflow = previous.overflow;
+      html.style.scrollbarGutter = previous.gutter;
+    };
+  }, []);
+
   if (!mounted) {
     return null;
   }
 
-  const cardW = figmaPx(34 + 387 + 56 + 358.5 + 34);
-  const closeSize = figmaPx(36);
+  const cardW = figmaPx(PAD_X + PHOTO_W + COL_GAP + TEXT_W + PAD_X);
+  const closeSize = figmaPx(44);
+  // Rough card height; the scale also fits it into the viewport height.
+  const cardH = figmaPx(PAD_Y * 2 + PHOTO_H + 24 * 2 + 1 + THUMB_H);
 
   return createPortal(
     <Box
@@ -202,7 +228,7 @@ export default function ProjectDetailPopup({
           position: "relative",
           width: cardW,
           flexShrink: 0,
-          transform: `scale(calc(100vw / ${LANDING_DESIGN_WIDTH}px))`,
+          transform: `scale(calc(min(100vw, ${((88 * LANDING_DESIGN_WIDTH) / cardH).toFixed(2)}vh) / ${LANDING_DESIGN_WIDTH}px))`,
         }}
       >
         <Box
@@ -210,10 +236,11 @@ export default function ProjectDetailPopup({
           type="button"
           aria-label="Close"
           onClick={onClose}
+          className="hover-grow"
           sx={{
             position: "absolute",
-            left: "100%",
-            top: -closeSize,
+            top: figmaPx(18),
+            right: figmaPx(18),
             width: closeSize,
             height: closeSize,
             p: 0,
@@ -226,19 +253,24 @@ export default function ProjectDetailPopup({
             justifyContent: "center",
             alignItems: "center",
             zIndex: 1,
+            "&:focus-visible": {
+              outline: "2px solid #CC35CC",
+              outlineOffset: 3,
+              borderRadius: `${figmaPx(8)}px`,
+            },
           }}
         >
           <Box
             component="svg"
             viewBox="0 0 16 16"
             aria-hidden
-            sx={{ width: figmaPx(18), height: figmaPx(18), display: "block" }}
+            sx={{ width: figmaPx(26), height: figmaPx(26), display: "block" }}
           >
             <path
               d="M3 3 13 13M13 3 3 13"
               fill="none"
               stroke="#FFFFFF"
-              strokeWidth="1.6"
+              strokeWidth="1.8"
               strokeLinecap="round"
             />
           </Box>
@@ -255,7 +287,7 @@ export default function ProjectDetailPopup({
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            py: `${figmaPx(46)}px`,
+            py: `${figmaPx(PAD_Y)}px`,
             px: 0,
             width: cardW,
             bgcolor: "rgba(65, 65, 65, 0.26)",
@@ -271,8 +303,8 @@ export default function ProjectDetailPopup({
               flexDirection: "row",
               justifyContent: "flex-start",
               alignItems: "flex-start",
-              px: `${figmaPx(34)}px`,
-              gap: `${figmaPx(56)}px`,
+              px: `${figmaPx(PAD_X)}px`,
+              gap: `${figmaPx(COL_GAP)}px`,
               width: "100%",
             }}
           >
@@ -283,14 +315,14 @@ export default function ProjectDetailPopup({
                 alignItems: "flex-start",
                 p: 0,
                 gap: `${figmaPx(24)}px`,
-                width: figmaPx(387),
+                width: figmaPx(PHOTO_W),
                 flexShrink: 0,
               }}
             >
             <ProjectPhoto
               src={imageSrc}
-              width={figmaPx(387)}
-              height={figmaPx(290.25)}
+              width={figmaPx(PHOTO_W)}
+              height={figmaPx(PHOTO_H)}
               alt={detail.name}
             />
             <Box
@@ -305,9 +337,9 @@ export default function ProjectDetailPopup({
                 flexDirection: "row",
                 alignItems: "center",
                 p: 0,
-                gap: `${figmaPx(12)}px`,
-                width: figmaPx(387),
-                height: figmaPx(67.5),
+                gap: `${figmaPx(14)}px`,
+                width: figmaPx(PHOTO_W),
+                height: figmaPx(THUMB_H),
               }}
             >
               {images.map((src, index) => (
@@ -331,8 +363,8 @@ export default function ProjectDetailPopup({
                 >
                   <ProjectPhoto
                     src={src}
-                    width={figmaPx(90)}
-                    height={figmaPx(67.5)}
+                    width={figmaPx(THUMB_W)}
+                    height={figmaPx(THUMB_H)}
                     alt=""
                   />
                 </Box>
@@ -346,8 +378,8 @@ export default function ProjectDetailPopup({
               flexDirection: "column",
               alignItems: "flex-start",
               p: 0,
-              gap: `${figmaPx(30)}px`,
-              width: figmaPx(358.5),
+              gap: `${figmaPx(34)}px`,
+              width: figmaPx(TEXT_W),
               minWidth: 0,
               flexShrink: 0,
             }}
@@ -372,8 +404,8 @@ export default function ProjectDetailPopup({
                   width: "100%",
                   fontStyle: "normal",
                   fontWeight: 600,
-                  fontSize: figmaPx(19.5),
-                  lineHeight: `${figmaPx(31)}px`,
+                  fontSize: figmaPx(28),
+                  lineHeight: `${figmaPx(40)}px`,
                   backgroundImage:
                     "linear-gradient(96.02deg, #FA9DFF 2.09%, #977EFF 97.91%)",
                   backgroundClip: "text",
@@ -438,7 +470,7 @@ export default function ProjectDetailPopup({
                             m: 0,
                             fontStyle: "normal",
                             fontWeight: 500,
-                            fontSize: figmaPx(12),
+                            fontSize: figmaPx(14),
                             lineHeight: "160%",
                             letterSpacing: "0.02em",
                             color: "#FFFFFF",

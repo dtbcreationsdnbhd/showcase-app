@@ -89,13 +89,7 @@ export default function SiteCursor() {
       raf = requestAnimationFrame(tick);
     };
 
-    const place = (event: PointerEvent) => {
-      if (event.pointerType === "touch") {
-        return;
-      }
-      targetX = event.clientX;
-      targetY = event.clientY;
-      const hit = event.target instanceof Element ? event.target : null;
+    const applyLabel = (hit: Element | null) => {
       const card = hit?.closest("[data-cursor-label]");
       const nextLabel = card?.getAttribute("data-cursor-label") ?? "";
       blendTarget = nextLabel ? 1 : 0;
@@ -103,6 +97,26 @@ export default function SiteCursor() {
         activeLabel = nextLabel;
         label.textContent = nextLabel;
       }
+    };
+
+    // A click can open a popup under a still pointer; no move event follows.
+    const relabel = () => {
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => {
+          if (!visible) return;
+          applyLabel(document.elementFromPoint(targetX, targetY));
+          kick();
+        }),
+      );
+    };
+
+    const place = (event: PointerEvent) => {
+      if (event.pointerType === "touch") {
+        return;
+      }
+      targetX = event.clientX;
+      targetY = event.clientY;
+      applyLabel(event.target instanceof Element ? event.target : null);
       if (!visible) {
         x = targetX;
         y = targetY;
@@ -158,6 +172,7 @@ export default function SiteCursor() {
     };
 
     window.addEventListener("pointermove", place);
+    window.addEventListener("click", relabel);
     document.addEventListener("pointerout", spring);
     document.addEventListener("animationend", springDone);
     document.documentElement.addEventListener("mouseleave", hide);
@@ -167,6 +182,7 @@ export default function SiteCursor() {
         cancelAnimationFrame(raf);
       }
       window.removeEventListener("pointermove", place);
+      window.removeEventListener("click", relabel);
       document.removeEventListener("pointerout", spring);
       document.removeEventListener("animationend", springDone);
       document.documentElement.removeEventListener("mouseleave", hide);

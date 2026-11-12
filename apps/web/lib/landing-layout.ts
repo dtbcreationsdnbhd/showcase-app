@@ -48,12 +48,17 @@ export const PROCESS_CARDS_SCROLL_HEIGHT_CSS = `calc(${PROCESS_PAGE_COUNT} * ${L
 export const SOLUTIONS_INTRO_HEIGHT = figmaPx(418);
 /** @deprecated Prefer STAGE_VIEWPORT_PAGE_HEIGHT_CSS * service pages + release. */
 export const SOLUTIONS_ROWS_HEIGHT = figmaPx(4 * 370 + 3 * 50 + 220);
-/** Tighter join into Project Showcase than the original 90 top padding. */
-export const SHOWCASE_PAD_TOP = figmaPx(80);
-export const SHOWCASE_PAD_BOTTOM = figmaPx(90);
-/** padding + header 70 + gap 50 + cards 414.75 */
+export const SHOWCASE_PAD_TOP = figmaPx(60);
+export const SHOWCASE_PAD_BOTTOM = figmaPx(60);
+/** Card row (cards + arrows) is drawn at this zoom of the base 276×414.75 card. */
+export const SHOWCASE_CARD_ZOOM = 1.05;
+/** padding + header 80 + gap 50 + zoomed cards */
 export const SHOWCASE_HEIGHT =
-  SHOWCASE_PAD_TOP + figmaPx(70 + 50 + 414.75) + SHOWCASE_PAD_BOTTOM;
+  SHOWCASE_PAD_TOP +
+  figmaPx(80 + 50 + 414.75 * SHOWCASE_CARD_ZOOM) +
+  SHOWCASE_PAD_BOTTOM;
+/** One viewport page like the other sections, never shorter than its content. */
+export const SHOWCASE_HEIGHT_CSS = `max(${STAGE_VIEWPORT_PAGE_HEIGHT_CSS}, ${SHOWCASE_HEIGHT}px)`;
 export const SHOWCASE_COLUMNS = 3;
 const SHOWCASE_CARD_H = figmaPx(414.75);
 const SHOWCASE_CARD_GAP = figmaPx(24);
@@ -87,9 +92,8 @@ export const FOOTER_HEIGHT = figmaPx(315);
 export const PROJECTS_PAGE_NAV_HEIGHT = 40;
 export const PROJECTS_PAGE_HEIGHT = PROJECTS_PAGE_NAV_HEIGHT + SHOWCASE_HEIGHT;
 
-/** Everything except Targeted Solutions / Process / Contact CTA / Contact form (those use viewport pages). */
-export const LANDING_HEIGHT_WITHOUT_SOLUTIONS =
-  HERO_DESIGN_HEIGHT + SHOWCASE_HEIGHT + FOOTER_HEIGHT;
+/** Everything except Targeted Solutions / Process / Showcase / Contact CTA / Contact form (those use viewport pages). */
+export const LANDING_HEIGHT_WITHOUT_SOLUTIONS = HERO_DESIGN_HEIGHT + FOOTER_HEIGHT;
 
 /**
  * Approximate design height assuming a 16:9 viewport for one page.
@@ -102,13 +106,15 @@ export const LANDING_DESIGN_HEIGHT =
   SOLUTIONS_PAGE_COUNT * (LANDING_DESIGN_WIDTH * (9 / 16)) +
   CONTACT_CTA_VIEWPORT_PAGES * (LANDING_DESIGN_WIDTH * (9 / 16)) +
   CONTACT_FORM_VIEWPORT_PAGES * (LANDING_DESIGN_WIDTH * (9 / 16)) +
+  Math.max(LANDING_DESIGN_WIDTH * (9 / 16), SHOWCASE_HEIGHT) +
   SOLUTIONS_RELEASE_HEIGHT;
 
 /** Screen-space height of the scaled landing frame (vh pages + fixed stage sections). */
 export function landingFrameHeightCss(includeShowcase = true): string {
-  const fixed =
-    LANDING_HEIGHT_WITHOUT_SOLUTIONS +
-    SOLUTIONS_RELEASE_HEIGHT -
-    (includeShowcase ? 0 : SHOWCASE_HEIGHT);
-  return `calc(100vw * ${fixed} / ${LANDING_DESIGN_WIDTH} + ${SOLUTIONS_PAGE_COUNT + PROCESS_INTRO_PAGES + PROCESS_PAGE_COUNT + CONTACT_CTA_VIEWPORT_PAGES + CONTACT_FORM_VIEWPORT_PAGES} * 100vh)`;
+  const fixed = LANDING_HEIGHT_WITHOUT_SOLUTIONS + SOLUTIONS_RELEASE_HEIGHT;
+  // Screen-space twin of SHOWCASE_HEIGHT_CSS.
+  const showcase = includeShowcase
+    ? ` + max(100vh, 100vw * ${SHOWCASE_HEIGHT} / ${LANDING_DESIGN_WIDTH})`
+    : "";
+  return `calc(100vw * ${fixed} / ${LANDING_DESIGN_WIDTH} + ${SOLUTIONS_PAGE_COUNT + PROCESS_INTRO_PAGES + PROCESS_PAGE_COUNT + CONTACT_CTA_VIEWPORT_PAGES + CONTACT_FORM_VIEWPORT_PAGES} * 100vh${showcase})`;
 }
