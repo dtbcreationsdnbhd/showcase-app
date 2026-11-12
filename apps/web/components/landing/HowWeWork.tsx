@@ -1,11 +1,11 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import HowWeWorkStackedCards from "@/components/landing/HowWeWorkStackedCards";
-import { getLandingProcessStepSrc } from "@/lib/landing-assets";
+import { getLandingWhyUsSrc } from "@/lib/landing-assets";
 import {
-  PROCESS_INTRO_SENTENCES,
-  PROCESS_STEPS,
-  PROCESS_TITLE,
+  WHY_US_INTRO_SENTENCES,
+  WHY_US_ITEMS,
+  WHY_US_TITLE,
 } from "@/lib/landing-content";
 import ScrollRevealPin from "@/components/landing/ScrollRevealPin";
 import {
@@ -20,11 +20,11 @@ const barlow = {
 } as const;
 
 export default function HowWeWork() {
-  const steps = PROCESS_STEPS.map((step) => ({
-    n: step.n,
-    title: step.title,
-    description: step.description,
-    src: getLandingProcessStepSrc(step.image),
+  const steps = WHY_US_ITEMS.map((item) => ({
+    n: item.n,
+    title: item.title,
+    description: item.description,
+    src: getLandingWhyUsSrc(item.image),
   }));
 
   return (
@@ -41,7 +41,7 @@ export default function HowWeWork() {
     >
       <ScrollRevealPin
         holdPages={TITLE_HOLD_PAGES}
-        anchorId="how-we-work"
+        anchorId="why-us"
         // Above the Solutions pin, below the process cards pin.
         zIndex={46}
       >
@@ -50,7 +50,7 @@ export default function HowWeWork() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            gap: `${figmaPx(20)}px`,
+            gap: `${figmaPx(28)}px`,
             width: "100%",
           }}
         >
@@ -61,8 +61,8 @@ export default function HowWeWork() {
               width: "100%",
               m: 0,
               fontWeight: 600,
-              fontSize: figmaPx(36),
-              lineHeight: `${figmaPx(58)}px`,
+              fontSize: figmaPx(64),
+              lineHeight: `${figmaPx(80)}px`,
               textAlign: "center",
               letterSpacing: "-0.02em",
               backgroundImage: "linear-gradient(90deg, #CC35CC 0%, #563DFE 100%)",
@@ -73,23 +73,23 @@ export default function HowWeWork() {
               whiteSpace: "nowrap",
             }}
           >
-            {PROCESS_TITLE}
+            {WHY_US_TITLE}
           </Typography>
 
           <Typography
             sx={{
               ...barlow,
-              width: figmaPx(640),
+              width: figmaPx(900),
               m: 0,
               fontWeight: 500,
-              fontSize: figmaPx(16.5),
+              fontSize: figmaPx(24),
               lineHeight: "140%",
               textAlign: "center",
               color: "#FFFFFF",
             }}
           >
-            {PROCESS_INTRO_SENTENCES[0]} <br />
-            {PROCESS_INTRO_SENTENCES[1]}
+            {WHY_US_INTRO_SENTENCES[0]} <br />
+            {WHY_US_INTRO_SENTENCES[1]}
           </Typography>
         </Box>
       </ScrollRevealPin>

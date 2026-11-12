@@ -62,6 +62,17 @@ export function getLandingProcessStepSrc(
   );
 }
 
+export type LandingWhyUsImage = "why01" | "why02" | "why03";
+
+/** Drop `why01.jpg`–`why03.jpg` into `apps/web/public/landing/`. */
+export function getLandingWhyUsSrc(key: LandingWhyUsImage): string | null {
+  return (
+    publicUrl(`landing/${key}.jpg`) ??
+    publicUrl(`landing/${key}.png`) ??
+    publicUrl(`landing/${key}.webp`)
+  );
+}
+
 /** Drop `ai.png` / `web.png` / `star.png` / `refresh.png` into `apps/web/public/landing/`. */
 export function getLandingServiceIconSrc(
   key: LandingServiceIcon,
