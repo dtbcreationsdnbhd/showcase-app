@@ -86,7 +86,7 @@ export default function Navbar({
           py: "24px",
           px: 0,
           gap: "123px",
-          width: 1370,
+          width: 1680,
           height: 102,
           boxSizing: "border-box",
           position: "relative",
@@ -115,6 +115,7 @@ export default function Navbar({
               width={689}
               height={116}
               priority
+              draggable={false}
               style={{ height: 52, width: "auto" }}
             />
           ) : (

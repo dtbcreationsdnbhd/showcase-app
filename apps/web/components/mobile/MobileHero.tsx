@@ -14,6 +14,10 @@ const barlow = {
     'var(--font-barlow-semi-condensed), "Barlow Semi Condensed", sans-serif',
 } as const;
 
+const jakarta = {
+  fontFamily: 'var(--font-plus-jakarta), "Plus Jakarta Sans", sans-serif',
+} as const;
+
 /** Type sizes are estimated off the Figma export; tune against a real device. */
 const TEXT_BLOCK_TOP = 482;
 
@@ -96,57 +100,39 @@ export default function MobileHero({ heroSrc }: { heroSrc: string | null }) {
             m: 0,
           }}
         >
-          <Typography
-            component="span"
-            sx={{
-              ...barlow,
-              fontStyle: "italic",
-              fontWeight: 500,
-              fontSize: 38,
-              lineHeight: "46px",
-              letterSpacing: "-0.02em",
-              color: "#FFFFFF",
-              whiteSpace: "nowrap",
-            }}
-          >
-            Automate. Scale.
-          </Typography>
-          <Typography
-            component="span"
-            sx={{
-              ...barlow,
-              fontStyle: "italic",
-              fontWeight: 800,
-              fontSize: 96,
-              lineHeight: "96px",
-              letterSpacing: "0.02em",
-              textTransform: "uppercase",
-              backgroundImage:
-                "linear-gradient(90deg, #CC35CC 0%, #563DFE 100%)",
-              backgroundClip: "text",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              color: "transparent",
-              whiteSpace: "nowrap",
-            }}
-          >
-            Outpace
-          </Typography>
-          <Typography
-            component="span"
-            sx={{
-              ...barlow,
-              fontStyle: "italic",
-              fontWeight: 700,
-              fontSize: 38,
-              lineHeight: "44px",
-              textTransform: "uppercase",
-              color: "#FFFFFF",
-              whiteSpace: "nowrap",
-            }}
-          >
-            Your Competition.
-          </Typography>
+          {[
+            ["Crafting ", "Vision", ","],
+            ["Empowering ", "Creation", ""],
+          ].map(([before, accent, after]) => (
+            <Typography
+              key={accent}
+              component="span"
+              sx={{
+                ...jakarta,
+                fontWeight: 800,
+                fontSize: 38,
+                lineHeight: "48px",
+                letterSpacing: "-0.02em",
+                color: "#FFFFFF",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {before}
+              <Box
+                component="span"
+                sx={{
+                  backgroundImage:
+                    "linear-gradient(90deg, #CC35CC 0%, #563DFE 100%)",
+                  backgroundClip: "text",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                {accent}
+              </Box>
+              {after}
+            </Typography>
+          ))}
         </Box>
 
         <Typography
@@ -159,11 +145,12 @@ export default function MobileHero({ heroSrc }: { heroSrc: string | null }) {
             lineHeight: "160%",
             letterSpacing: "0.02em",
             textAlign: "center",
-            color: "#667080",
+            color: "#A3AAB8",
           }}
         >
-          Equip your business with cutting-edge AI-tools, customized apps, and
-          intelligent data dashboards for full digital transformation.
+          Empower your business with next-gen AI-powered tools, video creation,
+          and design assets. From creative content to automated workflows, we
+          craft your vision for commercial success.
         </Typography>
 
         <PillButton width={253} href={`#${mobileAnchorId("contact")}`}>
