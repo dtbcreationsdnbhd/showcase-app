@@ -68,6 +68,8 @@ export function showcaseSectionHeight(projectCount: number) {
   const rows = Math.max(1, Math.ceil(projectCount / SHOWCASE_COLUMNS));
   return SHOWCASE_HEIGHT + (rows - 1) * (SHOWCASE_CARD_H + SHOWCASE_CARD_GAP);
 }
+/** FAQ: one viewport page for the pinned panel plus its hold. */
+export const FAQ_VIEWPORT_PAGES = 1 + TITLE_HOLD_PAGES;
 /** Contact CTA: one viewport page for the pinned title plus its hold. */
 export const CONTACT_CTA_VIEWPORT_PAGES = 1 + TITLE_HOLD_PAGES;
 /** Contact form is one full viewport on the scaled stage (not fixed Figma px). */
@@ -106,6 +108,7 @@ export const LANDING_DESIGN_HEIGHT =
   SOLUTIONS_PAGE_COUNT * (LANDING_DESIGN_WIDTH * (9 / 16)) +
   CONTACT_CTA_VIEWPORT_PAGES * (LANDING_DESIGN_WIDTH * (9 / 16)) +
   CONTACT_FORM_VIEWPORT_PAGES * (LANDING_DESIGN_WIDTH * (9 / 16)) +
+  FAQ_VIEWPORT_PAGES * (LANDING_DESIGN_WIDTH * (9 / 16)) +
   Math.max(LANDING_DESIGN_WIDTH * (9 / 16), SHOWCASE_HEIGHT) +
   SOLUTIONS_RELEASE_HEIGHT;
 
@@ -116,5 +119,5 @@ export function landingFrameHeightCss(includeShowcase = true): string {
   const showcase = includeShowcase
     ? ` + max(100vh, 100vw * ${SHOWCASE_HEIGHT} / ${LANDING_DESIGN_WIDTH})`
     : "";
-  return `calc(100vw * ${fixed} / ${LANDING_DESIGN_WIDTH} + ${SOLUTIONS_PAGE_COUNT + PROCESS_INTRO_PAGES + PROCESS_PAGE_COUNT + CONTACT_CTA_VIEWPORT_PAGES + CONTACT_FORM_VIEWPORT_PAGES} * 100vh${showcase})`;
+  return `calc(100vw * ${fixed} / ${LANDING_DESIGN_WIDTH} + ${SOLUTIONS_PAGE_COUNT + PROCESS_INTRO_PAGES + PROCESS_PAGE_COUNT + CONTACT_CTA_VIEWPORT_PAGES + CONTACT_FORM_VIEWPORT_PAGES + FAQ_VIEWPORT_PAGES} * 100vh${showcase})`;
 }

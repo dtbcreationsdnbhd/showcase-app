@@ -250,3 +250,140 @@ export const SERVICE_ROWS: {
     ],
   },
 ];
+
+export const FAQ_TITLE = "FAQ";
+export const FAQ_SUBTITLE = "Answers to the questions we hear most.";
+
+export type FaqItem = {
+  question: string;
+  /** Paragraph before the list, or the whole answer when there is no list. */
+  answer?: string;
+  /** Bulleted points; `label` is set in bold before the text. */
+  points?: readonly { label: string; text: string }[];
+};
+
+export type FaqGroup = {
+  title: string;
+  items: readonly FaqItem[];
+};
+
+export const FAQ_GROUPS: readonly FaqGroup[] = [
+  {
+    title: "General",
+    items: [
+      {
+        question: "What is VisionCraft and what services do you provide?",
+        answer:
+          "VisionCraft is an AI-powered digital creation and marketing solution platform designed to streamline content production, boost online visibility, and drive commercial success. Our service suite includes:",
+        points: [
+          {
+            label: "AI Tools",
+            text: "Next-gen tools like TeleFlies (social content automation) and FindSEO (search optimization).",
+          },
+          {
+            label: "AI Design & Video Production",
+            text: "High-end visual solutions including AI Commercial Video, AI Digital Human / IP Video, AI Drama (with in-scene ad placement), and AI Music Videos.",
+          },
+          {
+            label: "Platform Creation",
+            text: "Full turnkey web platform development (such as streaming and niche entertainment sites) complete with built-in Ads Dashboards for instant monetization.",
+          },
+        ],
+      },
+      {
+        question: "Who can benefit from using VisionCraft’s tools and solutions?",
+        answer: "Our solutions are built for:",
+        points: [
+          {
+            label: "Digital Marketers & Brands",
+            text: "Looking to scale visual content quickly without traditional studio production budgets.",
+          },
+          {
+            label: "Content Creators & Agencies",
+            text: "Seeking automated workflows for social media, SEO analytics, and video editing.",
+          },
+          {
+            label: "Platform Operators & Entrepreneurs",
+            text: "Planning to launch, manage, and monetize content streaming platforms (like movie or entertainment sites) with integrated ad networks.",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    title: "AI Tools & SEO",
+    items: [
+      {
+        question: "What is TeleFlies and how does it assist with content management?",
+        answer:
+          "TeleFlies is an AI-driven tool built for automated social content creation and workflow enhancement. It helps users draft engaging captions, structure campaign messaging, and schedule content publishing efficiently—reducing manual social media management effort while maintaining brand consistency across channels.",
+      },
+      {
+        question: "How does FindSEO help improve my website’s search engine rankings?",
+        answer:
+          "FindSEO uses AI analytics to discover high-volume keywords, optimize on-page content structures, and analyze competitor strategies. It delivers actionable insights to increase organic search traffic, elevate domain authority, and secure higher rankings on search engine result pages.",
+      },
+    ],
+  },
+  {
+    title: "AI Video & Design",
+    items: [
+      {
+        question: "What is the difference between standard AI Video and AI IP Video creation?",
+        points: [
+          {
+            label: "Standard AI Video",
+            text: "Generates cinematic, general-purpose commercial visuals, promotional clips, and motion graphics based on text or visual prompts.",
+          },
+          {
+            label: "AI IP Video",
+            text: "Focuses on creating and animating a custom digital persona or brand mascot (Intellectual Property). This allows you to generate consistent human-like presenters or avatar-driven video series repeatedly without re-hiring actors or crew.",
+          },
+        ],
+      },
+      {
+        question: "How does AI Drama work, and how are in-scene ads integrated?",
+        answer:
+          "AI Drama utilizes AI scriptwriting and scene rendering to produce narrative-driven short-form drama series rapidly. During production, we integrate In-Scene Ads by digitally placing brand product images, banner placements, or sponsored props seamlessly into the video environment itself—creating monetization opportunities without disrupting the viewer experience.",
+      },
+      {
+        question: "Can I commission custom AI MV (Music Video) production for my brand?",
+        answer:
+          "Yes! Our AI MV service blends AI audio-visual sync with stylised animations and visual effects. Whether for a product launch soundtrack, brand anthem, or artistic promotional campaign, we can produce high-impact, custom music videos tailored to your brand identity.",
+      },
+    ],
+  },
+  {
+    title: "Platform Creation & Ads Dashboard",
+    items: [
+      {
+        question: "What is included in your Platform Creation service with the Ads Dashboard?",
+        answer: "Our Platform Creation package offers an end-to-end web deployment solution:",
+        points: [
+          {
+            label: "Custom Frontend & Backend Architecture",
+            text: "Fully responsive, high-speed UI tailored to your niche.",
+          },
+          {
+            label: "Integrated Media Streaming / Content Systems",
+            text: "Optimized for low-latency playback.",
+          },
+          {
+            label: "Ads Dashboard",
+            text: "A centralized management hub that lets you insert banner ads, video pre-roll/post-roll ads, or pop-ups, track impression metrics, and monitor revenue payouts in real-time.",
+          },
+        ],
+      },
+      {
+        question: "Can VisionCraft build custom streaming platforms like Niuniutv or niche entertainment sites?",
+        answer:
+          "Absolutely. We build scalable streaming architectures modeled after popular media platforms like Niuniutv as well as specialized niche entertainment portals. Each platform comes fully equipped with user management, category tagging, video hosting compatibility, and ad integration ready for immediate deployment.",
+      },
+      {
+        question: "How do I get started with a project or request a free consultation?",
+        answer:
+          "You can get started by clicking the \"Start a Project\" or \"Get a Free Consultation\" button on our website navigation bar. Fill out the short inquiry form with your project scope, and our team will get back to you within 24 hours with a tailored strategy and custom price quote.",
+      },
+    ],
+  },
+];

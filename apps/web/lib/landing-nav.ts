@@ -11,6 +11,7 @@ export const DESKTOP_NAV_LINKS = [
   { label: "HOME", hash: "#top", center: false },
   { label: "SERVICES/PROJECTS", hash: "#services", center: true },
   { label: "WHY US", hash: "#why-us", center: true },
+  { label: "FAQ", hash: "#faq", center: true },
 ] as const;
 
 export type ServiceIcon =

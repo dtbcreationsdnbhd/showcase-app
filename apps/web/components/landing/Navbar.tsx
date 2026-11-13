@@ -166,7 +166,7 @@ export default function Navbar({
             alignItems: "center",
             p: 0,
             gap: "36px",
-            width: 491,
+            width: 560,
             height: 54,
             flexShrink: 0,
           }}
