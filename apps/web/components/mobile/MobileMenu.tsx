@@ -180,7 +180,7 @@ export default function MobileMenu({
             ...mobileSheetMotion(shown, reduced),
             // Glows are read off the Figma export, not sampled — tune on device.
             background:
-              "radial-gradient(120% 55% at 50% 0%, rgba(32, 72, 132, 0.42) 0%, rgba(7, 12, 30, 0) 70%), radial-gradient(70% 38% at 45% 58%, rgba(138, 62, 198, 0.20) 0%, rgba(7, 12, 30, 0) 75%), rgba(7, 12, 30, 0.86)",
+              "radial-gradient(120% 55% at 50% 0%, rgba(180, 30, 80, 0.42) 0%, rgba(42, 8, 22, 0) 70%), radial-gradient(70% 38% at 45% 58%, rgba(255, 120, 40, 0.20) 0%, rgba(42, 8, 22, 0) 75%), rgba(42, 8, 22, 0.86)",
             backdropFilter: "blur(48px)",
             WebkitBackdropFilter: "blur(48px)",
           }}
@@ -189,9 +189,9 @@ export default function MobileMenu({
             <Image
               src={logoSrc}
               alt="VisionCraft"
-              width={689}
-              height={116}
-              style={{ height: 48, width: "auto" }}
+              width={415}
+              height={225}
+              style={{ height: 96, width: "auto" }}
             />
           ) : (
             <Typography

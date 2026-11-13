@@ -1,5 +1,6 @@
 import Box from "@mui/material/Box";
 import type { ReactNode } from "react";
+import { GOLD_INK, goldButtonSx } from "@/lib/gold-theme";
 
 export default function PillButton({
   children,
@@ -27,8 +28,7 @@ export default function PillButton({
         height: 52,
         pl: "20px",
         pr: "6px",
-        background: "linear-gradient(90deg, #CC35CC 0%, #563DFE 100%)",
-        boxShadow: "0px 4px 20px rgba(236, 115, 255, 0.5)",
+        ...goldButtonSx,
         borderRadius: "9999px",
         textDecoration: "none",
         cursor: "pointer",
@@ -50,10 +50,10 @@ export default function PillButton({
             fontFamily:
               'var(--font-barlow-semi-condensed), "Barlow Semi Condensed", sans-serif',
             fontStyle: "normal",
-            fontWeight: 500,
+            fontWeight: 600,
             fontSize: 18,
             lineHeight: "22px",
-            color: "#FFFFFF",
+            color: GOLD_INK,
             whiteSpace: "nowrap",
           }}
         >
@@ -69,7 +69,7 @@ export default function PillButton({
             width: 40,
             height: 40,
             boxSizing: "border-box",
-            background: "rgba(255, 255, 255, 0.4)",
+            background: GOLD_INK,
             borderRadius: "99px",
             flexShrink: 0,
           }}
@@ -87,7 +87,7 @@ export default function PillButton({
             <path
               d="M2 8h10.5M9.2 3.8 13.8 8 9.2 12.2"
               fill="none"
-              stroke="#FFFFFF"
+              stroke="#FFD866"
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"

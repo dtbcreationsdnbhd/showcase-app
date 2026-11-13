@@ -243,14 +243,14 @@ export default function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                 flexDirection: "column",
                 borderRadius: "24px",
                 overflow: "hidden",
-                bgcolor: "#120D2A",
+                bgcolor: "#5A0F32",
                 border: "1px solid",
                 borderColor: isActive
-                  ? "rgba(168, 120, 255, 0.55)"
-                  : "rgba(255, 255, 255, 0.1)",
+                  ? "rgba(255, 215, 122, 0.85)"
+                  : "rgba(255, 214, 128, 0.3)",
                 boxShadow: isActive
-                  ? "0 24px 70px rgba(86, 61, 254, 0.4)"
-                  : "0 12px 30px rgba(0, 0, 0, 0.4)",
+                  ? "0 0 18px rgba(255, 200, 100, 0.45), 0 0 48px rgba(255, 168, 56, 0.3), 0 28px 48px -24px rgba(40, 0, 14, 0.5)"
+                  : "0 12px 30px rgba(40, 0, 14, 0.4)",
                 transform: isActive ? "scale(1.03)" : "scale(0.9)",
                 filter: isActive ? "none" : "brightness(0.7)",
                 transition: transition(
@@ -275,7 +275,7 @@ export default function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                       position: "absolute",
                       inset: 0,
                       background:
-                        "linear-gradient(135deg, #1B1446 0%, #3A1B5C 100%)",
+                        "linear-gradient(135deg, #4A0F2A 0%, #7A1A2E 100%)",
                     }}
                   />
                 )}
@@ -291,7 +291,7 @@ export default function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                       width: 76,
                       height: 76,
                       borderRadius: "50%",
-                      bgcolor: "rgba(10, 8, 24, 0.6)",
+                      bgcolor: "rgba(42, 9, 24, 0.6)",
                       border: "1px solid rgba(255, 255, 255, 0.35)",
                       display: "flex",
                       alignItems: "center",
@@ -314,8 +314,9 @@ export default function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                   flexDirection: "column",
                   gap: "6px",
                   background:
-                    "linear-gradient(180deg, #1A1338 0%, #0E0A20 100%)",
-                  borderTop: "1px solid rgba(255, 255, 255, 0.08)",
+                    "linear-gradient(180deg, #8A1848 0%, #5A0F32 100%)",
+                  borderTop: "1px solid rgba(255, 214, 128, 0.45)",
+                  boxShadow: "inset 0 1px 0 rgba(255, 255, 255, 0.18)",
                 }}
               >
                 <Typography
@@ -325,7 +326,7 @@ export default function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                     fontWeight: 600,
                     letterSpacing: "0.1em",
                     textTransform: "uppercase",
-                    color: "#A9A3C7",
+                    color: "#FFD77A",
                   }}
                 >
                   {s.category}
@@ -356,7 +357,7 @@ export default function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                     fontWeight: 600,
                     color: "#FFFFFF",
                     textDecoration: "none",
-                    "&:hover": { color: "#CC35CC" },
+                    "&:hover": { color: "#FFD866" },
                   }}
                 >
                   View Details ↗

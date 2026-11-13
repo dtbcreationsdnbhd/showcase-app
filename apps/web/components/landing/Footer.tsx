@@ -3,6 +3,7 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { useEffect, useRef } from "react";
+import { GOLD_TEXT } from "@/lib/gold-theme";
 import { COPYRIGHT_TEXT } from "@/lib/landing-content";
 import { FOOTER_HEIGHT, figmaPx } from "@/lib/landing-layout";
 
@@ -158,7 +159,7 @@ export default function Footer() {
         boxSizing: "border-box",
         width: "100%",
         height: FOOTER_HEIGHT,
-        bgcolor: "#120D27",
+        bgcolor: "#3A0E24",
         overflow: "hidden",
       }}
     >
@@ -193,7 +194,7 @@ export default function Footer() {
               component="span"
               className="footer-apex-glyph"
               sx={{
-                backgroundImage: "linear-gradient(90deg, #CC35CC 0%, #563DFE 100%)",
+                backgroundImage: GOLD_TEXT,
                 backgroundClip: "text",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",

@@ -115,7 +115,7 @@ function ImagePlaceholder({
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        bgcolor: filled ? "#050B13" : "transparent",
+        bgcolor: filled ? "#22060F" : "transparent",
         border: "1px solid rgba(255, 255, 255, 0.05)",
         borderRadius: `${figmaPx(12)}px`,
         flexShrink: 0,
@@ -218,7 +218,7 @@ export default function ProjectDetailPopup({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        bgcolor: "rgba(5, 11, 19, 0.45)",
+        bgcolor: "rgba(34, 6, 15, 0.45)",
         backdropFilter: "blur(28px)",
         WebkitBackdropFilter: "blur(28px)",
       }}
@@ -254,7 +254,7 @@ export default function ProjectDetailPopup({
             alignItems: "center",
             zIndex: 1,
             "&:focus-visible": {
-              outline: "2px solid #CC35CC",
+              outline: "2px solid #FF2D78",
               outlineOffset: 3,
               borderRadius: `${figmaPx(8)}px`,
             },
@@ -407,7 +407,7 @@ export default function ProjectDetailPopup({
                   fontSize: figmaPx(28),
                   lineHeight: `${figmaPx(40)}px`,
                   backgroundImage:
-                    "linear-gradient(96.02deg, #FA9DFF 2.09%, #977EFF 97.91%)",
+                    "linear-gradient(96.02deg, #FF8FB1 2.09%, #FFB45C 97.91%)",
                   backgroundClip: "text",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",

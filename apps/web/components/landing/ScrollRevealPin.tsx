@@ -28,7 +28,7 @@ export default function ScrollRevealPin({
   holdPages,
   anchorId,
   zIndex = 20,
-  background = "#050B13",
+  background = "transparent",
   children,
 }: {
   holdPages: number;

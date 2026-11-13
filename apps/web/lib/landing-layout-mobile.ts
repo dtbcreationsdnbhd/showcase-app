@@ -31,18 +31,15 @@ export function mobileAnchorId(name: string): string {
 export const MOBILE_NAV_HEIGHT = 100;
 /** Hero fills one frame; the photo is a portrait crop, not the desktop 1440x900. */
 export const MOBILE_HERO_HEIGHT = MOBILE_DESIGN_HEIGHT;
-/** Fade from the hero photo into the section below it. */
-export const MOBILE_HERO_BOTTOM_FADE = 120;
-
-/** Shared dark field behind every section below the hero. */
-export const MOBILE_SECTION_BG = "#050B13";
+/** Sections sit on the shared fixed site backdrop (see `body::before`). */
+export const MOBILE_SECTION_BG = "transparent";
+/** Popups cover the page, so they need a solid field. */
+export const MOBILE_POPUP_BG = "#22060F";
 /** Barely-there watermark: the Figma export reads near-black on the dark field. */
-export const MOBILE_SOLUTIONS_TITLE_COLOR = "#16202D";
-
 /** Every stacked section keeps its copy inside this column. */
 export const MOBILE_GUTTER = 33;
 export const MOBILE_CONTENT_WIDTH = MOBILE_DESIGN_WIDTH - MOBILE_GUTTER * 2;
-export const MOBILE_SERVICE_TITLE_COLOR = "#C3A4FF";
+export const MOBILE_SERVICE_TITLE_COLOR = "#FFC46B";
 export const MOBILE_DIVIDER_COLOR = "rgba(255, 255, 255, 0.12)";
 export const MOBILE_ACCENT_GRADIENT =
-  "linear-gradient(90deg, #CC35CC 0%, #563DFE 100%)";
+  "linear-gradient(180deg, #FFF8E1 0%, #FFE08A 40%, #F8B33A 72%, #E8891C 100%)";

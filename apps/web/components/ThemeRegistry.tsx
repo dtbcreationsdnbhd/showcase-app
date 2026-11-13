@@ -10,12 +10,12 @@ const theme = createTheme({
   palette: {
     mode: "dark",
     primary: {
-      main: "#A855F7",
+      main: "#FF4D5E",
       contrastText: "#FFFFFF",
     },
     background: {
-      default: "#07071A",
-      paper: "#0D0D28",
+      default: "#2A0818",
+      paper: "#321024",
     },
     text: {
       primary: "#FFFFFF",
@@ -56,10 +56,10 @@ const theme = createTheme({
         {
           props: { variant: "contained", color: "primary" },
           style: {
-            backgroundColor: "#A855F7",
+            backgroundColor: "#FF4D5E",
             color: "#FFFFFF",
             "&:hover": {
-              backgroundColor: "#A855F7",
+              backgroundColor: "#FF4D5E",
             },
           },
         },
@@ -68,7 +68,7 @@ const theme = createTheme({
     MuiCssBaseline: {
       styleOverrides: {
         body: {
-          backgroundColor: "#07071A",
+          backgroundColor: "transparent",
           color: "#FFFFFF",
         },
       },

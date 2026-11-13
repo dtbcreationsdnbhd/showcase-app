@@ -7,9 +7,9 @@ import {
 } from "@/lib/landing-content";
 import {
   MOBILE_SECTION_BG,
-  MOBILE_SOLUTIONS_TITLE_COLOR,
   mobileAnchorId,
 } from "@/lib/landing-layout-mobile";
+import { goldTextSx } from "@/lib/gold-theme";
 import MobileTitleReveal from "./MobileTitleReveal";
 
 const barlow = {
@@ -44,13 +44,13 @@ export default function MobileTargetedSolutions() {
           <Typography
             key={word}
             component="span"
+            className="solutions-title-flow"
             sx={{
               ...barlow,
               fontWeight: 700,
               fontSize: 80,
               lineHeight: "86px",
               textTransform: "uppercase",
-              color: MOBILE_SOLUTIONS_TITLE_COLOR,
               whiteSpace: "nowrap",
             }}
           >
@@ -68,11 +68,7 @@ export default function MobileTargetedSolutions() {
           lineHeight: "48px",
           letterSpacing: "-0.02em",
           textAlign: "center",
-          backgroundImage: "linear-gradient(90deg, #CC35CC 0%, #563DFE 100%)",
-          backgroundClip: "text",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          color: "transparent",
+          ...goldTextSx,
           whiteSpace: "nowrap",
         }}
       >

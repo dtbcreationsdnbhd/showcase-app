@@ -167,7 +167,7 @@ export default function MobileFooter() {
         boxSizing: "border-box",
         width: "100%",
         height: FOOTER_H,
-        bgcolor: "#120D27",
+        bgcolor: "#3A0E24",
         overflow: "hidden",
       }}
     >

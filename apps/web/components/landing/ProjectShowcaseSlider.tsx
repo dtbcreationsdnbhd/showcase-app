@@ -10,6 +10,12 @@ import {
   SHOWCASE_COLUMNS,
   figmaPx,
 } from "@/lib/landing-layout";
+import {
+  GOLD_BUTTON_SHADOW_SM,
+  GOLD_FILL,
+  GOLD_INK,
+  goldTextSx,
+} from "@/lib/gold-theme";
 import { projectTagLine, type ShowcaseProject } from "@/lib/projects";
 
 const barlow = {
@@ -22,8 +28,11 @@ const CARD_H = figmaPx(414.75);
 const CARD_GAP = figmaPx(24);
 const STEP = CARD_W + CARD_GAP;
 const ROW_W = CARD_W * SHOWCASE_COLUMNS + CARD_GAP * (SHOWCASE_COLUMNS - 1);
-// Room for the card hover scale; half the gap so neighbours stay hidden.
-const CLIP_PAD = CARD_GAP / 2;
+// Room for the card glow. Sideways it stops at the neighbouring card and is
+// feathered out so the clip edge never shows as a line.
+const CLIP_PAD_X = CARD_GAP;
+const CLIP_PAD_Y = 64;
+const CLIP_MASK = `linear-gradient(90deg, transparent 0, #000 ${CLIP_PAD_X}px, #000 calc(100% - ${CLIP_PAD_X}px), transparent 100%)`;
 const ARROW_GAP = figmaPx(56);
 const SLIDE_MS = 600;
 
@@ -59,12 +68,14 @@ function ArrowButton({
         p: 0,
         m: 0,
         border: 0,
-        bgcolor: "transparent",
+        borderRadius: "50%",
+        background: GOLD_FILL,
+        boxShadow: GOLD_BUTTON_SHADOW_SM,
         appearance: "none",
         cursor: "pointer",
         flexShrink: 0,
         "&:focus-visible": {
-          outline: "2px solid #CC35CC",
+          outline: "2px solid #FFD866",
           outlineOffset: 4,
           borderRadius: "50%",
         },
@@ -75,17 +86,16 @@ function ArrowButton({
         viewBox="0 0 24 24"
         aria-hidden
         sx={{
-          width: figmaPx(34),
-          height: figmaPx(34),
+          width: figmaPx(24),
+          height: figmaPx(24),
           display: "block",
           transform: direction === "prev" ? "rotate(180deg)" : "none",
-          filter: "drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5))",
         }}
       >
         <path
           d="M9 4.5 16.5 12 9 19.5"
           fill="none"
-          stroke="#FFFFFF"
+          stroke={GOLD_INK}
           strokeWidth="2.4"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -188,11 +198,7 @@ export default function ProjectShowcaseSlider({
             fontSize: figmaPx(48),
             lineHeight: `${figmaPx(64)}px`,
             letterSpacing: "-0.02em",
-            backgroundImage: "linear-gradient(90deg, #CC35CC 0%, #563DFE 100%)",
-            backgroundClip: "text",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            color: "transparent",
+            ...goldTextSx,
             whiteSpace: "nowrap",
           }}
         >
@@ -226,9 +232,13 @@ export default function ProjectShowcaseSlider({
             boxSizing: "content-box",
             width: ROW_W,
             height: CARD_H,
-            p: `${CLIP_PAD}px`,
-            m: `${-CLIP_PAD}px`,
+            px: `${CLIP_PAD_X}px`,
+            py: `${CLIP_PAD_Y}px`,
+            mx: `${-CLIP_PAD_X}px`,
+            my: `${-CLIP_PAD_Y}px`,
             overflow: "hidden",
+            maskImage: CLIP_MASK,
+            WebkitMaskImage: CLIP_MASK,
           }}
         >
           <Box

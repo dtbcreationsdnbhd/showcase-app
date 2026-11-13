@@ -121,10 +121,10 @@ export default function MobileNavbar({
             <Image
               src={logoSrc}
               alt="VisionCraft"
-              width={689}
-              height={116}
+              width={415}
+              height={225}
               priority
-              style={{ height: 40, width: "auto" }}
+              style={{ height: 72, width: "auto" }}
             />
           ) : (
             <Typography
@@ -156,9 +156,10 @@ export default function MobileNavbar({
             width: 44,
             height: 44,
             p: 0,
-            border: "none",
+            border: "1px solid rgba(255, 214, 128, 0.7)",
             borderRadius: "12px",
-            background: "rgba(255, 255, 255, 0.1)",
+            background: "rgba(255, 255, 255, 0.12)",
+            boxShadow: "0 0 14px rgba(255, 184, 72, 0.3)",
             backdropFilter: "blur(12px)",
             WebkitBackdropFilter: "blur(12px)",
             cursor: "pointer",

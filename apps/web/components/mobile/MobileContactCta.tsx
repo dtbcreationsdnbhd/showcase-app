@@ -5,8 +5,8 @@ import {
   CTA_BUTTON_LABEL,
   CTA_TITLE_LINES,
 } from "@/lib/landing-content";
+import { goldTextSx } from "@/lib/gold-theme";
 import {
-  MOBILE_ACCENT_GRADIENT,
   MOBILE_CONTENT_WIDTH,
   MOBILE_SECTION_BG,
   mobileAnchorId,
@@ -51,11 +51,7 @@ export default function MobileContactCta() {
           lineHeight: "39px",
           letterSpacing: "-0.02em",
           textAlign: "center",
-          backgroundImage: MOBILE_ACCENT_GRADIENT,
-          backgroundClip: "text",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          color: "transparent",
+          ...goldTextSx,
         }}
       >
         {CTA_TITLE_LINES.map((line) => (

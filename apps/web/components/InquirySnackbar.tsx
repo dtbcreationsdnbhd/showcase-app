@@ -41,14 +41,14 @@ export default function InquirySnackbar({
         maxWidth: "calc(100vw - 32px)",
         padding: "8px 16px",
         borderRadius: 10,
-        background: "#120D27",
-        color: error ? "#FF8A8A" : "#C3A4FF",
+        background: "#3A0E24",
+        color: error ? "#FF8A8A" : "#FFC46B",
         border: error
           ? "1px solid rgba(255, 138, 138, 0.35)"
-          : "1px solid rgba(195, 164, 255, 0.35)",
+          : "1px solid rgba(255, 196, 107, 0.35)",
         boxShadow: error
           ? "0px 4px 20px rgba(255, 138, 138, 0.25)"
-          : "0px 4px 20px rgba(236, 115, 255, 0.35)",
+          : "0px 4px 20px rgba(255, 90, 60, 0.35)",
         fontFamily:
           'var(--font-barlow-semi-condensed), "Barlow Semi Condensed", sans-serif',
         fontWeight: 500,

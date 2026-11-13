@@ -4,7 +4,6 @@ import { SERVICE_ROWS, type ServiceCopy } from "@/lib/landing-content";
 import {
   MOBILE_CONTENT_WIDTH,
   MOBILE_GUTTER,
-  MOBILE_SECTION_BG,
   MOBILE_SERVICE_TITLE_COLOR,
   MOBILE_VIEWPORT_HEIGHT_CSS,
 } from "@/lib/landing-layout-mobile";
@@ -76,6 +75,7 @@ export default function MobileServicePages({ rows }: { rows: ServiceRow[] }) {
             }}
           >
             <Box
+              className="site-bg-surface"
               sx={{
                 position: "relative",
                 width: "100%",
@@ -83,7 +83,6 @@ export default function MobileServicePages({ rows }: { rows: ServiceRow[] }) {
                 boxSizing: "border-box",
                 px: `${MOBILE_GUTTER}px`,
                 py: "52px",
-                bgcolor: MOBILE_SECTION_BG,
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",

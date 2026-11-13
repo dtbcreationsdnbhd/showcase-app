@@ -19,9 +19,16 @@ import {
 import InquirySnackbar, {
   type InquiryNotice,
 } from "@/components/InquirySnackbar";
+import {
+  GOLD_BUTTON_SHADOW_SM,
+  GOLD_FILL,
+  GOLD_INK,
+  GOLD_RIM,
+  glassPanelSx,
+  goldButtonSx,
+} from "@/lib/gold-theme";
 import { submitInquiry } from "@/lib/inquiries";
 import {
-  MOBILE_ACCENT_GRADIENT,
   MOBILE_CONTENT_WIDTH,
   MOBILE_SECTION_BG,
   mobileAnchorId,
@@ -87,13 +94,21 @@ function Chip({
         pr: "24px",
         border: 0,
         borderRadius: "11px",
-        background: selected
-          ? MOBILE_ACCENT_GRADIENT
-          : "rgba(255, 255, 255, 0.1)",
-        fontWeight: 500,
         fontSize: 15,
         letterSpacing: "0.02em",
-        color: "#FFFFFF",
+        ...(selected
+          ? {
+              background: GOLD_FILL,
+              boxShadow: GOLD_BUTTON_SHADOW_SM,
+              color: GOLD_INK,
+              fontWeight: 600,
+            }
+          : {
+              background: "rgba(255, 255, 255, 0.1)",
+              boxShadow: `inset 0 0 0 1px ${GOLD_RIM}`,
+              color: "#FFFFFF",
+              fontWeight: 500,
+            }),
         textAlign: "left",
         whiteSpace: "nowrap",
         appearance: "none",
@@ -159,7 +174,8 @@ function Field({
         pb: "10px",
         width: "100%",
         height: FIELD_H,
-        background: "rgba(255, 255, 255, 0.05)",
+        background: "rgba(255, 255, 255, 0.08)",
+        boxShadow: "inset 0 0 0 1px rgba(255, 214, 128, 0.22)",
         borderRadius: "10px",
       }}
     >
@@ -190,7 +206,7 @@ function Field({
               fontSize: 17,
               lineHeight: "normal",
               letterSpacing: "0.02em",
-              color: "#9747FF",
+              color: "#FF4D6D",
             }}
           >
             *
@@ -293,11 +309,8 @@ export default function MobileContactForm() {
           width: MOBILE_CONTENT_WIDTH,
           px: `${CARD_PAD_X}px`,
           py: `${CARD_PAD_Y}px`,
-          background: "rgba(18, 13, 39, 0.5)",
-          border: "1px solid rgba(195, 164, 255, 0.05)",
+          ...glassPanelSx,
           borderRadius: "28px",
-          backdropFilter: "blur(21px)",
-          WebkitBackdropFilter: "blur(21px)",
         }}
       >
         {/* Services — the only block the design centres. */}
@@ -373,7 +386,7 @@ export default function MobileContactForm() {
             fontSize: 32,
             lineHeight: "normal",
             letterSpacing: "-0.02em",
-            color: "#C3A4FF",
+            color: "#FFC46B",
           }}
         >
           {FORM_REACH_TITLE}
@@ -422,12 +435,10 @@ export default function MobileContactForm() {
             width: "100%",
             height: 55,
             border: 0,
-            background: MOBILE_ACCENT_GRADIENT,
-            boxShadow: "0px 4px 20px rgba(236, 115, 255, 0.5)",
+            ...goldButtonSx,
             borderRadius: "9999px",
-            fontWeight: 600,
+            fontWeight: 700,
             fontSize: 16.5,
-            color: "#FFFFFF",
             cursor: submitting ? "default" : "pointer",
             opacity: submitting ? 0.7 : 1,
             appearance: "none",

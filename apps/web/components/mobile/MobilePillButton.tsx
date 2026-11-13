@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import type { ReactNode } from "react";
-import { MOBILE_ACCENT_GRADIENT } from "@/lib/landing-layout-mobile";
+import { GOLD_INK, goldButtonSx } from "@/lib/gold-theme";
 
 const PILL_H = 55;
 const DISC = 42;
@@ -31,8 +31,7 @@ export default function MobilePillButton({
         height: PILL_H,
         pl: "22px",
         pr: "6px",
-        background: MOBILE_ACCENT_GRADIENT,
-        boxShadow: "0px 4px 20px rgba(236, 115, 255, 0.5)",
+        ...goldButtonSx,
         borderRadius: "9999px",
         textDecoration: "none",
         flexShrink: 0,
@@ -46,7 +45,7 @@ export default function MobilePillButton({
           fontWeight: 600,
           fontSize: 18,
           lineHeight: "22px",
-          color: "#FFFFFF",
+          color: GOLD_INK,
           whiteSpace: "nowrap",
         }}
       >
@@ -62,7 +61,7 @@ export default function MobilePillButton({
           width: DISC,
           height: DISC,
           flexShrink: 0,
-          background: "rgba(255, 255, 255, 0.4)",
+          background: GOLD_INK,
           borderRadius: "50%",
         }}
       >
@@ -79,7 +78,7 @@ export default function MobilePillButton({
           <path
             d="M1.8 10.2 10.2 1.8M5.4 1.8h4.8v4.8"
             fill="none"
-            stroke="#FFFFFF"
+            stroke="#FFD866"
             strokeWidth="1.8"
             strokeLinecap="round"
             strokeLinejoin="round"

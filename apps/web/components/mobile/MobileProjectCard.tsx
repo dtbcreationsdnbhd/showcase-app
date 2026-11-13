@@ -47,7 +47,7 @@ export default function MobileProjectCard({
         backdropFilter: "blur(22px) saturate(1.35)",
         WebkitBackdropFilter: "blur(22px) saturate(1.35)",
         boxShadow:
-          "inset 0 1px 0 rgba(255, 255, 255, 0.72), inset 0 -16px 28px rgba(8, 12, 18, 0.18)",
+          "inset 0 -16px 28px rgba(8, 12, 18, 0.18), inset 0 0 0 1px rgba(255, 215, 122, 0.6), inset 0 0 14px rgba(255, 200, 100, 0.3)",
         scrollSnapAlign: "center",
       }}
     >

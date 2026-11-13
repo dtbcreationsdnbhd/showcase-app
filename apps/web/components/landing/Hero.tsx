@@ -3,7 +3,7 @@ import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import HeroCarousel, { type HeroSlide } from "@/components/landing/HeroCarousel";
 import PillButton from "@/components/landing/PillButton";
-import { HERO_BOTTOM_FADE } from "@/lib/landing-layout";
+import { goldTextSx } from "@/lib/gold-theme";
 
 const barlow = {
   fontFamily:
@@ -13,6 +13,9 @@ const barlow = {
 const jakarta = {
   fontFamily: 'var(--font-plus-jakarta), "Plus Jakarta Sans", sans-serif',
 } as const;
+
+const HERO_FADE_MASK =
+  "linear-gradient(180deg, #000 0%, #000 50%, rgba(0, 0, 0, 0.55) 76%, transparent 100%)";
 
 export default function Hero({
   heroSrc,
@@ -29,60 +32,38 @@ export default function Hero({
         position: "relative",
         width: "100%",
         overflow: "hidden",
-        bgcolor: "#050B13",
       }}
     >
-      {heroSrc ? (
-        <Image
-          src={heroSrc}
-          alt=""
-          width={1440}
-          height={900}
-          priority
-          draggable={false}
-          sizes="100vw"
-          style={{
-            width: "100%",
-            height: "auto",
-            aspectRatio: "1440 / 900",
-            objectFit: "cover",
-            display: "block",
-            userSelect: "none",
-          }}
-        />
-      ) : (
+      <Box
+        aria-hidden
+        sx={{
+          position: "relative",
+          width: "100%",
+          aspectRatio: "1440 / 900",
+          maskImage: HERO_FADE_MASK,
+          WebkitMaskImage: HERO_FADE_MASK,
+        }}
+      >
+        {heroSrc ? (
+          <Image
+            src={heroSrc}
+            alt=""
+            fill
+            priority
+            draggable={false}
+            sizes="100vw"
+            style={{ objectFit: "cover", userSelect: "none" }}
+          />
+        ) : null}
         <Box
           sx={{
-            width: "100%",
-            aspectRatio: "1440 / 900",
-            bgcolor: "#07071A",
+            position: "absolute",
+            inset: 0,
+            background:
+              "linear-gradient(59.86deg, rgba(48, 4, 22, 0.6) 0%, rgba(48, 4, 22, 0) 55.05%)",
           }}
         />
-      )}
-
-      <Box
-        aria-hidden
-        sx={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "linear-gradient(59.86deg, #000000 0%, rgba(0, 0, 0, 0) 55.05%)",
-          pointerEvents: "none",
-        }}
-      />
-
-      <Box
-        aria-hidden
-        sx={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          bottom: 0,
-          height: HERO_BOTTOM_FADE,
-          background: "linear-gradient(180deg, rgba(5, 11, 19, 0) 0%, #050B13 100%)",
-          pointerEvents: "none",
-        }}
-      />
+      </Box>
 
       <Box
         sx={{
@@ -169,11 +150,7 @@ export default function Hero({
                   <Box
                     component="span"
                     sx={{
-                      backgroundImage:
-                        "linear-gradient(90deg, #CC35CC 0%, #563DFE 100%)",
-                      backgroundClip: "text",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
+                      ...goldTextSx,
                     }}
                   >
                     {accent}
@@ -193,7 +170,7 @@ export default function Hero({
                 fontSize: 24,
                 lineHeight: "160%",
                 letterSpacing: "0.02em",
-                color: "#A3AAB8",
+                color: "#C4AAB2",
               }}
             >
               Empower your business with next-gen AI-powered tools, video

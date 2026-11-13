@@ -1,5 +1,6 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import { goldTextSx } from "@/lib/gold-theme";
 import { getLandingProcessStepSrc } from "@/lib/landing-assets";
 import {
   PROCESS_INTRO_TEXT,
@@ -52,12 +53,7 @@ export default function MobileHowWeWork() {
             fontSize: 36,
             lineHeight: "44px",
             letterSpacing: "-0.02em",
-            backgroundImage:
-              "linear-gradient(90deg, #CC35CC 0%, #563DFE 100%)",
-            backgroundClip: "text",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            color: "transparent",
+            ...goldTextSx,
           }}
         >
           {PROCESS_TITLE_SHORT}

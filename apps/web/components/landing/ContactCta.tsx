@@ -7,6 +7,7 @@ import {
 } from "@/lib/landing-content";
 import { TITLE_HOLD_PAGES, figmaPx } from "@/lib/landing-layout";
 import ScrollRevealPin from "@/components/landing/ScrollRevealPin";
+import { GOLD_INK, goldButtonSx, goldTextSx } from "@/lib/gold-theme";
 
 const barlow = {
   fontFamily:
@@ -25,12 +26,10 @@ function ContactPillButton() {
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
-        width: figmaPx(164.25),
-        height: figmaPx(39),
-        pl: `${figmaPx(20)}px`,
+        height: figmaPx(52),
+        pl: `${figmaPx(26)}px`,
         pr: `${figmaPx(6)}px`,
-        background: "linear-gradient(90deg, #CC35CC 0%, #563DFE 100%)",
-        boxShadow: "0px 4px 20px rgba(236, 115, 255, 0.5)",
+        ...goldButtonSx,
         borderRadius: "9999px",
         textDecoration: "none",
         cursor: "pointer",
@@ -42,8 +41,8 @@ function ContactPillButton() {
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
-          gap: `${figmaPx(8)}px`,
-          height: figmaPx(39),
+          gap: `${figmaPx(14)}px`,
+          height: figmaPx(52),
           flexShrink: 0,
         }}
       >
@@ -53,9 +52,9 @@ function ContactPillButton() {
             ...barlow,
             fontStyle: "normal",
             fontWeight: 600,
-            fontSize: figmaPx(13.5),
+            fontSize: figmaPx(17),
             lineHeight: `${figmaPx(22)}px`,
-            color: "#FFFFFF",
+            color: GOLD_INK,
             whiteSpace: "nowrap",
             flexShrink: 0,
             display: "inline-block",
@@ -70,10 +69,10 @@ function ContactPillButton() {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            width: figmaPx(30),
-            height: figmaPx(30),
+            width: figmaPx(40),
+            height: figmaPx(40),
             boxSizing: "border-box",
-            background: "rgba(255, 255, 255, 0.4)",
+            background: GOLD_INK,
             borderRadius: "99px",
             flexShrink: 0,
           }}
@@ -82,8 +81,8 @@ function ContactPillButton() {
             component="svg"
             viewBox="0 0 16 16"
             sx={{
-              width: figmaPx(16),
-              height: figmaPx(16),
+              width: figmaPx(18),
+              height: figmaPx(18),
               display: "block",
             }}
           >
@@ -91,7 +90,7 @@ function ContactPillButton() {
               <path
                 d="M2 8h10.5M9.2 3.8 13.8 8 9.2 12.2"
                 fill="none"
-                stroke="#FFFFFF"
+                stroke="#FFD866"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -111,7 +110,7 @@ export default function ContactCta() {
       sx={{
         boxSizing: "border-box",
         width: "100%",
-        bgcolor: "#050B13",
+        bgcolor: "transparent",
         position: "relative",
       }}
     >
@@ -123,7 +122,7 @@ export default function ContactCta() {
             justifyContent: "center",
             alignItems: "center",
             p: 0,
-            gap: `${figmaPx(10)}px`,
+            gap: `${figmaPx(30)}px`,
             width: "100%",
           }}
         >
@@ -134,9 +133,8 @@ export default function ContactCta() {
               justifyContent: "center",
               alignItems: "center",
               p: 0,
-              gap: `${figmaPx(10)}px`,
+              gap: `${figmaPx(18)}px`,
               width: "100%",
-              height: figmaPx(144),
               flexShrink: 0,
             }}
           >
@@ -145,19 +143,14 @@ export default function ContactCta() {
               sx={{
                 ...barlow,
                 width: "100%",
-                height: figmaPx(58),
                 m: 0,
                 fontStyle: "normal",
                 fontWeight: 600,
-                fontSize: figmaPx(28.5),
-                lineHeight: `${figmaPx(58)}px`,
+                fontSize: figmaPx(48),
+                lineHeight: `${figmaPx(64)}px`,
                 textAlign: "center",
                 letterSpacing: "-0.02em",
-                backgroundImage: "linear-gradient(90deg, #CC35CC 0%, #563DFE 100%)",
-                backgroundClip: "text",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                color: "transparent",
+                ...goldTextSx,
                 whiteSpace: "nowrap",
               }}
             >
@@ -173,18 +166,16 @@ export default function ContactCta() {
                 p: 0,
                 gap: `${figmaPx(10)}px`,
                 width: figmaPx(1152),
-                height: figmaPx(62),
               }}
             >
               <Typography
                 sx={{
                   ...barlow,
                   width: figmaPx(1152),
-                  height: figmaPx(62),
                   m: 0,
                   fontStyle: "normal",
                   fontWeight: 500,
-                  fontSize: figmaPx(16.5),
+                  fontSize: figmaPx(20),
                   lineHeight: "140%",
                   textAlign: "center",
                   color: "#FFFFFF",

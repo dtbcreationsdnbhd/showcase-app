@@ -34,7 +34,7 @@ export default function ProjectsPage() {
 //             projects.length === 0
 //               ? "100vh"
 //               : `max(100vh, calc(100vw * ${PROJECTS_PAGE_NAV_HEIGHT + showcaseSectionHeight(projects.length)} / ${LANDING_DESIGN_WIDTH}))`,
-//           backgroundColor: "#050B13",
+//           backgroundColor: "#22060F",
 //         }}
 //         sx={{
 //           [MOBILE_ONLY]: { display: "none" },
@@ -72,7 +72,7 @@ export default function ProjectsPage() {
 //           <Box
 //             sx={{
 //               pt: `${PROJECTS_PAGE_NAV_HEIGHT}px`,
-//               bgcolor: "#050B13",
+//               bgcolor: "#22060F",
 //             }}
 //           >
 //             <ProjectShowcase

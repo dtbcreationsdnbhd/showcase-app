@@ -10,7 +10,7 @@ const NEXT = figmaPx(64);
 const NEXT_FONT = figmaPx(16);
 /** Lower = more lag. Position chase. */
 const FOLLOW = 3.5;
-/** How fast the purple dot grows into the View Project circle. */
+/** How fast the accent dot grows into the View Project circle. */
 const MORPH = 1.7;
 
 export default function SiteCursor() {
@@ -45,9 +45,9 @@ export default function SiteCursor() {
       const grown = activeLabel === "Next" ? NEXT : VIEW;
       const font = activeLabel === "Next" ? NEXT_FONT : VIEW_FONT;
       const size = DOT + (grown - DOT) * blend;
-      const r = Math.round(204 + (255 - 204) * blend);
-      const g = Math.round(53 + (255 - 53) * blend);
-      const b = Math.round(204 + (255 - 204) * blend);
+      const r = 255;
+      const g = Math.round(205 + (244 - 205) * blend);
+      const b = Math.round(90 + (214 - 90) * blend);
       dot.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
       dot.style.setProperty("--cursor-size", String(size));
       dot.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
