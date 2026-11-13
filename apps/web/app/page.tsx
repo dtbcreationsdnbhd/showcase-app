@@ -11,7 +11,6 @@ import TargetedSolutions from "@/components/landing/TargetedSolutions";
 import MobileLanding from "@/components/mobile/MobileLanding";
 import {
   getLandingContactWaveSrc,
-  getLandingHeroMobileSrc,
   getLandingHeroSlideSrc,
   getLandingHeroSrc,
   getLandingLogoSrc,
@@ -27,7 +26,6 @@ export default async function Home() {
   const projects = await listProjects();
   const logoSrc = getLandingLogoSrc();
   const heroSrc = getLandingHeroSrc();
-  const heroMobileSrc = getLandingHeroMobileSrc();
   const contactWaveSrc = getLandingContactWaveSrc();
   const heroSlides = [
     {
@@ -107,9 +105,10 @@ export default async function Home() {
 
       <Box sx={{ [DESKTOP_ONLY]: { display: "none" } }}>
         <MobileLanding
-          heroSrc={heroMobileSrc}
+          heroSrc={heroSrc}
           projects={projects}
           logoSrc={logoSrc}
+          heroSlides={heroSlides}
         />
       </Box>
     </Box>

@@ -1,11 +1,11 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { goldTextSx } from "@/lib/gold-theme";
-import { getLandingProcessStepSrc } from "@/lib/landing-assets";
+import { getLandingWhyUsSrc } from "@/lib/landing-assets";
 import {
-  PROCESS_INTRO_TEXT,
-  PROCESS_STEPS,
-  PROCESS_TITLE_SHORT,
+  WHY_US_INTRO_SENTENCES,
+  WHY_US_ITEMS,
+  WHY_US_TITLE,
 } from "@/lib/landing-content";
 import {
   MOBILE_GUTTER,
@@ -33,44 +33,44 @@ export default function MobileHowWeWork() {
   return (
     <Box
       component="section"
-      id={mobileAnchorId("how-we-work")}
+      id={mobileAnchorId("why-us")}
       sx={{ width: "100%", bgcolor: MOBILE_SECTION_BG }}
     >
       <MobileTitleReveal>
-      <Box
-        sx={{
-          px: `${MOBILE_GUTTER}px`,
-          py: "60px",
-          boxSizing: "border-box",
-        }}
-      >
-        <Typography
-          component="h2"
+        <Box
           sx={{
-            ...barlow,
-            m: 0,
-            fontWeight: 600,
-            fontSize: 36,
-            lineHeight: "44px",
-            letterSpacing: "-0.02em",
-            ...goldTextSx,
+            px: `${MOBILE_GUTTER}px`,
+            py: "60px",
+            boxSizing: "border-box",
           }}
         >
-          {PROCESS_TITLE_SHORT}
-        </Typography>
+          <Typography
+            component="h2"
+            sx={{
+              ...barlow,
+              m: 0,
+              fontWeight: 600,
+              fontSize: 36,
+              lineHeight: "44px",
+              letterSpacing: "-0.02em",
+              ...goldTextSx,
+            }}
+          >
+            {WHY_US_TITLE}
+          </Typography>
 
-        <Typography sx={{ ...body, mt: "15px" }}>
-          {PROCESS_INTRO_TEXT}
-        </Typography>
-      </Box>
+          <Typography sx={{ ...body, mt: "15px" }}>
+            {WHY_US_INTRO_SENTENCES[0]} {WHY_US_INTRO_SENTENCES[1]}
+          </Typography>
+        </Box>
       </MobileTitleReveal>
 
       <MobileProcessSteps
-        steps={PROCESS_STEPS.map((step) => ({
-          n: step.n,
-          title: step.title,
-          description: step.description,
-          src: getLandingProcessStepSrc(step.image),
+        steps={WHY_US_ITEMS.map((item) => ({
+          n: item.n,
+          title: item.title,
+          description: item.description,
+          src: getLandingWhyUsSrc(item.image),
         }))}
       />
     </Box>

@@ -1,20 +1,28 @@
 import Box from "@mui/material/Box";
-import { MOBILE_GUTTER } from "@/lib/landing-layout-mobile";
 
-const SEAM = "rgba(255, 255, 255, 0.72)";
+const FADE_H = 56;
 
+/**
+ * Soft edge for sticky mobile stacks. A hard 1px seam reads as a cut across
+ * the shared site backdrop; a short gradient lets the next page fade in.
+ */
 export function MobileSeamLine({ edge }: { edge: "top" | "bottom" }) {
+  const fromTop = edge === "top";
   return (
     <Box
       aria-hidden
       sx={{
         position: "absolute",
-        top: edge === "top" ? 0 : "auto",
-        bottom: edge === "bottom" ? 0 : "auto",
-        left: `${MOBILE_GUTTER}px`,
-        right: `${MOBILE_GUTTER}px`,
-        height: "1px",
-        bgcolor: SEAM,
+        top: fromTop ? 0 : "auto",
+        bottom: fromTop ? "auto" : 0,
+        left: 0,
+        right: 0,
+        height: FADE_H,
+        pointerEvents: "none",
+        background: fromTop
+          ? "linear-gradient(180deg, rgba(48, 4, 22, 0) 0%, rgba(48, 4, 22, 0.35) 45%, rgba(48, 4, 22, 0) 100%)"
+          : "linear-gradient(0deg, rgba(48, 4, 22, 0) 0%, rgba(48, 4, 22, 0.35) 45%, rgba(48, 4, 22, 0) 100%)",
+        zIndex: 2,
       }}
     />
   );

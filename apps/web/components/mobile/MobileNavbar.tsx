@@ -99,16 +99,10 @@ export default function MobileNavbar({
             top: 0,
             left: 0,
             right: 0,
-            height: 180,
+            height: 140,
             pointerEvents: "none",
             background:
-              "linear-gradient(180deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 100%)",
-            backdropFilter: "blur(24px)",
-            WebkitBackdropFilter: "blur(24px)",
-            maskImage:
-              "linear-gradient(180deg, #000 0%, #000 35%, transparent 100%)",
-            WebkitMaskImage:
-              "linear-gradient(180deg, #000 0%, #000 35%, transparent 100%)",
+              "linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 100%)",
           }}
         />
         <Box
@@ -124,7 +118,7 @@ export default function MobileNavbar({
               width={415}
               height={225}
               priority
-              style={{ height: 72, width: "auto" }}
+              style={{ height: 48, width: "auto" }}
             />
           ) : (
             <Typography

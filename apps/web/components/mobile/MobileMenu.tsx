@@ -191,7 +191,7 @@ export default function MobileMenu({
               alt="VisionCraft"
               width={415}
               height={225}
-              style={{ height: 96, width: "auto" }}
+              style={{ height: 56, width: "auto" }}
             />
           ) : (
             <Typography
@@ -199,8 +199,8 @@ export default function MobileMenu({
               sx={{
                 ...barlow,
                 fontWeight: 700,
-                fontSize: 24,
-                lineHeight: "29px",
+                fontSize: 18,
+                lineHeight: "22px",
                 letterSpacing: "0.02em",
                 color: "#FFFFFF",
               }}
@@ -211,7 +211,7 @@ export default function MobileMenu({
 
           <Box
             sx={{
-              mt: "98px",
+              mt: "72px",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",

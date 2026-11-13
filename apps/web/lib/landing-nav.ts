@@ -1,9 +1,9 @@
-/** Mobile menu links. */
+/** Mobile menu links — SERVICES/PROJECTS jumps to the project showcase. */
 export const NAV_LINKS = [
   { label: "HOME", hash: "#top", center: false },
-  { label: "SERVICES", hash: "#services", center: true },
-  { label: "HOW WE WORK", hash: "#how-we-work", center: true },
-  { label: "PROJECTS", hash: "#projects", center: true },
+  { label: "SERVICES/PROJECTS", hash: "#projects", center: true },
+  { label: "WHY US", hash: "#why-us", center: true },
+  { label: "FAQ", hash: "#faq", center: true },
 ] as const;
 
 /** Desktop navbar links: projects live in the SERVICES dropdown instead. */
