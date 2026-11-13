@@ -4,7 +4,6 @@ import Image from "next/image";
 import {
   MOBILE_DESIGN_WIDTH,
   MOBILE_GUTTER,
-  MOBILE_SECTION_BG,
   MOBILE_VIEWPORT_HEIGHT_CSS,
 } from "@/lib/landing-layout-mobile";
 import { MobileSeamLine } from "./mobile-stack";
@@ -56,13 +55,13 @@ export default function MobileProcessSteps({
           }}
         >
           <Box
+            className="site-bg-surface"
             sx={{
               position: "relative",
               width: "100%",
               minHeight: MOBILE_VIEWPORT_HEIGHT_CSS,
               boxSizing: "border-box",
               py: "40px",
-              bgcolor: MOBILE_SECTION_BG,
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",

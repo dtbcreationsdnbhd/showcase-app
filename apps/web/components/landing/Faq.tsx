@@ -11,6 +11,13 @@ import {
 } from "@/lib/landing-content";
 import ScrollRevealPin from "@/components/landing/ScrollRevealPin";
 import {
+  GLASS_BG,
+  GLASS_SHADOW,
+  GOLD_RIM,
+  GOLD_TEXT,
+  GOLD_TEXT_GLOW,
+} from "@/lib/gold-theme";
+import {
   STAGE_VIEWPORT_PAGE_HEIGHT_CSS,
   TITLE_HOLD_PAGES,
   figmaPx,
@@ -21,7 +28,7 @@ const barlow = {
     'var(--font-barlow-semi-condensed), "Barlow Semi Condensed", sans-serif',
 } as const;
 
-const GRADIENT = "linear-gradient(90deg, #CC35CC 0%, #563DFE 100%)";
+const GRADIENT = GOLD_TEXT;
 const CONTENT_W = figmaPx(1100);
 const SIDE_W = figmaPx(280);
 const COL_GAP = figmaPx(80);
@@ -53,7 +60,7 @@ function PlusIcon({ open }: { open: boolean }) {
       <path
         d="M12 4v16M4 12h16"
         fill="none"
-        stroke={open ? "#CC35CC" : "rgba(255, 255, 255, 0.7)"}
+        stroke={open ? "#FFD866" : "rgba(255, 255, 255, 0.7)"}
         strokeWidth="2"
         strokeLinecap="round"
       />
@@ -69,7 +76,7 @@ function Answer({ item }: { item: FaqItem }) {
     fontSize: figmaPx(14.5),
     lineHeight: "160%",
     letterSpacing: "0.01em",
-    color: "rgba(255, 255, 255, 0.7)",
+    color: "rgba(255, 255, 255, 0.82)",
   } as const;
 
   return (
@@ -149,7 +156,7 @@ export default function Faq() {
       sx={{
         boxSizing: "border-box",
         width: "100%",
-        bgcolor: "#050B13",
+        bgcolor: "transparent",
         position: "relative",
       }}
     >
@@ -197,6 +204,7 @@ export default function Faq() {
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   color: "transparent",
+                  filter: GOLD_TEXT_GLOW,
                   alignSelf: "flex-start",
                 }}
               >
@@ -247,9 +255,9 @@ export default function Faq() {
                         border: 0,
                         borderRadius: `${figmaPx(10)}px`,
                         bgcolor: active
-                          ? "rgba(255, 255, 255, 0.05)"
+                          ? "rgba(255, 214, 128, 0.12)"
                           : "transparent",
-                        color: active ? "#FFFFFF" : "rgba(255, 255, 255, 0.5)",
+                        color: active ? "#FFE08A" : "rgba(255, 255, 255, 0.6)",
                         fontWeight: 600,
                         fontSize: figmaPx(16),
                         lineHeight: "130%",
@@ -271,7 +279,7 @@ export default function Faq() {
                         },
                         "&:hover": { color: "#FFFFFF" },
                         "&:focus-visible": {
-                          outline: "2px solid #CC35CC",
+                          outline: "2px solid #FFD866",
                           outlineOffset: 2,
                         },
                       }}
@@ -313,16 +321,17 @@ export default function Faq() {
                       flexShrink: 0,
                       border: "1px solid",
                       borderColor: isOpen
-                        ? "rgba(204, 53, 204, 0.45)"
-                        : "rgba(255, 255, 255, 0.08)",
+                        ? GOLD_RIM
+                        : "rgba(255, 214, 128, 0.22)",
                       borderRadius: `${figmaPx(14)}px`,
-                      bgcolor: isOpen
-                        ? "rgba(204, 53, 204, 0.06)"
-                        : "rgba(255, 255, 255, 0.02)",
+                      background: isOpen
+                        ? GLASS_BG
+                        : "rgba(255, 255, 255, 0.06)",
+                      boxShadow: isOpen ? GLASS_SHADOW : "none",
                       transition:
-                        "border-color 0.3s ease, background-color 0.3s ease",
+                        "border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease",
                       "&:has(> button:focus-visible)": {
-                        borderColor: "#CC35CC",
+                        borderColor: "#FFD866",
                       },
                     }}
                   >
@@ -356,7 +365,7 @@ export default function Faq() {
                           flexShrink: 0,
                           fontWeight: 600,
                           fontSize: figmaPx(14),
-                          color: "#CC35CC",
+                          color: "#FFD866",
                         }}
                       >
                         {number}

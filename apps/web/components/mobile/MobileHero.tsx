@@ -2,9 +2,9 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import PillButton from "@/components/landing/PillButton";
+import { goldTextSx } from "@/lib/gold-theme";
 import {
   MOBILE_DESIGN_WIDTH,
-  MOBILE_HERO_BOTTOM_FADE,
   MOBILE_HERO_HEIGHT,
   mobileAnchorId,
 } from "@/lib/landing-layout-mobile";
@@ -30,7 +30,6 @@ export default function MobileHero({ heroSrc }: { heroSrc: string | null }) {
         position: "relative",
         width: "100%",
         height: MOBILE_HERO_HEIGHT,
-        bgcolor: "#050B13",
         overflow: "hidden",
       }}
     >
@@ -46,36 +45,13 @@ export default function MobileHero({ heroSrc }: { heroSrc: string | null }) {
             height: "100%",
             objectFit: "cover",
             display: "block",
+            maskImage:
+              "linear-gradient(180deg, #000 38%, rgba(0, 0, 0, 0.28) 62%, transparent 100%)",
+            WebkitMaskImage:
+              "linear-gradient(180deg, #000 38%, rgba(0, 0, 0, 0.28) 62%, transparent 100%)",
           }}
         />
-      ) : (
-        <Box sx={{ width: "100%", height: "100%", bgcolor: "#07071A" }} />
-      )}
-
-      <Box
-        aria-hidden
-        sx={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "linear-gradient(180deg, rgba(5, 11, 19, 0) 38%, rgba(5, 11, 19, 0.72) 62%, rgba(5, 11, 19, 0.92) 100%)",
-          pointerEvents: "none",
-        }}
-      />
-
-      <Box
-        aria-hidden
-        sx={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          bottom: 0,
-          height: MOBILE_HERO_BOTTOM_FADE,
-          background:
-            "linear-gradient(180deg, rgba(5, 11, 19, 0) 0%, #050B13 100%)",
-          pointerEvents: "none",
-        }}
-      />
+      ) : null}
 
       <Box
         sx={{
@@ -121,11 +97,7 @@ export default function MobileHero({ heroSrc }: { heroSrc: string | null }) {
               <Box
                 component="span"
                 sx={{
-                  backgroundImage:
-                    "linear-gradient(90deg, #CC35CC 0%, #563DFE 100%)",
-                  backgroundClip: "text",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
+                  ...goldTextSx,
                 }}
               >
                 {accent}
@@ -145,7 +117,7 @@ export default function MobileHero({ heroSrc }: { heroSrc: string | null }) {
             lineHeight: "160%",
             letterSpacing: "0.02em",
             textAlign: "center",
-            color: "#A3AAB8",
+            color: "#C4AAB2",
           }}
         >
           Empower your business with next-gen AI-powered tools, video creation,

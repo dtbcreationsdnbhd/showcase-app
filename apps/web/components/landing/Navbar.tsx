@@ -2,11 +2,8 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import CenterHashLink from "@/components/landing/CenterHashLink";
-import ServicesMenu, {
-  SERVICES_BG,
-  SERVICES_MENU_CLASS,
-  ServicesCaret,
-} from "@/components/landing/ServicesMenu";
+import ServicesMenu, { ServicesCaret } from "@/components/landing/ServicesMenu";
+import { GOLD_INK, goldButtonSx } from "@/lib/gold-theme";
 import { DESKTOP_NAV_LINKS } from "@/lib/landing-nav";
 
 const headerFont = {
@@ -27,7 +24,7 @@ function ArrowRightIcon() {
       <path
         d="M2 8h10.5M9.2 3.8 13.8 8 9.2 12.2"
         fill="none"
-        stroke="#FFFFFF"
+        stroke="#FFD866"
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -60,12 +57,6 @@ export default function Navbar({
         p: 0,
         gap: "10px",
         overflow: "visible",
-        transition: "background-color 0.2s ease 0.1s",
-        [`&:has(.${SERVICES_MENU_CLASS}:hover), &:has(.${SERVICES_MENU_CLASS} :focus-visible)`]:
-          {
-            backgroundColor: SERVICES_BG,
-            transitionDelay: "0s",
-          },
         ...headerFont,
       }}
     >
@@ -112,7 +103,7 @@ export default function Navbar({
             flexDirection: "row",
             alignItems: "center",
             gap: logoSrc ? 0 : "27px",
-            height: 54,
+            height: logoSrc ? 58 : 54,
             color: "#FFFFFF",
             textDecoration: "none",
             cursor: "pointer",
@@ -123,11 +114,11 @@ export default function Navbar({
             <Image
               src={logoSrc}
               alt="VisionCraft"
-              width={689}
-              height={116}
+              width={415}
+              height={225}
               priority
               draggable={false}
-              style={{ height: 52, width: "auto" }}
+              style={{ height: 58, width: "auto" }}
             />
           ) : (
             <>
@@ -184,6 +175,7 @@ export default function Navbar({
               boxSizing: "border-box",
               textDecoration: "none",
               cursor: "pointer",
+              "&:hover > span, &:focus-visible > span": { color: "#FFD866" },
             } as const;
             const label = (
               <Typography
@@ -193,8 +185,10 @@ export default function Navbar({
                   fontSize: 18,
                   lineHeight: "22px",
                   textTransform: "uppercase",
-                  color: "rgba(255, 255, 255, 0.5)",
+                  color: "rgba(255, 255, 255, 0.92)",
+                  textShadow: "0 1px 10px rgba(60, 0, 24, 0.55)",
                   whiteSpace: "nowrap",
+                  transition: "color 0.15s ease",
                 }}
               >
                 {link.label}
@@ -256,8 +250,7 @@ export default function Navbar({
             justifyContent: "center",
             width: 190,
             height: 52,
-            background: "linear-gradient(90deg, #CC35CC 0%, #563DFE 100%)",
-            boxShadow: "0px 4px 20px rgba(236, 115, 255, 0.5)",
+            ...goldButtonSx,
             borderRadius: "9999px",
             textDecoration: "none",
             cursor: "pointer",
@@ -283,7 +276,8 @@ export default function Navbar({
                 height: 22,
                 fontSize: 18,
                 lineHeight: "22px",
-                color: "#FFFFFF",
+                fontWeight: 600,
+                color: GOLD_INK,
                 whiteSpace: "nowrap",
               }}
             >
@@ -299,7 +293,7 @@ export default function Navbar({
                 width: 40,
                 height: 40,
                 boxSizing: "border-box",
-                background: "rgba(255, 255, 255, 0.4)",
+                background: GOLD_INK,
                 borderRadius: "99px",
                 flexShrink: 0,
               }}

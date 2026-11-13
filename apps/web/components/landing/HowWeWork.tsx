@@ -8,6 +8,7 @@ import {
   WHY_US_TITLE,
 } from "@/lib/landing-content";
 import ScrollRevealPin from "@/components/landing/ScrollRevealPin";
+import { goldTextSx } from "@/lib/gold-theme";
 import {
   PROCESS_CARDS_SCROLL_HEIGHT_CSS,
   TITLE_HOLD_PAGES,
@@ -33,7 +34,7 @@ export default function HowWeWork() {
       sx={{
         boxSizing: "border-box",
         width: "100%",
-        bgcolor: "#050B13",
+        bgcolor: "transparent",
         // Sit above the Solutions sticky pin so the title is never covered.
         position: "relative",
         zIndex: 45,
@@ -50,7 +51,7 @@ export default function HowWeWork() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            gap: `${figmaPx(28)}px`,
+            gap: `${figmaPx(18)}px`,
             width: "100%",
           }}
         >
@@ -61,15 +62,11 @@ export default function HowWeWork() {
               width: "100%",
               m: 0,
               fontWeight: 600,
-              fontSize: figmaPx(64),
-              lineHeight: `${figmaPx(80)}px`,
+              fontSize: figmaPx(48),
+              lineHeight: `${figmaPx(60)}px`,
               textAlign: "center",
               letterSpacing: "-0.02em",
-              backgroundImage: "linear-gradient(90deg, #CC35CC 0%, #563DFE 100%)",
-              backgroundClip: "text",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              color: "transparent",
+              ...goldTextSx,
               whiteSpace: "nowrap",
             }}
           >
@@ -82,7 +79,7 @@ export default function HowWeWork() {
               width: figmaPx(900),
               m: 0,
               fontWeight: 500,
-              fontSize: figmaPx(24),
+              fontSize: figmaPx(18),
               lineHeight: "140%",
               textAlign: "center",
               color: "#FFFFFF",

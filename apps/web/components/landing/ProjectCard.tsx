@@ -54,6 +54,7 @@ export default function ProjectCard({
           position: "relative",
           isolation: "isolate",
           display: "block",
+          boxSizing: "border-box",
           width: "100%",
           height: "100%",
           borderRadius: `${CARD_R}px`,
@@ -62,8 +63,9 @@ export default function ProjectCard({
             "linear-gradient(180deg, rgba(255, 255, 255, 0.52) 0%, rgba(198, 206, 214, 0.36) 42%, rgba(132, 140, 150, 0.42) 100%)",
           backdropFilter: "blur(22px) saturate(1.35)",
           WebkitBackdropFilter: "blur(22px) saturate(1.35)",
+          border: "1px solid rgba(255, 215, 122, 0.6)",
           boxShadow:
-            "inset 0 1px 0 rgba(255, 255, 255, 0.72), inset 0 -16px 28px rgba(8, 12, 18, 0.18)",
+            "inset 0 -16px 28px rgba(8, 12, 18, 0.18), 0 0 14px rgba(255, 200, 100, 0.35), 0 0 36px rgba(255, 168, 56, 0.22), 0 22px 36px -18px rgba(40, 0, 14, 0.5)",
           textDecoration: "none",
           color: "inherit",
           cursor: href || onOpen ? "pointer" : "auto",
@@ -89,7 +91,7 @@ export default function ProjectCard({
             sx={{
               width: "100%",
               height: "100%",
-              bgcolor: "#0C1622",
+              bgcolor: "#300C1E",
             }}
           />
         )}

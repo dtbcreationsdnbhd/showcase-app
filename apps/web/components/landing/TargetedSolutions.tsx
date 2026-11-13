@@ -3,6 +3,7 @@ import Typography from "@mui/material/Typography";
 import { getLandingServiceIconSrc, getLandingServiceMorphSrc } from "@/lib/landing-assets";
 import SolutionsStickyRows from "@/components/landing/SolutionsStickyRows";
 import ScrollRevealPin from "@/components/landing/ScrollRevealPin";
+import { goldTextSx } from "@/lib/gold-theme";
 import {
   SOLUTIONS_INTRO_TEXT,
   SOLUTIONS_SUBTITLE,
@@ -50,7 +51,7 @@ export default function TargetedSolutions() {
         flexDirection: "column",
         alignItems: "flex-start",
         width: "100%",
-        bgcolor: "#050B13",
+        bgcolor: "transparent",
         position: "relative",
         overflow: "visible",
       }}
@@ -64,7 +65,7 @@ export default function TargetedSolutions() {
             height: figmaPx(316),
             left: figmaPx(-101),
             top: figmaPx(-106),
-            bgcolor: "#563DFE",
+            bgcolor: "#FF8A1F",
             opacity: 0.1,
             filter: `blur(${figmaPx(212)}px)`,
             pointerEvents: "none",
@@ -133,12 +134,7 @@ export default function TargetedSolutions() {
               lineHeight: `${figmaPx(58)}px`,
               textAlign: "center",
               letterSpacing: "-0.02em",
-              backgroundImage:
-                "linear-gradient(90deg, #CC35CC 0%, #563DFE 100%)",
-              backgroundClip: "text",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              color: "transparent",
+              ...goldTextSx,
               whiteSpace: "nowrap",
             }}
           >

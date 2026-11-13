@@ -26,7 +26,7 @@ export type ServiceIcon =
 
 export type ServiceGroup = {
   title: string;
-  accent: "pink" | "gradient" | "purple";
+  accent: "pink" | "gradient" | "orange";
   badge?: string;
   items: { label: string; tag?: string; desc: string; icon: ServiceIcon }[];
 };
@@ -53,7 +53,7 @@ export const SERVICES_MENU: ServiceGroup[] = [
   },
   {
     title: "Platform Creation",
-    accent: "purple",
+    accent: "orange",
     badge: "with Ads Dashboard",
     items: [
       {

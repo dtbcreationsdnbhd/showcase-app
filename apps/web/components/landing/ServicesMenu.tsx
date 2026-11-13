@@ -5,6 +5,7 @@ import {
   type ServiceGroup,
   type ServiceIcon,
 } from "@/lib/landing-nav";
+import { GOLD_RIM } from "@/lib/gold-theme";
 import { LANDING_DESIGN_WIDTH } from "@/lib/landing-layout";
 
 const barlow = {
@@ -14,9 +15,9 @@ const barlow = {
 } as const;
 
 const ACCENT_BG: Record<ServiceGroup["accent"], string> = {
-  pink: "#CC35CC",
-  gradient: "linear-gradient(90deg, #CC35CC 0%, #563DFE 100%)",
-  purple: "#563DFE",
+  pink: "rgba(255, 45, 120, 0.28)",
+  gradient: "rgba(255, 196, 92, 0.2)",
+  orange: "rgba(255, 138, 31, 0.26)",
 };
 
 const ICONS: Record<ServiceIcon, ReactNode> = {
@@ -85,10 +86,13 @@ const ICONS: Record<ServiceIcon, ReactNode> = {
 };
 
 const PANEL_CLASS = "services-panel";
+const PANEL_FADE = 90;
 const CARET_CLASS = "services-caret";
 
-export const SERVICES_MENU_CLASS = "services-menu";
-export const SERVICES_BG = "rgba(10, 9, 24, 0.92)";
+const SERVICES_MENU_CLASS = "services-menu";
+const SERVICES_BG = "#560A2C";
+const PANEL_TOP_FADE = 44;
+const PANEL_MASK = `linear-gradient(180deg, transparent 0, #000 ${PANEL_TOP_FADE}px, #000 calc(100% - ${PANEL_FADE}px), transparent 100%)`;
 
 /** Hover/focus target: wraps the SERVICES link and owns the dropdown panel. */
 export default function ServicesMenu({ children }: { children: ReactNode }) {
@@ -135,7 +139,7 @@ export function ServicesCaret() {
       <path
         d="M2.5 4.5 6 8l3.5-3.5"
         fill="none"
-        stroke="rgba(255, 255, 255, 0.5)"
+        stroke="rgba(255, 255, 255, 0.9)"
         strokeWidth="1.6"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -168,16 +172,15 @@ function ServicesPanel() {
     >
       <Box
         sx={{
+          // No backdrop blur: its edge sampling draws a seam against the navbar.
           background: SERVICES_BG,
-          backdropFilter: "blur(24px)",
-          WebkitBackdropFilter: "blur(24px)",
-          borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
-          boxShadow: "0 32px 80px rgba(0, 0, 0, 0.55)",
+          maskImage: PANEL_MASK,
+          WebkitMaskImage: PANEL_MASK,
           display: "grid",
           gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
           gap: "96px",
           pt: "56px",
-          pb: "64px",
+          pb: `${64 + PANEL_FADE}px`,
           px: `${(LANDING_DESIGN_WIDTH - 1680) / 2}px`,
         }}
       >
@@ -200,11 +203,14 @@ function ServicesPanel() {
                   fontSize: 20,
                   lineHeight: "24px",
                   letterSpacing: "0.02em",
-                  color: "#FFFFFF",
+                  color: "#FFE08A",
                   px: "18px",
                   py: "9px",
-                  borderRadius: "12px",
+                  borderRadius: "9999px",
                   background: ACCENT_BG[group.accent],
+                  border: `1.5px solid ${GOLD_RIM}`,
+                  boxShadow:
+                    "inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 0 16px rgba(255, 184, 72, 0.25)",
                 }}
               >
                 {group.title}
@@ -242,7 +248,7 @@ function ServicesPanel() {
                   "&:first-of-type": { borderTop: "none" },
                   "&:hover .services-item-title": { color: "#FFFFFF" },
                   "&:hover .services-item-icon": {
-                    color: "#CC35CC",
+                    color: "#FFD866",
                     transform: "scale(1.1)",
                   },
                 }}
@@ -273,8 +279,8 @@ function ServicesPanel() {
                           px: "8px",
                           py: "2px",
                           borderRadius: "9999px",
-                          background: "rgba(204, 53, 204, 0.2)",
-                          color: "#F0A8F0",
+                          background: "rgba(255, 45, 120, 0.2)",
+                          color: "#FFB3CC",
                         }}
                       >
                         {item.tag}
@@ -288,7 +294,7 @@ function ServicesPanel() {
                       fontWeight: 400,
                       fontSize: 16,
                       lineHeight: "22px",
-                      color: "rgba(255, 255, 255, 0.5)",
+                      color: "rgba(255, 255, 255, 0.72)",
                     }}
                   >
                     {item.desc}

@@ -6,7 +6,12 @@ import { useState } from "react";
 import { SHOWCASE_TITLE } from "@/lib/landing-content";
 import { projectTagLine, type ShowcaseProject } from "@/lib/projects";
 import {
-  MOBILE_ACCENT_GRADIENT,
+  GOLD_BUTTON_SHADOW_SM,
+  GOLD_FILL,
+  GOLD_INK,
+  goldTextSx,
+} from "@/lib/gold-theme";
+import {
   MOBILE_GUTTER,
   MOBILE_SECTION_BG,
   MOBILE_VIEWPORT_HEIGHT_CSS,
@@ -42,7 +47,7 @@ function ArrowRightIcon({ upRight }: { upRight: boolean }) {
       <path
         d="M3 10h12.5M11.2 4.8 17 10l-5.8 5.2"
         fill="none"
-        stroke="#FFFFFF"
+        stroke={GOLD_INK}
         strokeWidth="2.5"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -99,11 +104,7 @@ export default function MobileProjectShowcase({
             fontSize: 48,
             lineHeight: "58px",
             letterSpacing: "-0.02em",
-            backgroundImage: MOBILE_ACCENT_GRADIENT,
-            backgroundClip: "text",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            color: "transparent",
+            ...goldTextSx,
           }}
         >
           {/* The mock stacks the words even when the line would fit. */}
@@ -135,8 +136,8 @@ export default function MobileProjectShowcase({
                 width: ARROW_DOT,
                 height: ARROW_DOT,
                 borderRadius: "50%",
-                background: MOBILE_ACCENT_GRADIENT,
-                boxShadow: "0px 3px 12px rgba(236, 115, 255, 0.5)",
+                background: GOLD_FILL,
+                boxShadow: GOLD_BUTTON_SHADOW_SM,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",

@@ -19,6 +19,14 @@ import {
 import InquirySnackbar, {
   type InquiryNotice,
 } from "@/components/InquirySnackbar";
+import {
+  GOLD_BUTTON_SHADOW_SM,
+  GOLD_FILL,
+  GOLD_INK,
+  GOLD_RIM,
+  glassPanelSx,
+  goldButtonSx,
+} from "@/lib/gold-theme";
 import { submitInquiry } from "@/lib/inquiries";
 import {
   CONTACT_FORM_HEIGHT_CSS,
@@ -79,9 +87,17 @@ function Chip({
       onClick={onClick}
       sx={{
         ...chipBase,
-        background: selected
-          ? "linear-gradient(90deg, #CC35CC 0%, #563DFE 100%)"
-          : "rgba(255, 255, 255, 0.1)",
+        ...(selected
+          ? {
+              background: GOLD_FILL,
+              boxShadow: GOLD_BUTTON_SHADOW_SM,
+              color: GOLD_INK,
+              fontWeight: 600,
+            }
+          : {
+              background: "rgba(255, 255, 255, 0.1)",
+              boxShadow: `inset 0 0 0 1px ${GOLD_RIM}`,
+            }),
       }}
     >
       {label}
@@ -165,7 +181,8 @@ function Field({
         gap: `${figmaPx(5)}px`,
         width: INNER_W,
         height: figmaPx(57),
-        background: "rgba(255, 255, 255, 0.05)",
+        background: "rgba(255, 255, 255, 0.08)",
+        boxShadow: "inset 0 0 0 1px rgba(255, 214, 128, 0.22)",
         borderRadius: `${figmaPx(12)}px`,
       }}
     >
@@ -210,7 +227,7 @@ function Field({
               fontSize: figmaPx(12),
               lineHeight: "160%",
               letterSpacing: "0.02em",
-              color: "#9747FF",
+              color: "#FF4D6D",
             }}
           >
             *
@@ -261,11 +278,8 @@ function FormCard({ children }: { children: ReactNode }) {
         height: CARD_H,
         overflow: "hidden",
         flexShrink: 0,
-        background: "rgba(18, 13, 39, 0.5)",
-        border: "1px solid rgba(195, 164, 255, 0.05)",
+        ...glassPanelSx,
         borderRadius: `${figmaPx(30)}px`,
-        backdropFilter: "blur(21px)",
-        WebkitBackdropFilter: "blur(21px)",
       }}
     >
       {children}
@@ -338,7 +352,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
         p: 0,
         width: "100%",
         height: CONTACT_FORM_HEIGHT_CSS,
-        bgcolor: "#050B13",
+        bgcolor: "transparent",
         overflow: "hidden",
       }}
     >
@@ -513,7 +527,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
                 fontSize: figmaPx(25.5),
                 lineHeight: `${figmaPx(41)}px`,
                 letterSpacing: "-0.02em",
-                color: "#C3A4FF",
+                color: "#FFC46B",
               }}
             >
               {FORM_REACH_TITLE}
@@ -601,14 +615,12 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
                 width: INNER_W,
                 height: figmaPx(40.5),
                 border: 0,
-                background: "linear-gradient(90deg, #CC35CC 0%, #563DFE 100%)",
-                boxShadow: "0px 4px 20px rgba(236, 115, 255, 0.5)",
+                ...goldButtonSx,
                 borderRadius: "9999px",
                 fontStyle: "normal",
-                fontWeight: 600,
+                fontWeight: 700,
                 fontSize: figmaPx(13.5),
                 lineHeight: `${figmaPx(22)}px`,
-                color: "#FFFFFF",
                 cursor: submitting ? "default" : "pointer",
                 opacity: submitting ? 0.7 : 1,
                 appearance: "none",

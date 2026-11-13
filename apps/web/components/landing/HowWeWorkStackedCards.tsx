@@ -11,6 +11,7 @@ import {
   STAGE_VIEWPORT_PAGE_HEIGHT_CSS,
   figmaPx,
 } from "@/lib/landing-layout";
+import { goldTextSx } from "@/lib/gold-theme";
 import { isLandingNav } from "@/lib/landing-nav";
 import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
 
@@ -35,8 +36,8 @@ const COLUMN_Z = figmaPx(24);
 /** Focused step: photo left + copy right — keep the pair near viewport center. */
 const FOCUS_SCALE = 0.78;
 const FOCUS_Y = figmaPx(28);
-const PHOTO_X = -figmaPx(180);
-const COPY_LEFT = figmaPx(60);
+const PHOTO_X = -figmaPx(215);
+const COPY_LEFT = figmaPx(125);
 const COPY_WIDTH = figmaPx(340);
 /** Waiting deck under the focus — tighter under the active pair. */
 const WAIT_BASE_Y = FOCUS_Y + figmaPx(200);
@@ -63,7 +64,9 @@ const CARD_PATH = (() => {
   const r = CARD_R;
   return `M ${nx} 0 H ${w - r} A ${r} ${r} 0 0 1 ${w} ${r} V ${h - r} A ${r} ${r} 0 0 1 ${w - r} ${h} H ${r} A ${r} ${r} 0 0 1 0 ${h - r} V ${ny + r} A ${r} ${r} 0 0 1 ${r} ${ny} H ${nx - r} A ${r} ${r} 0 0 0 ${nx} ${ny - r} V 0 Z`;
 })();
-const CARD_BG = "#070A14";
+const CARD_BG = "#5A0F32";
+const CARD_BG_CLEAR = "rgba(90, 15, 50, 0)";
+const CARD_BG_SHADE = "rgba(70, 10, 38, 0.92)";
 
 export type ProcessStepView = {
   n: string;
@@ -134,7 +137,7 @@ function ProcessCard({
         sx={{
           position: "absolute",
           inset: 0,
-          filter: `drop-shadow(0 0 ${figmaPx(16)}px rgba(150, 110, 255, 0.35))`,
+          filter: `drop-shadow(0 0 ${figmaPx(18)}px rgba(255, 184, 72, 0.4))`,
         }}
       >
         <Box
@@ -169,7 +172,7 @@ function ProcessCard({
             sx={{
               position: "absolute",
               inset: 0,
-              background: `linear-gradient(90deg, ${CARD_BG} 14%, rgba(7, 10, 20, 0) 34%), linear-gradient(180deg, rgba(7, 10, 20, 0) 50%, rgba(7, 10, 20, 0.92) 82%)`,
+              background: `linear-gradient(90deg, ${CARD_BG} 14%, ${CARD_BG_CLEAR} 34%), linear-gradient(180deg, ${CARD_BG_CLEAR} 50%, ${CARD_BG_SHADE} 82%), linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0) 30%)`,
             }}
           />
         </Box>
@@ -187,15 +190,16 @@ function ProcessCard({
         >
           <defs>
             <linearGradient id="process-card-stroke" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stopColor="#CC35CC" />
-              <stop offset="1" stopColor="#563DFE" />
+              <stop offset="0" stopColor="#FFF3C4" />
+              <stop offset="0.45" stopColor="#FFD866" />
+              <stop offset="1" stopColor="#D27F1C" />
             </linearGradient>
           </defs>
           <path
             d={CARD_PATH}
             fill="none"
             stroke="url(#process-card-stroke)"
-            strokeWidth={2}
+            strokeWidth={2.5}
           />
         </Box>
       </Box>
@@ -215,7 +219,7 @@ function ProcessCard({
           fontWeight: 700,
           fontSize: figmaPx(72),
           lineHeight: 1,
-          color: "#D8C6FF",
+          ...goldTextSx,
           opacity: showNumber ? 1 : 0,
           transition: "opacity 0.2s ease",
         }}
@@ -714,7 +718,7 @@ export default function HowWeWorkStackedCards({
                 height: STAGE_VIEWPORT_PAGE_HEIGHT_CSS,
                 transform: `scale(calc(100vw / ${LANDING_DESIGN_WIDTH}px))`,
                 transformOrigin: "top left",
-                background: "#050B13",
+                background: "transparent",
                 overflow: "hidden",
                 pointerEvents: "none",
                 visibility: "hidden",

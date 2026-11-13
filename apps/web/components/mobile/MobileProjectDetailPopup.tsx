@@ -14,7 +14,7 @@ import {
   MOBILE_BREAKPOINT,
   MOBILE_DESIGN_WIDTH,
   MOBILE_GUTTER,
-  MOBILE_SECTION_BG,
+  MOBILE_POPUP_BG,
   MOBILE_STAGE_ZOOM,
   MOBILE_VIEWPORT_HEIGHT_CSS,
 } from "@/lib/landing-layout-mobile";
@@ -210,7 +210,7 @@ export default function MobileProjectDetailPopup({
           width: MOBILE_DESIGN_WIDTH,
           height: MOBILE_VIEWPORT_HEIGHT_CSS,
           zoom: MOBILE_STAGE_ZOOM,
-          bgcolor: MOBILE_SECTION_BG,
+          bgcolor: MOBILE_POPUP_BG,
           overflowY: "auto",
           overscrollBehavior: "contain",
           ...mobileSheetMotion(shown, reduced),
@@ -223,7 +223,7 @@ export default function MobileProjectDetailPopup({
             zIndex: 2,
             height: HEADER_H,
             px: `${MOBILE_GUTTER}px`,
-            bgcolor: "#10141D",
+            bgcolor: "#2E0E1E",
             display: "flex",
             alignItems: "center",
           }}
@@ -369,7 +369,7 @@ export default function MobileProjectDetailPopup({
             overflow: "hidden",
             borderRadius: `${PANEL_RADIUS}px ${PANEL_RADIUS}px 0 0`,
             // The panel is the page colour with a faint lift along its top edge.
-            background: `linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 70px), ${MOBILE_SECTION_BG}`,
+            background: `linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 70px), ${MOBILE_POPUP_BG}`,
           }}
         >
           <Typography sx={labelSx}>Project Name</Typography>
@@ -385,7 +385,7 @@ export default function MobileProjectDetailPopup({
               lineHeight: "36px",
               overflowWrap: "anywhere",
               backgroundImage:
-                "linear-gradient(96.02deg, #FA9DFF 2.09%, #977EFF 97.91%)",
+                "linear-gradient(96.02deg, #FF8FB1 2.09%, #FFB45C 97.91%)",
               backgroundClip: "text",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",

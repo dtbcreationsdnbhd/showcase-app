@@ -57,8 +57,8 @@ export const SHOWCASE_HEIGHT =
   SHOWCASE_PAD_TOP +
   figmaPx(80 + 50 + 414.75 * SHOWCASE_CARD_ZOOM) +
   SHOWCASE_PAD_BOTTOM;
-/** One viewport page like the other sections, never shorter than its content. */
-export const SHOWCASE_HEIGHT_CSS = `max(${STAGE_VIEWPORT_PAGE_HEIGHT_CSS}, ${SHOWCASE_HEIGHT}px)`;
+/** Landing showcase: one viewport page for the pinned slider plus its hold. */
+export const SHOWCASE_VIEWPORT_PAGES = 1 + TITLE_HOLD_PAGES;
 export const SHOWCASE_COLUMNS = 3;
 const SHOWCASE_CARD_H = figmaPx(414.75);
 const SHOWCASE_CARD_GAP = figmaPx(24);
@@ -83,7 +83,7 @@ export const CONTACT_FORM_HEIGHT =
 /** Short fade from the hero photo into the solutions background. */
 export const HERO_BOTTOM_FADE = figmaPx(110);
 /**
- * Wave PNG stays black until the purple glow; cover+bottom puts that join
+ * Wave PNG stays black until the glow; cover+bottom puts that join
  * through the cards. Hold transparency over the black field, then fade the
  * image in across the glow — same idea as HERO_BOTTOM_FADE, on the photo.
  */
@@ -109,15 +109,12 @@ export const LANDING_DESIGN_HEIGHT =
   CONTACT_CTA_VIEWPORT_PAGES * (LANDING_DESIGN_WIDTH * (9 / 16)) +
   CONTACT_FORM_VIEWPORT_PAGES * (LANDING_DESIGN_WIDTH * (9 / 16)) +
   FAQ_VIEWPORT_PAGES * (LANDING_DESIGN_WIDTH * (9 / 16)) +
-  Math.max(LANDING_DESIGN_WIDTH * (9 / 16), SHOWCASE_HEIGHT) +
+  SHOWCASE_VIEWPORT_PAGES * (LANDING_DESIGN_WIDTH * (9 / 16)) +
   SOLUTIONS_RELEASE_HEIGHT;
 
 /** Screen-space height of the scaled landing frame (vh pages + fixed stage sections). */
 export function landingFrameHeightCss(includeShowcase = true): string {
   const fixed = LANDING_HEIGHT_WITHOUT_SOLUTIONS + SOLUTIONS_RELEASE_HEIGHT;
-  // Screen-space twin of SHOWCASE_HEIGHT_CSS.
-  const showcase = includeShowcase
-    ? ` + max(100vh, 100vw * ${SHOWCASE_HEIGHT} / ${LANDING_DESIGN_WIDTH})`
-    : "";
+  const showcase = includeShowcase ? ` + ${SHOWCASE_VIEWPORT_PAGES} * 100vh` : "";
   return `calc(100vw * ${fixed} / ${LANDING_DESIGN_WIDTH} + ${SOLUTIONS_PAGE_COUNT + PROCESS_INTRO_PAGES + PROCESS_PAGE_COUNT + CONTACT_CTA_VIEWPORT_PAGES + CONTACT_FORM_VIEWPORT_PAGES + FAQ_VIEWPORT_PAGES} * 100vh${showcase})`;
 }

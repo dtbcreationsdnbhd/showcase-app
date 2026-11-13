@@ -52,7 +52,8 @@ function playheadFrame(x: number) {
   );
 }
 
-const LIT_HOVER = [230, 214, 255] as const;
+const LIT_BASE = [255, 196, 107] as const;
+const LIT_HOVER = [255, 236, 200] as const;
 const SPOT_RADIUS = 88;
 const SPOT_SCALE = 1.35;
 
@@ -128,7 +129,7 @@ function MorphLottie({
         const k = t * t;
         path.style.setProperty(
           "fill",
-          `rgb(${Math.round(195 + (LIT_HOVER[0] - 195) * k)},${Math.round(163 + (LIT_HOVER[1] - 163) * k)},255)`,
+          `rgb(${LIT_HOVER.map((c, j) => Math.round(LIT_BASE[j] + (c - LIT_BASE[j]) * k)).join(",")})`,
           "important",
         );
         path.style.transform = `scale(${1 + k * SPOT_SCALE})`;
@@ -292,7 +293,7 @@ function ServiceCopyBlock({ title, description }: ServiceCopy) {
           fontSize: figmaPx(25.5),
           lineHeight: `${figmaPx(41)}px`,
           letterSpacing: "-0.02em",
-          color: "#C3A4FF",
+          color: "#FFC46B",
         }}
       >
         {title}
@@ -526,7 +527,7 @@ export default function SolutionsStickyRows({
               overflow: "visible",
               pointerEvents: "auto",
               visibility: "hidden",
-              background: "#050B13",
+              background: "transparent",
             }}
           >
             <IconStack
