@@ -1,6 +1,7 @@
 import Box from "@mui/material/Box";
 import ContactCta from "@/components/landing/ContactCta";
 import ContactForm from "@/components/landing/ContactForm";
+import Faq from "@/components/landing/Faq";
 import Footer from "@/components/landing/Footer";
 import Hero from "@/components/landing/Hero";
 import HowWeWork from "@/components/landing/HowWeWork";
@@ -97,6 +98,7 @@ export default async function Home() {
           <TargetedSolutions />
           <HowWeWork />
           <ProjectShowcase projects={projects} />
+          <Faq />
           <ContactCta />
           <ContactForm waveSrc={contactWaveSrc} />
           <Footer />
