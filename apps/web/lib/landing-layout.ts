@@ -107,8 +107,14 @@ export function projectsGridHeight(projectCount: number, columns: number) {
 export const PROJECTS_PAGE_NAV_HEIGHT = 40;
 export const PROJECTS_PAGE_HEIGHT = PROJECTS_PAGE_NAV_HEIGHT + SHOWCASE_HEIGHT;
 
-/** Everything except Targeted Solutions / Process / Showcase / Contact CTA / Contact form (those use viewport pages). */
-export const LANDING_HEIGHT_WITHOUT_SOLUTIONS = HERO_DESIGN_HEIGHT + FOOTER_HEIGHT;
+/** Desktop Why Us poster, 3840×2400, drawn across the full 1920 stage. */
+export const WHY_US_DESKTOP_HEIGHT = (LANDING_DESIGN_WIDTH * 2400) / 3840 * 0.88;
+/** Soft bottom edge of the solutions backdrop as it scrolls off, in viewport pages. */
+export const SOLUTIONS_TAIL_FADE_PAGES = 0.5;
+
+/** Fixed stage sections. Solutions / Showcase / Contact CTA / Contact form / FAQ use viewport pages. */
+export const LANDING_HEIGHT_WITHOUT_SOLUTIONS =
+  HERO_DESIGN_HEIGHT + WHY_US_DESKTOP_HEIGHT + FOOTER_HEIGHT;
 
 /**
  * Approximate design height assuming a 16:9 viewport for one page.
@@ -116,9 +122,7 @@ export const LANDING_HEIGHT_WITHOUT_SOLUTIONS = HERO_DESIGN_HEIGHT + FOOTER_HEIG
  */
 export const LANDING_DESIGN_HEIGHT =
   LANDING_HEIGHT_WITHOUT_SOLUTIONS +
-  PROCESS_INTRO_PAGES * (LANDING_DESIGN_WIDTH * (9 / 16)) +
-  PROCESS_PAGE_COUNT * (LANDING_DESIGN_WIDTH * (9 / 16)) +
-  SOLUTIONS_PAGE_COUNT * (LANDING_DESIGN_WIDTH * (9 / 16)) +
+  (SOLUTIONS_PAGE_COUNT + SOLUTIONS_TAIL_FADE_PAGES) * (LANDING_DESIGN_WIDTH * (9 / 16)) +
   CONTACT_CTA_VIEWPORT_PAGES * (LANDING_DESIGN_WIDTH * (9 / 16)) +
   CONTACT_FORM_VIEWPORT_PAGES * (LANDING_DESIGN_WIDTH * (9 / 16)) +
   FAQ_VIEWPORT_PAGES * (LANDING_DESIGN_WIDTH * (9 / 16)) +
@@ -129,5 +133,5 @@ export const LANDING_DESIGN_HEIGHT =
 export function landingFrameHeightCss(includeShowcase = true): string {
   const fixed = LANDING_HEIGHT_WITHOUT_SOLUTIONS + SOLUTIONS_RELEASE_HEIGHT;
   const showcase = includeShowcase ? ` + ${SHOWCASE_VIEWPORT_PAGES} * 100vh` : "";
-  return `calc(100vw * ${fixed} / ${LANDING_DESIGN_WIDTH} + ${SOLUTIONS_PAGE_COUNT + PROCESS_INTRO_PAGES + PROCESS_PAGE_COUNT + CONTACT_CTA_VIEWPORT_PAGES + CONTACT_FORM_VIEWPORT_PAGES + FAQ_VIEWPORT_PAGES} * 100vh${showcase})`;
+  return `calc(100vw * ${fixed} / ${LANDING_DESIGN_WIDTH} + ${SOLUTIONS_PAGE_COUNT + SOLUTIONS_TAIL_FADE_PAGES + CONTACT_CTA_VIEWPORT_PAGES + CONTACT_FORM_VIEWPORT_PAGES + FAQ_VIEWPORT_PAGES} * 100vh${showcase})`;
 }

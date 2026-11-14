@@ -12,6 +12,8 @@ import {
 } from "@/lib/landing-content";
 import {
   SOLUTIONS_RELEASE_HEIGHT,
+  SOLUTIONS_TAIL_FADE_PAGES,
+  STAGE_VIEWPORT_PAGE_HEIGHT_CSS,
   TITLE_HOLD_PAGES,
   figmaPx,
 } from "@/lib/landing-layout";
@@ -170,7 +172,7 @@ export default function TargetedSolutions() {
           alignItems: "center",
           width: "100%",
           flexShrink: 0,
-          pb: `${SOLUTIONS_RELEASE_HEIGHT}px`,
+          pb: `calc(${SOLUTIONS_RELEASE_HEIGHT}px + ${SOLUTIONS_TAIL_FADE_PAGES} * ${STAGE_VIEWPORT_PAGE_HEIGHT_CSS})`,
         }}
       >
         <SolutionsStickyRows iconSrcs={iconSrcs} morphSrc={morphSrc} />
