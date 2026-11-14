@@ -1,6 +1,8 @@
 import Box from "@mui/material/Box";
+import type { HeroSlide } from "@/components/landing/HeroCarousel";
 import MobileContactCta from "@/components/mobile/MobileContactCta";
 import MobileContactForm from "@/components/mobile/MobileContactForm";
+import MobileFaq from "@/components/mobile/MobileFaq";
 import MobileFooter from "@/components/mobile/MobileFooter";
 import MobileHero from "@/components/mobile/MobileHero";
 import MobileHowWeWork from "@/components/mobile/MobileHowWeWork";
@@ -14,17 +16,26 @@ import MobileTargetedSolutions from "@/components/mobile/MobileTargetedSolutions
 import {
   MOBILE_DESIGN_WIDTH,
   MOBILE_STAGE_ZOOM,
+  mobileAnchorId,
 } from "@/lib/landing-layout-mobile";
 
 export default function MobileLanding({
   heroSrc,
   projects,
   logoSrc,
+  heroSlides = [],
 }: {
   heroSrc: string | null;
   projects: readonly ShowcaseProject[];
   logoSrc: string | null;
+  heroSlides?: readonly HeroSlide[];
 }) {
+  const mobileSlides = heroSlides.map((slide) => ({
+    ...slide,
+    // Desktop hashes point at the desktop tree; remap onto mobile anchors.
+    href: `#${mobileAnchorId(slide.href.replace(/^#/, "") || "projects")}`,
+  }));
+
   return (
     <Box sx={{ position: "relative", width: "100%", overflowX: "clip" }}>
       <Box
@@ -50,7 +61,7 @@ export default function MobileLanding({
       </Box>
 
       <Box sx={{ width: MOBILE_DESIGN_WIDTH, zoom: MOBILE_STAGE_ZOOM }}>
-        <MobileHero heroSrc={heroSrc} />
+        <MobileHero heroSrc={heroSrc} slides={mobileSlides} />
         <MobileTargetedSolutions />
         <MobileServicePages
           rows={SERVICE_ROWS.map((row) => ({
@@ -60,6 +71,7 @@ export default function MobileLanding({
         />
         <MobileHowWeWork />
         <MobileProjectShowcase projects={projects} />
+        <MobileFaq />
         <MobileContactCta />
         <MobileContactForm />
         <MobileFooter />

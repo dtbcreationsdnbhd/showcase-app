@@ -9,6 +9,7 @@ import {
   mobileSheetMotion,
   useMobileSheet,
 } from "@/components/mobile/use-mobile-sheet";
+import { goldTextSx } from "@/lib/gold-theme";
 import type { ShowcaseProject } from "@/lib/projects";
 import {
   MOBILE_BREAKPOINT,
@@ -384,12 +385,7 @@ export default function MobileProjectDetailPopup({
               fontSize: 26,
               lineHeight: "36px",
               overflowWrap: "anywhere",
-              backgroundImage:
-                "linear-gradient(96.02deg, #FF8FB1 2.09%, #FFB45C 97.91%)",
-              backgroundClip: "text",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              color: "transparent",
+              ...goldTextSx,
             }}
           >
             {detail.name}

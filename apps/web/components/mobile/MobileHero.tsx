@@ -1,11 +1,14 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
+import type { HeroSlide } from "@/components/landing/HeroCarousel";
 import PillButton from "@/components/landing/PillButton";
+import MobileHeroCards from "@/components/mobile/MobileHeroCards";
 import { goldTextSx } from "@/lib/gold-theme";
 import {
   MOBILE_DESIGN_WIDTH,
   MOBILE_HERO_HEIGHT,
+  MOBILE_NAV_HEIGHT,
   mobileAnchorId,
 } from "@/lib/landing-layout-mobile";
 
@@ -18,10 +21,19 @@ const jakarta = {
   fontFamily: 'var(--font-plus-jakarta), "Plus Jakarta Sans", sans-serif',
 } as const;
 
-/** Type sizes are estimated off the Figma export; tune against a real device. */
-const TEXT_BLOCK_TOP = 482;
+/** Same curve as desktop; applied to the whole bg stack (image + wash). */
+const HERO_FADE_MASK =
+  "linear-gradient(180deg, #000 0%, #000 50%, rgba(0, 0, 0, 0.55) 76%, transparent 100%)";
+/** Extra bleed so the fade finishes past the section edge (no hard cut under CTA). */
+const HERO_BG_BLEED = 64;
 
-export default function MobileHero({ heroSrc }: { heroSrc: string | null }) {
+export default function MobileHero({
+  heroSrc,
+  slides = [],
+}: {
+  heroSrc: string | null;
+  slides?: readonly HeroSlide[];
+}) {
   return (
     <Box
       component="section"
@@ -30,42 +42,75 @@ export default function MobileHero({ heroSrc }: { heroSrc: string | null }) {
         position: "relative",
         width: "100%",
         height: MOBILE_HERO_HEIGHT,
-        overflow: "hidden",
+        // Don't clip card glows; the bg layer below owns its own overflow.
+        overflow: "visible",
+        boxSizing: "border-box",
+        // Leave the fixed navbar band clear, then centre the rest.
+        pt: `${MOBILE_NAV_HEIGHT}px`,
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
       }}
     >
-      {heroSrc ? (
-        <Image
-          src={heroSrc}
-          alt=""
-          width={MOBILE_DESIGN_WIDTH}
-          height={MOBILE_HERO_HEIGHT}
-          sizes="100vw"
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            display: "block",
-            maskImage:
-              "linear-gradient(180deg, #000 38%, rgba(0, 0, 0, 0.28) 62%, transparent 100%)",
-            WebkitMaskImage:
-              "linear-gradient(180deg, #000 38%, rgba(0, 0, 0, 0.28) 62%, transparent 100%)",
+      {/* Own compositor layer + bottom bleed: `zoom` + child transforms otherwise
+          paint a hard full-width seam where the photo meets the site backdrop. */}
+      <Box
+        aria-hidden
+        sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: -HERO_BG_BLEED,
+          zIndex: 0,
+          pointerEvents: "none",
+          transform: "translateZ(0)",
+          backfaceVisibility: "hidden",
+          maskImage: HERO_FADE_MASK,
+          WebkitMaskImage: HERO_FADE_MASK,
+        }}
+      >
+        {heroSrc ? (
+          <Image
+            src={heroSrc}
+            alt=""
+            width={MOBILE_DESIGN_WIDTH}
+            height={MOBILE_HERO_HEIGHT + HERO_BG_BLEED}
+            sizes="100vw"
+            priority
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "center center",
+              display: "block",
+            }}
+          />
+        ) : null}
+        <Box
+          sx={{
+            position: "absolute",
+            inset: 0,
+            background:
+              "linear-gradient(59.86deg, rgba(48, 4, 22, 0.6) 0%, rgba(48, 4, 22, 0) 55.05%)",
           }}
         />
-      ) : null}
+      </Box>
 
       <Box
         sx={{
-          position: "absolute",
-          top: TEXT_BLOCK_TOP,
-          left: 0,
-          right: 0,
+          position: "relative",
+          zIndex: 10,
+          width: "100%",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          gap: "38px",
-          zIndex: 10,
+          gap: "16px",
+          py: "12px",
         }}
       >
+        <MobileHeroCards slides={slides} />
+
         <Box
           component="h1"
           sx={{
@@ -74,6 +119,8 @@ export default function MobileHero({ heroSrc }: { heroSrc: string | null }) {
             alignItems: "center",
             gap: "3px",
             m: 0,
+            mt: "8px",
+            px: "16px",
           }}
         >
           {[
@@ -86,8 +133,8 @@ export default function MobileHero({ heroSrc }: { heroSrc: string | null }) {
               sx={{
                 ...jakarta,
                 fontWeight: 800,
-                fontSize: 38,
-                lineHeight: "48px",
+                fontSize: 34,
+                lineHeight: "42px",
                 letterSpacing: "-0.02em",
                 color: "#FFFFFF",
                 whiteSpace: "nowrap",
@@ -113,11 +160,11 @@ export default function MobileHero({ heroSrc }: { heroSrc: string | null }) {
             width: 345,
             fontStyle: "normal",
             fontWeight: 500,
-            fontSize: 15,
-            lineHeight: "160%",
+            fontSize: 14,
+            lineHeight: "155%",
             letterSpacing: "0.02em",
             textAlign: "center",
-            color: "#C4AAB2",
+            color: "rgba(255, 255, 255, 0.85)",
           }}
         >
           Empower your business with next-gen AI-powered tools, video creation,

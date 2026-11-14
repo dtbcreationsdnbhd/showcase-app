@@ -86,9 +86,18 @@ export default function MobileServicePages({ rows }: { rows: ServiceRow[] }) {
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
+                // Soft leading edge so sticky pages don't flash a hard seam.
+                maskImage:
+                  index === 0
+                    ? "none"
+                    : "linear-gradient(180deg, transparent 0, #000 64px, #000 100%)",
+                WebkitMaskImage:
+                  index === 0
+                    ? "none"
+                    : "linear-gradient(180deg, transparent 0, #000 64px, #000 100%)",
               }}
             >
-            <MobileSeamLine edge="top" />
+            {index > 0 ? <MobileSeamLine edge="top" /> : null}
             {iconSrc ? (
               <MobileServiceIcon
                 src={iconSrc}
