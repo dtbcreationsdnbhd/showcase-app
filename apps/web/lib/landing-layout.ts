@@ -90,6 +90,14 @@ export const HERO_BOTTOM_FADE = figmaPx(110);
 export const CONTACT_WAVE_MASK_HOLD_PCT = 46;
 export const CONTACT_WAVE_MASK_FADE = HERO_BOTTOM_FADE * 1.8;
 export const FOOTER_HEIGHT = figmaPx(315);
+/** Projects page grid: wider than the landing's 3-card row. */
+export const PROJECTS_PAGE_COLUMNS = 4;
+
+export function projectsGridHeight(projectCount: number, columns: number) {
+  const rows = Math.max(1, Math.ceil(projectCount / columns));
+  return rows * SHOWCASE_CARD_H + (rows - 1) * SHOWCASE_CARD_GAP;
+}
+
 /** Navbar is 102 on the 1920 stage; projects page has no Hero under it. */
 export const PROJECTS_PAGE_NAV_HEIGHT = 40;
 export const PROJECTS_PAGE_HEIGHT = PROJECTS_PAGE_NAV_HEIGHT + SHOWCASE_HEIGHT;

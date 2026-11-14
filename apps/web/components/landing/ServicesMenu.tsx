@@ -101,13 +101,14 @@ export default function ServicesMenu({ children }: { children: ReactNode }) {
       className={SERVICES_MENU_CLASS}
       sx={{
         display: "flex",
-        [`&:hover > .${PANEL_CLASS}, &:has(:focus-visible) > .${PANEL_CLASS}`]: {
-          opacity: 1,
-          visibility: "visible",
-          transform: "translate(-50%, 0)",
-          pointerEvents: "auto",
-          transition: "opacity 0.2s ease, transform 0.2s ease, visibility 0s",
-        },
+        [`&:hover > .${PANEL_CLASS}, &:has(:focus-visible) > .${PANEL_CLASS}`]:
+          {
+            opacity: 1,
+            visibility: "visible",
+            transform: "translate(-50%, 0)",
+            pointerEvents: "auto",
+            transition: "opacity 0.2s ease, transform 0.2s ease, visibility 0s",
+          },
         [`&:hover .${CARET_CLASS}, &:has(:focus-visible) .${CARET_CLASS}`]: {
           transform: "rotate(180deg)",
         },
@@ -238,7 +239,11 @@ function ServicesPanel() {
             {group.items.map((item) => (
               <Box
                 key={item.label}
+                component="a"
+                href="/projects"
                 sx={{
+                  textDecoration: "none",
+                  cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
