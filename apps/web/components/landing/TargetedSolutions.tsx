@@ -58,21 +58,6 @@ export default function TargetedSolutions() {
     >
       <ScrollRevealPin holdPages={TITLE_HOLD_PAGES} anchorId="services">
         <Box
-          aria-hidden
-          sx={{
-            position: "absolute",
-            width: figmaPx(316),
-            height: figmaPx(316),
-            left: figmaPx(-101),
-            top: figmaPx(-106),
-            bgcolor: "#FF8A1F",
-            opacity: 0.1,
-            filter: `blur(${figmaPx(212)}px)`,
-            pointerEvents: "none",
-          }}
-        />
-
-        <Box
           sx={{
             position: "relative",
             width: "100%",

@@ -10,7 +10,7 @@ import ProjectShowcase from "@/components/landing/ProjectShowcase";
 import TargetedSolutions from "@/components/landing/TargetedSolutions";
 import MobileLanding from "@/components/mobile/MobileLanding";
 import {
-  getLandingContactWaveSrc,
+  getLandingHeroDesktopSrc,
   getLandingHeroSlideSrc,
   getLandingHeroSrc,
   getLandingLogoSrc,
@@ -26,7 +26,6 @@ export default async function Home() {
   const projects = await listProjects();
   const logoSrc = getLandingLogoSrc();
   const heroSrc = getLandingHeroSrc();
-  const contactWaveSrc = getLandingContactWaveSrc();
   const heroSlides = [
     {
       key: "web",
@@ -92,13 +91,13 @@ export default async function Home() {
             transformOrigin: "top left",
           }}
         >
-          <Hero heroSrc={heroSrc} slides={heroSlides} />
+          <Hero heroSrc={getLandingHeroDesktopSrc()} slides={heroSlides} />
           <TargetedSolutions />
           <HowWeWork />
           <ProjectShowcase projects={projects} />
           <Faq />
           <ContactCta />
-          <ContactForm waveSrc={contactWaveSrc} />
+          <ContactForm waveSrc={null} />
           <Footer />
         </Box>
       </Box>

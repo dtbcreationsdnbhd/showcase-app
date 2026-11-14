@@ -159,7 +159,6 @@ export default function Footer() {
         boxSizing: "border-box",
         width: "100%",
         height: FOOTER_HEIGHT,
-        bgcolor: "#3A0E24",
         overflow: "hidden",
       }}
     >

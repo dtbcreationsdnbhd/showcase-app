@@ -52,6 +52,7 @@ export default function Hero({
             priority
             draggable={false}
             sizes="100vw"
+            quality={90}
             style={{ objectFit: "cover", userSelect: "none" }}
           />
         ) : null}
@@ -60,7 +61,7 @@ export default function Hero({
             position: "absolute",
             inset: 0,
             background:
-              "linear-gradient(59.86deg, rgba(48, 4, 22, 0.6) 0%, rgba(48, 4, 22, 0) 55.05%)",
+              "linear-gradient(90deg, rgba(30, 4, 16, 0.85) 0%, rgba(30, 4, 16, 0.55) 35%, rgba(30, 4, 16, 0) 60%)",
           }}
         />
       </Box>
@@ -170,7 +171,8 @@ export default function Hero({
                 fontSize: 24,
                 lineHeight: "160%",
                 letterSpacing: "0.02em",
-                color: "#C4AAB2",
+                color: "#E6D3D9",
+                textShadow: "0 2px 12px rgba(0, 0, 0, 0.8)",
               }}
             >
               Empower your business with next-gen AI-powered tools, video

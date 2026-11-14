@@ -24,6 +24,15 @@ export function getLandingHeroSrc(): string | null {
   );
 }
 
+/** Drop `hero-bg-desktop.jpg` (or `.png` / `.webp`) into `apps/web/public/landing/`. */
+export function getLandingHeroDesktopSrc(): string | null {
+  return (
+    publicUrl("landing/hero-bg-desktop.jpg") ??
+    publicUrl("landing/hero-bg-desktop.png") ??
+    publicUrl("landing/hero-bg-desktop.webp")
+  );
+}
+
 /** Drop `hero-mobile.png` (or `.jpg` / `.webp`) into `apps/web/public/landing/`. */
 export function getLandingHeroMobileSrc(): string | null {
   return (

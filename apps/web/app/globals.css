@@ -82,6 +82,13 @@ body::after {
   }
 }
 
+@media (min-width: 768px) {
+  body::before,
+  body::after {
+    display: none;
+  }
+}
+
 /* For layers that must stay opaque (stacked mobile pages) yet read as the same backdrop. */
 .site-bg-surface {
   background: var(--site-bg);
