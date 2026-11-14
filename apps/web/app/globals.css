@@ -270,11 +270,11 @@ body {
 @keyframes solutions-dot-wave {
   0%,
   100% {
-    fill: rgb(214, 96, 132);
+    fill: rgb(255, 92, 154);
   }
   38%,
   52% {
-    fill: rgb(255, 196, 107);
+    fill: rgb(255, 222, 120);
   }
 }
 
@@ -292,7 +292,7 @@ body {
   .solutions-morph svg path,
   .solutions-morph svg ellipse {
     animation: none;
-    fill: rgb(255, 196, 107);
+    fill: rgb(255, 222, 120);
   }
 }
 
@@ -328,4 +328,35 @@ body {
     animation: none;
     background-position: 40% 50%;
   }
+}
+
+/* Scroll-linked hold for the desktop service rows; the range and --hold-shift
+   are set per row from SolutionsStickyRows. Without support the copy simply
+   scrolls, since the shift defaults to 0. */
+@keyframes service-copy-hold {
+  from {
+    transform: translate3d(0, calc(-1 * var(--hold-shift, 0px)), 0);
+  }
+  to {
+    transform: translate3d(0, var(--hold-shift, 0px), 0);
+  }
+}
+
+@supports (animation-timeline: scroll()) {
+  .service-copy-hold {
+    animation: service-copy-hold linear both;
+    animation-timeline: scroll(root);
+  }
+}
+
+/* Stacked drop-shadows build the extrusion: text-shadow would bleed through
+   the transparent, background-clipped fill. */
+.solutions-title-3d {
+  filter:
+    drop-shadow(0 2px 0 #D08A22)
+    drop-shadow(0 2px 0 #A9620F)
+    drop-shadow(0 2px 0 #844806)
+    drop-shadow(0 2px 0 #5E3002)
+    drop-shadow(0 10px 14px rgba(0, 0, 0, 0.65))
+    drop-shadow(0 0 18px rgba(255, 184, 72, 0.4));
 }

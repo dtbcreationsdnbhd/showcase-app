@@ -15,9 +15,14 @@ export const HERO_DESIGN_HEIGHT = 1200;
  * viewport. See the design spec before changing it — it drives three sections.
  */
 export const TITLE_HOLD_PAGES = 2;
-/** Pinned title page + its hold + AI / web / star / refresh — each one viewport. */
-export const SOLUTIONS_PAGE_COUNT = 5 + TITLE_HOLD_PAGES;
 export const SOLUTIONS_SERVICE_PAGES = 4;
+/** Extra scroll, in viewport pages, each service row's copy holds still for. */
+export const SOLUTIONS_SERVICE_HOLD_PAGES = 0.5;
+/** Pinned title page + its hold + AI / web / star / refresh, each one viewport plus its hold. */
+export const SOLUTIONS_PAGE_COUNT =
+  1 +
+  TITLE_HOLD_PAGES +
+  SOLUTIONS_SERVICE_PAGES * (1 + SOLUTIONS_SERVICE_HOLD_PAGES);
 /**
  * Stage px for one viewport tall page: after `scale(100vw/1920)` it reads as 100vh.
  * Use in CSS height: `calc(${LANDING_DESIGN_WIDTH}px * 100vh / 100vw)`.
