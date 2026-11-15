@@ -18,7 +18,6 @@ import {
   goldTextSx,
 } from "@/lib/gold-theme";
 import {
-  FAQ_TAIL_FADE_PAGES,
   STAGE_VIEWPORT_PAGE_HEIGHT_CSS,
   TITLE_HOLD_PAGES,
   figmaPx,
@@ -161,7 +160,6 @@ export default function Faq() {
         bgcolor: "transparent",
         position: "relative",
         overflow: "visible",
-        pb: `calc(${FAQ_TAIL_FADE_PAGES} * ${STAGE_VIEWPORT_PAGE_HEIGHT_CSS})`,
       }}
     >
       <FaqBackdrop targetId="faq" />

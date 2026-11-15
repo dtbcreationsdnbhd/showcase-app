@@ -75,12 +75,14 @@ export function showcaseSectionHeight(projectCount: number) {
 }
 /** FAQ: one viewport page for the pinned panel plus its hold. */
 export const FAQ_VIEWPORT_PAGES = 1 + TITLE_HOLD_PAGES;
-/** Soft bottom edge of the FAQ backdrop as it scrolls off, in viewport pages. */
-export const FAQ_TAIL_FADE_PAGES = 0.5;
+/** @deprecated FAQ no longer reserves empty scroll for a soft exit. */
+export const FAQ_TAIL_FADE_PAGES = 0;
 /** Contact CTA: one viewport page for the pinned title plus its hold. */
 export const CONTACT_CTA_VIEWPORT_PAGES = 1 + TITLE_HOLD_PAGES;
 /** Contact form is one full viewport on the scaled stage (not fixed Figma px). */
 export const CONTACT_FORM_VIEWPORT_PAGES = 1;
+/** @deprecated Contact form backdrop is a fixed viewport layer; no tail pad. */
+export const CONTACT_FORM_TAIL_FADE_PAGES = 0;
 export const CONTACT_FORM_HEIGHT_CSS = STAGE_VIEWPORT_PAGE_HEIGHT_CSS;
 export const CONTACT_FORM_PAD_TOP = figmaPx(56);
 export const CONTACT_FORM_PAD_BOTTOM = figmaPx(80);
@@ -111,14 +113,12 @@ export const PROJECTS_PAGE_HEIGHT = PROJECTS_PAGE_NAV_HEIGHT + SHOWCASE_HEIGHT;
 
 /** Desktop Why Us poster, 3840×2400, drawn across the full 1920 stage. */
 export const WHY_US_DESKTOP_HEIGHT = (LANDING_DESIGN_WIDTH * 2400) / 3840 * 0.88;
-/** Extra stage px so the soft bottom edge sits below the fold when settled. */
-export const WHY_US_BOTTOM_OVERSHOOT = 60;
 /** Soft bottom edge of the solutions backdrop as it scrolls off, in viewport pages. */
 export const SOLUTIONS_TAIL_FADE_PAGES = 0.5;
 
 /** Fixed stage sections. Solutions / Contact form / FAQ use viewport pages. */
 export const LANDING_HEIGHT_WITHOUT_SOLUTIONS =
-  HERO_DESIGN_HEIGHT + WHY_US_DESKTOP_HEIGHT + WHY_US_BOTTOM_OVERSHOOT + FOOTER_HEIGHT;
+  HERO_DESIGN_HEIGHT + WHY_US_DESKTOP_HEIGHT + FOOTER_HEIGHT;
 
 /**
  * Approximate design height assuming a 16:9 viewport for one page.
@@ -128,7 +128,7 @@ export const LANDING_DESIGN_HEIGHT =
   LANDING_HEIGHT_WITHOUT_SOLUTIONS +
   (SOLUTIONS_PAGE_COUNT + SOLUTIONS_TAIL_FADE_PAGES) * (LANDING_DESIGN_WIDTH * (9 / 16)) +
   CONTACT_FORM_VIEWPORT_PAGES * (LANDING_DESIGN_WIDTH * (9 / 16)) +
-  (FAQ_VIEWPORT_PAGES + FAQ_TAIL_FADE_PAGES) * (LANDING_DESIGN_WIDTH * (9 / 16)) +
+  FAQ_VIEWPORT_PAGES * (LANDING_DESIGN_WIDTH * (9 / 16)) +
   SHOWCASE_VIEWPORT_PAGES * (LANDING_DESIGN_WIDTH * (9 / 16)) +
   SOLUTIONS_RELEASE_HEIGHT;
 
@@ -136,5 +136,5 @@ export const LANDING_DESIGN_HEIGHT =
 export function landingFrameHeightCss(includeShowcase = true): string {
   const fixed = LANDING_HEIGHT_WITHOUT_SOLUTIONS + SOLUTIONS_RELEASE_HEIGHT;
   const showcase = includeShowcase ? ` + ${SHOWCASE_VIEWPORT_PAGES} * 100vh` : "";
-  return `calc(100vw * ${fixed} / ${LANDING_DESIGN_WIDTH} + ${SOLUTIONS_PAGE_COUNT + SOLUTIONS_TAIL_FADE_PAGES + CONTACT_FORM_VIEWPORT_PAGES + FAQ_VIEWPORT_PAGES + FAQ_TAIL_FADE_PAGES} * 100vh${showcase})`;
+  return `calc(100vw * ${fixed} / ${LANDING_DESIGN_WIDTH} + ${SOLUTIONS_PAGE_COUNT + SOLUTIONS_TAIL_FADE_PAGES + CONTACT_FORM_VIEWPORT_PAGES + FAQ_VIEWPORT_PAGES} * 100vh${showcase})`;
 }

@@ -153,6 +153,7 @@ export default function Footer() {
   return (
     <Box
       component="footer"
+      id="footer"
       ref={footerRef}
       sx={{
         position: "relative",
@@ -160,6 +161,7 @@ export default function Footer() {
         width: "100%",
         height: FOOTER_HEIGHT,
         overflow: "hidden",
+        bgcolor: "#2A0818",
       }}
     >
       <Box
