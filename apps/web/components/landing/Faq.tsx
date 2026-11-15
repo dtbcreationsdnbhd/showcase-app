@@ -9,15 +9,16 @@ import {
   FAQ_TITLE,
   type FaqItem,
 } from "@/lib/landing-content";
+import FaqBackdrop from "@/components/landing/FaqBackdrop";
 import ScrollRevealPin from "@/components/landing/ScrollRevealPin";
 import {
-  GLASS_BG,
   GLASS_SHADOW,
   GOLD_RIM,
   GOLD_TEXT,
-  GOLD_TEXT_GLOW,
+  goldTextSx,
 } from "@/lib/gold-theme";
 import {
+  FAQ_TAIL_FADE_PAGES,
   STAGE_VIEWPORT_PAGE_HEIGHT_CSS,
   TITLE_HOLD_PAGES,
   figmaPx,
@@ -73,10 +74,10 @@ function Answer({ item }: { item: FaqItem }) {
     ...barlow,
     m: 0,
     fontWeight: 500,
-    fontSize: figmaPx(14.5),
+    fontSize: figmaPx(17),
     lineHeight: "160%",
     letterSpacing: "0.01em",
-    color: "rgba(255, 255, 255, 0.82)",
+    color: "rgba(255, 255, 255, 0.92)",
   } as const;
 
   return (
@@ -153,14 +154,18 @@ export default function Faq() {
   return (
     <Box
       component="section"
+      id="faq"
       sx={{
         boxSizing: "border-box",
         width: "100%",
         bgcolor: "transparent",
         position: "relative",
+        overflow: "visible",
+        pb: `calc(${FAQ_TAIL_FADE_PAGES} * ${STAGE_VIEWPORT_PAGE_HEIGHT_CSS})`,
       }}
     >
-      <ScrollRevealPin holdPages={TITLE_HOLD_PAGES} anchorId="faq">
+      <FaqBackdrop targetId="faq" />
+      <ScrollRevealPin holdPages={TITLE_HOLD_PAGES}>
         <Box
           sx={{
             boxSizing: "border-box",
@@ -199,12 +204,9 @@ export default function Faq() {
                   fontSize: figmaPx(48),
                   lineHeight: 1,
                   letterSpacing: "-0.02em",
-                  backgroundImage: GRADIENT,
-                  backgroundClip: "text",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  color: "transparent",
-                  filter: GOLD_TEXT_GLOW,
+                  ...goldTextSx,
+                  filter:
+                    "drop-shadow(0 1.5px 0 #A9620F) drop-shadow(0 1.5px 0 #6B3804) drop-shadow(0 6px 10px rgba(0, 0, 0, 0.6))",
                   alignSelf: "flex-start",
                 }}
               >
@@ -216,9 +218,9 @@ export default function Faq() {
                   mt: `${figmaPx(14)}px`,
                   mb: `${figmaPx(32)}px`,
                   fontWeight: 500,
-                  fontSize: figmaPx(15),
+                  fontSize: figmaPx(17),
                   lineHeight: "150%",
-                  color: "rgba(255, 255, 255, 0.6)",
+                  color: "rgba(255, 255, 255, 0.72)",
                 }}
               >
                 {FAQ_SUBTITLE}
@@ -259,7 +261,7 @@ export default function Faq() {
                           : "transparent",
                         color: active ? "#FFE08A" : "rgba(255, 255, 255, 0.6)",
                         fontWeight: 600,
-                        fontSize: figmaPx(16),
+                        fontSize: figmaPx(17),
                         lineHeight: "130%",
                         cursor: "pointer",
                         appearance: "none",
@@ -325,8 +327,10 @@ export default function Faq() {
                         : "rgba(255, 214, 128, 0.22)",
                       borderRadius: `${figmaPx(14)}px`,
                       background: isOpen
-                        ? GLASS_BG
-                        : "rgba(255, 255, 255, 0.06)",
+                        ? "rgba(20, 6, 14, 0.82)"
+                        : "rgba(20, 6, 14, 0.45)",
+                      backdropFilter: isOpen ? "blur(12px)" : "blur(6px)",
+                      WebkitBackdropFilter: isOpen ? "blur(12px)" : "blur(6px)",
                       boxShadow: isOpen ? GLASS_SHADOW : "none",
                       transition:
                         "border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease",
@@ -375,8 +379,9 @@ export default function Faq() {
                         sx={{
                           flex: 1,
                           fontWeight: 600,
-                          fontSize: figmaPx(17),
+                          fontSize: figmaPx(19),
                           lineHeight: "135%",
+                          color: "#FFD866",
                         }}
                       >
                         {item.question}
