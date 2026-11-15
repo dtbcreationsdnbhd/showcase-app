@@ -1,12 +1,10 @@
 import Box from "@mui/material/Box";
-import ContactCta from "@/components/landing/ContactCta";
 import ContactForm from "@/components/landing/ContactForm";
 import Faq from "@/components/landing/Faq";
 import Footer from "@/components/landing/Footer";
 import Hero from "@/components/landing/Hero";
 import HowWeWork from "@/components/landing/HowWeWork";
 import Navbar from "@/components/landing/Navbar";
-import ProjectShowcase from "@/components/landing/ProjectShowcase";
 import TargetedSolutions from "@/components/landing/TargetedSolutions";
 import MobileLanding from "@/components/mobile/MobileLanding";
 import {
@@ -31,14 +29,14 @@ export default async function Home() {
       key: "web",
       category: "Website Design",
       title: "Websites & Landing Pages",
-      href: "#projects",
+      href: "/projects",
       src: getLandingHeroSlideSrc("hero-slide-web"),
     },
     {
       key: "video",
       category: "AI Video",
       title: "Stories for Your Brand",
-      href: "#projects",
+      href: "/projects",
       src: getLandingHeroSlideSrc("hero-slide-video"),
       isVideo: true,
     },
@@ -46,7 +44,7 @@ export default async function Home() {
       key: "teleflies",
       category: "Digital Tools",
       title: "TeleFlies",
-      href: "#projects",
+      href: "/projects",
       src: getLandingHeroSlideSrc("hero-slide-teleflies"),
     },
   ];
@@ -56,7 +54,7 @@ export default async function Home() {
       <Box
         className="landing-frame"
         style={{
-          height: landingFrameHeightCss(projects.length > 0),
+          height: landingFrameHeightCss(false),
         }}
         sx={{
           [MOBILE_ONLY]: { display: "none" },
@@ -94,9 +92,7 @@ export default async function Home() {
           <Hero heroSrc={getLandingHeroDesktopSrc()} slides={heroSlides} />
           <TargetedSolutions />
           <HowWeWork />
-          <ProjectShowcase projects={projects} />
           <Faq />
-          <ContactCta />
           <ContactForm waveSrc={null} />
           <Footer />
         </Box>

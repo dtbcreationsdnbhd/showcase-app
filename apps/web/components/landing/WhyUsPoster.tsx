@@ -23,7 +23,7 @@ function PosterButton() {
         pointerEvents: "auto",
       }}
     >
-      <PillButton href="#contact-form">
+      <PillButton href="#contact">
         Let's Build Your Next Project
       </PillButton>
     </Box>

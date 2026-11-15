@@ -341,7 +341,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
   return (
     <Box
       component="section"
-      id="contact-form"
+      id="contact"
       sx={{
         position: "relative",
         boxSizing: "border-box",
