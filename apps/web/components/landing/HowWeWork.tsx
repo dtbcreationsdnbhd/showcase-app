@@ -1,6 +1,9 @@
 import Box from "@mui/material/Box";
 import WhyUsPoster from "@/components/landing/WhyUsPoster";
-import { WHY_US_DESKTOP_HEIGHT } from "@/lib/landing-layout";
+import {
+  STAGE_VIEWPORT_PAGE_HEIGHT_CSS,
+  WHY_US_VIEWPORT_PAGES,
+} from "@/lib/landing-layout";
 
 export default function HowWeWork() {
   return (
@@ -10,7 +13,7 @@ export default function HowWeWork() {
       sx={{
         position: "relative",
         width: "100%",
-        height: WHY_US_DESKTOP_HEIGHT,
+        height: `calc(${WHY_US_VIEWPORT_PAGES} * ${STAGE_VIEWPORT_PAGE_HEIGHT_CSS})`,
         lineHeight: 0,
       }}
     >
