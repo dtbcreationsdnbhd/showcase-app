@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { Fragment, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import ProjectBodyText from "@/components/landing/ProjectBodyText";
 import ShowcaseMedia from "@/components/landing/ShowcaseMedia";
 import { LANDING_DESIGN_WIDTH, figmaPx } from "@/lib/landing-layout";
 import {
@@ -48,6 +49,7 @@ const bodySx = {
   lineHeight: "160%",
   letterSpacing: "0.02em",
   color: "#FFFFFF",
+  whiteSpace: "pre-wrap",
   overflowWrap: "anywhere",
   minWidth: 0,
 } as const;
@@ -619,7 +621,7 @@ export default function ProjectDetailPopup({
               }}
             >
               <Typography sx={labelSx}>Challenge</Typography>
-              <Typography sx={bodySx}>{detail.challenge}</Typography>
+              <ProjectBodyText value={detail.challenge} sx={bodySx} />
             </Box>
 
             <Box
@@ -633,7 +635,7 @@ export default function ProjectDetailPopup({
               }}
             >
               <Typography sx={labelSx}>Solution</Typography>
-              <Typography sx={bodySx}>{detail.solution}</Typography>
+              <ProjectBodyText value={detail.solution} sx={bodySx} />
             </Box>
           </Box>
         </Box>

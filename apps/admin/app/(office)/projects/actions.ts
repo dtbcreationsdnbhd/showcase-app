@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { mediaFileError } from "@/lib/project-media";
 import { isProjectCategory, projectTable } from "@/lib/projects";
+import { plainTextFromHtml } from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
 
 const BUCKET = "project-images";
@@ -35,7 +36,12 @@ export async function createShowcaseProject(
   }
   const category = categoryRaw;
 
-  if (!name || tags.length === 0 || !challenge || !solution) {
+  if (
+    !name ||
+    tags.length === 0 ||
+    !plainTextFromHtml(challenge) ||
+    !plainTextFromHtml(solution)
+  ) {
     return { ok: false, message: "Fill in every field." };
   }
 
@@ -162,7 +168,12 @@ export async function updateShowcaseProject(
   }
   const category = categoryRaw;
 
-  if (!name || tags.length === 0 || !challenge || !solution) {
+  if (
+    !name ||
+    tags.length === 0 ||
+    !plainTextFromHtml(challenge) ||
+    !plainTextFromHtml(solution)
+  ) {
     return { ok: false, message: "Fill in every field." };
   }
 

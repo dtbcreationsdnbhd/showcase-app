@@ -14,6 +14,7 @@ import { useEffect, useId, useRef, useState, useTransition, type DragEvent, type
 
 import { createShowcaseProject, updateShowcaseProject } from "@/app/(office)/projects/actions";
 import NoticeSnackbar, { type AuthNotice } from "@/components/NoticeSnackbar";
+import RichTextField from "@/components/office/RichTextField";
 import { PROJECT_CATEGORIES } from "@/lib/project-categories";
 import {
   MAX_UPLOAD_TOTAL_BYTES,
@@ -253,29 +254,19 @@ function ProjectFormFields({
             onInputChange={setTagInput}
           />
         </Box>
-        <TextField
+        <RichTextField
           name="challenge"
           label="Challenge"
           required
-          fullWidth
-          size="small"
-          multiline
-          minRows={3}
           disabled={pending}
           defaultValue={project?.challenge ?? ""}
-          sx={fieldSx}
         />
-        <TextField
+        <RichTextField
           name="solution"
           label="Solution"
           required
-          fullWidth
-          size="small"
-          multiline
-          minRows={3}
           disabled={pending}
           defaultValue={project?.solution ?? ""}
-          sx={fieldSx}
         />
         <ImageField
           name="mainImage"

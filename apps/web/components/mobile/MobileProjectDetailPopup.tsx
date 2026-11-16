@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { useEffect, useRef, useState, type TouchEvent } from "react";
 import { createPortal } from "react-dom";
+import ProjectBodyText from "@/components/landing/ProjectBodyText";
 import ShowcaseMedia from "@/components/landing/ShowcaseMedia";
 import {
   mobileSheetMotion,
@@ -427,11 +428,11 @@ export default function MobileProjectDetailPopup({
           </Section>
 
           <Section label="Challenge">
-            <Typography sx={bodySx}>{detail.challenge}</Typography>
+            <ProjectBodyText value={detail.challenge} sx={bodySx} />
           </Section>
 
           <Section label="Solution">
-            <Typography sx={bodySx}>{detail.solution}</Typography>
+            <ProjectBodyText value={detail.solution} sx={bodySx} />
           </Section>
         </Box>
       </Box>
