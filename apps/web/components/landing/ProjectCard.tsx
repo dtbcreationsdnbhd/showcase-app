@@ -2,7 +2,7 @@
 
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Image from "next/image";
+import ShowcaseMedia from "@/components/landing/ShowcaseMedia";
 import { figmaPx } from "@/lib/landing-layout";
 
 const barlow = {
@@ -72,19 +72,13 @@ export default function ProjectCard({
         }}
       >
         {imageSrc ? (
-          <Image
+          <ShowcaseMedia
             src={imageSrc}
             alt={title}
-            fill
-            loading={eager ? "eager" : undefined}
             sizes={`${CARD_W}px`}
-            style={{
-              objectFit: "contain",
-              objectPosition: "center",
-              zIndex: 1,
-              filter:
-                "drop-shadow(0 0 1px rgba(255, 255, 255, 0.85)) drop-shadow(0 18px 28px rgba(0, 0, 0, 0.55))",
-            }}
+            eager={eager}
+            objectFit="cover"
+            filter="drop-shadow(0 0 1px rgba(255, 255, 255, 0.85)) drop-shadow(0 18px 28px rgba(0, 0, 0, 0.55))"
           />
         ) : (
           <Box

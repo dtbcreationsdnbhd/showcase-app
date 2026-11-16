@@ -1,17 +1,14 @@
 import Box from "@mui/material/Box";
-import ContactCta from "@/components/landing/ContactCta";
 import ContactForm from "@/components/landing/ContactForm";
 import Faq from "@/components/landing/Faq";
 import Footer from "@/components/landing/Footer";
 import Hero from "@/components/landing/Hero";
 import HowWeWork from "@/components/landing/HowWeWork";
 import Navbar from "@/components/landing/Navbar";
-import ProjectShowcase from "@/components/landing/ProjectShowcase";
 import TargetedSolutions from "@/components/landing/TargetedSolutions";
 import MobileLanding from "@/components/mobile/MobileLanding";
 import {
-  getLandingContactWaveSrc,
-  getLandingHeroSlideSrc,
+  getLandingHeroDesktopSrc,
   getLandingHeroSrc,
   getLandingLogoSrc,
 } from "@/lib/landing-assets";
@@ -20,44 +17,20 @@ import {
   landingFrameHeightCss,
 } from "@/lib/landing-layout";
 import { DESKTOP_ONLY, MOBILE_ONLY } from "@/lib/landing-layout-mobile";
-import { listProjects } from "@/lib/projects";
+import { listProjects, projectToHeroSlide } from "@/lib/projects";
 
 export default async function Home() {
   const projects = await listProjects();
   const logoSrc = getLandingLogoSrc();
   const heroSrc = getLandingHeroSrc();
-  const contactWaveSrc = getLandingContactWaveSrc();
-  const heroSlides = [
-    {
-      key: "web",
-      category: "Website Design",
-      title: "Websites & Landing Pages",
-      href: "#projects",
-      src: getLandingHeroSlideSrc("hero-slide-web"),
-    },
-    {
-      key: "video",
-      category: "AI Video",
-      title: "Stories for Your Brand",
-      href: "#projects",
-      src: getLandingHeroSlideSrc("hero-slide-video"),
-      isVideo: true,
-    },
-    {
-      key: "teleflies",
-      category: "Digital Tools",
-      title: "TeleFlies",
-      href: "#projects",
-      src: getLandingHeroSlideSrc("hero-slide-teleflies"),
-    },
-  ];
+  const heroSlides = projects.map(projectToHeroSlide);
 
   return (
     <Box component="main">
       <Box
         className="landing-frame"
         style={{
-          height: landingFrameHeightCss(projects.length > 0),
+          height: landingFrameHeightCss(false),
         }}
         sx={{
           [MOBILE_ONLY]: { display: "none" },
@@ -92,13 +65,11 @@ export default async function Home() {
             transformOrigin: "top left",
           }}
         >
-          <Hero heroSrc={heroSrc} slides={heroSlides} />
+          <Hero heroSrc={getLandingHeroDesktopSrc()} slides={heroSlides} />
           <TargetedSolutions />
           <HowWeWork />
-          <ProjectShowcase projects={projects} />
           <Faq />
-          <ContactCta />
-          <ContactForm waveSrc={contactWaveSrc} />
+          <ContactForm waveSrc={null} />
           <Footer />
         </Box>
       </Box>

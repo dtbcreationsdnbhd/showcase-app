@@ -3,14 +3,15 @@
 -- Vercel Production reads and writes production_projects.
 -- Visitors may read rows. Signed-in back-office users may insert and update rows.
 -- Visitors may read rows. Signed-in back-office users may insert and delete rows.
--- Images go in the public project-images bucket.
+-- Images and videos go in the public project-images bucket (50 MB cap; Free plan).
 -- Re-running this file keeps existing rows.
 
 create table if not exists public.staging_projects (
   id uuid primary key default gen_random_uuid(),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
-  name text not null,
+  name text not null, 
+  category text not null,
   tags text[] not null,
   challenge text not null,
   solution text not null,
@@ -23,6 +24,7 @@ create table if not exists public.production_projects (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   name text not null,
+  category text not null,
   tags text[] not null,
   challenge text not null,
   solution text not null,
@@ -35,6 +37,17 @@ alter table public.staging_projects add column if not exists updated_at timestam
 alter table public.production_projects add column if not exists updated_at timestamptz not null default now();
 alter table public.staging_projects add column if not exists detail_image_urls text[];
 alter table public.production_projects add column if not exists detail_image_urls text[];
+-- Top-level category: digital_tools | website_designs | platform_creation
+alter table public.staging_projects add column if not exists category text;
+alter table public.production_projects add column if not exists category text;
+update public.staging_projects
+set category = 'website_designs'
+where category is null or category = '';
+update public.production_projects
+set category = 'website_designs'
+where category is null or category = '';
+alter table public.staging_projects alter column category set not null;
+alter table public.production_projects alter column category set not null;
 
 do $$
 begin
@@ -160,7 +173,7 @@ create policy "authenticated can delete production projects"
   using (true);
 
 insert into storage.buckets (id, name, public, file_size_limit)
-values ('project-images', 'project-images', true, 5242880)
+values ('project-images', 'project-images', true, 52428800)
 on conflict (id) do update
 set public = excluded.public,
     file_size_limit = excluded.file_size_limit;

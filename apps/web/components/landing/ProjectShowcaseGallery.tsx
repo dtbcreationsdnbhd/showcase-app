@@ -13,14 +13,16 @@ const CARD_GAP = figmaPx(24);
 
 export default function ProjectShowcaseGallery({
   projects,
+  columns: maxColumns = SHOWCASE_COLUMNS,
 }: {
   projects: readonly ShowcaseProject[];
+  columns?: number;
 }) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const close = useCallback(() => setSelectedId(null), []);
   const selected = projects.find((project) => project.id === selectedId) ?? null;
-  const columns = Math.min(SHOWCASE_COLUMNS, projects.length);
-  const rows = Math.ceil(projects.length / SHOWCASE_COLUMNS);
+  const columns = Math.min(maxColumns, projects.length);
+  const rows = Math.ceil(projects.length / maxColumns);
   const rowWidth = CARD_W * columns + CARD_GAP * Math.max(columns - 1, 0);
   const gridHeight = rows * CARD_H + CARD_GAP * Math.max(rows - 1, 0);
 

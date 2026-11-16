@@ -5,18 +5,22 @@ export const INQUIRY_PAGE_SIZE = INQUIRY_PAGE_SIZES[0];
 export const INQUIRY_SOURCES = ["web", "mobile"] as const;
 
 export const INQUIRY_SERVICES = [
-  "Branding Design",
-  "Design System",
-  "Product Design",
-  "Website Design",
-  "Other Services",
+  "AI IP Management (Lifestyle)",
+  "AI IP Management (Script)",
+  "AI Music Video",
+  "AI Video 30s",
+  "AI Drama Series",
+  "Porn Site Setup",
+  "Movie / TV Site Setup",
+  "Other",
 ] as const;
 
 export const INQUIRY_BUDGETS = [
-  "$10.000 - $20.000",
-  "$20.000 - $50.000",
-  "$50.000 - $100.000",
-  "> $100.000",
+  "Under $1,000",
+  "$1,000 – $3,000",
+  "$3,000 – $5,000",
+  "$5,000+",
+  "Monthly retainer",
 ] as const;
 
 export const INQUIRY_CYCLES = [

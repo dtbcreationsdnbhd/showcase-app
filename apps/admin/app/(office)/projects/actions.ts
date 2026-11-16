@@ -2,11 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 
-import { projectTable } from "@/lib/projects";
+import { mediaFileError } from "@/lib/project-media";
+import { isProjectCategory, projectTable } from "@/lib/projects";
+import { plainTextFromHtml } from "@/lib/rich-text";
 import { createClient } from "@/lib/supabase/server";
 
-const IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
-const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 const BUCKET = "project-images";
 
 type ActionResult = { ok: true } | { ok: false; message: string };
@@ -18,6 +18,7 @@ export async function createShowcaseProject(
   formData: FormData,
 ): Promise<ActionResult> {
   const name = String(formData.get("name") ?? "").trim();
+  const categoryRaw = String(formData.get("category") ?? "").trim();
   const tags = String(formData.get("tags") ?? "")
     .split(",")
     .map((tag) => tag.trim())
@@ -30,22 +31,32 @@ export async function createShowcaseProject(
     .map(imageFile)
     .filter((file): file is File => file !== null);
 
-  if (!name || tags.length === 0 || !challenge || !solution) {
+  if (!isProjectCategory(categoryRaw)) {
+    return { ok: false, message: "Pick a category." };
+  }
+  const category = categoryRaw;
+
+  if (
+    !name ||
+    tags.length === 0 ||
+    !plainTextFromHtml(challenge) ||
+    !plainTextFromHtml(solution)
+  ) {
     return { ok: false, message: "Fill in every field." };
   }
 
-  if (!mainImage || detailImages.length === 0) {
+  if (!mainImage) {
     return {
       ok: false,
-      message: "Upload a main image and at least one detail image.",
+      message: "Upload a main media file.",
     };
   }
 
-  const imageProblem = [mainImage, ...detailImages]
-    .map(imageError)
+  const mediaProblem = [mainImage, ...detailImages]
+    .map(mediaError)
     .find((message) => message !== null);
-  if (imageProblem) {
-    return { ok: false, message: imageProblem };
+  if (mediaProblem) {
+    return { ok: false, message: mediaProblem };
   }
 
   let table: ReturnType<typeof projectTable>;
@@ -107,6 +118,7 @@ export async function createShowcaseProject(
   const { error } = await supabase.from(table).insert({
     id,
     name,
+    category,
     tags,
     challenge,
     solution,
@@ -129,6 +141,7 @@ export async function updateShowcaseProject(
 ): Promise<ActionResult> {
   const id = String(formData.get("id") ?? "").trim();
   const name = String(formData.get("name") ?? "").trim();
+  const categoryRaw = String(formData.get("category") ?? "").trim();
   const tags = String(formData.get("tags") ?? "")
     .split(",")
     .map((tag) => tag.trim())
@@ -150,22 +163,32 @@ export async function updateShowcaseProject(
     return { ok: false, message: "Could not save the project." };
   }
 
-  if (!name || tags.length === 0 || !challenge || !solution) {
+  if (!isProjectCategory(categoryRaw)) {
+    return { ok: false, message: "Pick a category." };
+  }
+  const category = categoryRaw;
+
+  if (
+    !name ||
+    tags.length === 0 ||
+    !plainTextFromHtml(challenge) ||
+    !plainTextFromHtml(solution)
+  ) {
     return { ok: false, message: "Fill in every field." };
   }
 
-  const imageProblem = [mainImage, ...detailImages]
+  const mediaProblem = [mainImage, ...detailImages]
     .filter((file): file is File => file !== null)
-    .map(imageError)
+    .map(mediaError)
     .find((message) => message !== null);
-  if (imageProblem) {
-    return { ok: false, message: imageProblem };
+  if (mediaProblem) {
+    return { ok: false, message: mediaProblem };
   }
 
-  if (!mainImage && !keptMain && detailImages.length === 0 && keptDetailInputs.length === 0) {
+  if (!mainImage && !keptMain) {
     return {
       ok: false,
-      message: "Upload a main image and at least one detail image.",
+      message: "Upload a main media file.",
     };
   }
 
@@ -217,11 +240,13 @@ export async function updateShowcaseProject(
     return { ok: false, message: "Could not save the project." };
   }
 
-  const keptDetailUrls = currentDetails.filter((url) => keptDetailInputs.includes(url));
-  if ((!mainImage && !keptMain) || (detailImages.length === 0 && keptDetailUrls.length === 0)) {
+  const keptDetailUrls = currentDetails.filter((url) =>
+    keptDetailInputs.includes(url),
+  );
+  if (!mainImage && !keptMain) {
     return {
       ok: false,
-      message: "Upload a main image and at least one detail image.",
+      message: "Upload a main media file.",
     };
   }
 
@@ -272,6 +297,7 @@ export async function updateShowcaseProject(
     .from(table)
     .update({
       name,
+      category,
       tags,
       challenge,
       solution,
@@ -360,21 +386,15 @@ function imageFile(value: FormDataEntryValue | null) {
   return value;
 }
 
-function imageError(file: File) {
-  if (!IMAGE_TYPES.has(file.type)) {
-    return "Images must be JPG, PNG, or WebP.";
-  }
-
-  if (file.size > MAX_IMAGE_BYTES) {
-    return "Each image must be 5 MB or smaller.";
-  }
-
-  return null;
+function mediaError(file: File) {
+  return mediaFileError(file);
 }
 
 function extension(file: File) {
   if (file.type === "image/png") return "png";
   if (file.type === "image/webp") return "webp";
+  if (file.type === "video/mp4") return "mp4";
+  if (file.type === "video/webm") return "webm";
   return "jpg";
 }
 

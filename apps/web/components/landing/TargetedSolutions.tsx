@@ -3,6 +3,7 @@ import Typography from "@mui/material/Typography";
 import { getLandingServiceIconSrc, getLandingServiceMorphSrc } from "@/lib/landing-assets";
 import SolutionsStickyRows from "@/components/landing/SolutionsStickyRows";
 import ScrollRevealPin from "@/components/landing/ScrollRevealPin";
+import SolutionsBackdrop from "@/components/landing/SolutionsBackdrop";
 import { goldTextSx } from "@/lib/gold-theme";
 import {
   SOLUTIONS_INTRO_TEXT,
@@ -11,6 +12,8 @@ import {
 } from "@/lib/landing-content";
 import {
   SOLUTIONS_RELEASE_HEIGHT,
+  SOLUTIONS_TAIL_FADE_PAGES,
+  STAGE_VIEWPORT_PAGE_HEIGHT_CSS,
   TITLE_HOLD_PAGES,
   figmaPx,
 } from "@/lib/landing-layout";
@@ -25,8 +28,8 @@ const watermarkWord = {
   m: 0,
   fontStyle: "normal",
   fontWeight: 700,
-  fontSize: figmaPx(72),
-  lineHeight: `${figmaPx(96)}px`,
+  fontSize: figmaPx(92),
+  lineHeight: `${figmaPx(120)}px`,
   textAlign: "center",
   textTransform: "uppercase",
   whiteSpace: "nowrap",
@@ -40,11 +43,12 @@ export default function TargetedSolutions() {
     refresh: getLandingServiceIconSrc("refresh"),
   };
   const morphSrc = getLandingServiceMorphSrc();
-  const watermarkW = figmaPx(869);
+  const watermarkW = figmaPx(1120);
 
   return (
     <Box
       component="section"
+      id="solutions"
       sx={{
         boxSizing: "border-box",
         display: "flex",
@@ -56,27 +60,13 @@ export default function TargetedSolutions() {
         overflow: "visible",
       }}
     >
+      <SolutionsBackdrop targetId="solutions" />
       <ScrollRevealPin holdPages={TITLE_HOLD_PAGES} anchorId="services">
-        <Box
-          aria-hidden
-          sx={{
-            position: "absolute",
-            width: figmaPx(316),
-            height: figmaPx(316),
-            left: figmaPx(-101),
-            top: figmaPx(-106),
-            bgcolor: "#FF8A1F",
-            opacity: 0.1,
-            filter: `blur(${figmaPx(212)}px)`,
-            pointerEvents: "none",
-          }}
-        />
-
         <Box
           sx={{
             position: "relative",
             width: "100%",
-            height: figmaPx(150),
+            height: figmaPx(180),
             flexShrink: 0,
           }}
         >
@@ -90,7 +80,7 @@ export default function TargetedSolutions() {
               justifyContent: "center",
               gap: `${figmaPx(26)}px`,
               width: watermarkW,
-              height: figmaPx(96),
+              height: figmaPx(120),
               left: `calc(50% - ${watermarkW}px / 2)`,
               top: figmaPx(35),
               m: 0,
@@ -100,7 +90,7 @@ export default function TargetedSolutions() {
               <Typography
                 key={word}
                 component="span"
-                className="solutions-title-flow"
+                className="solutions-title-flow solutions-title-3d"
                 sx={{ ...watermarkWord }}
               >
                 {word}
@@ -127,14 +117,16 @@ export default function TargetedSolutions() {
             sx={{
               ...barlow,
               width: "100%",
-              height: figmaPx(58),
+              height: figmaPx(68),
               fontStyle: "normal",
               fontWeight: 600,
-              fontSize: figmaPx(36),
-              lineHeight: `${figmaPx(58)}px`,
+              fontSize: figmaPx(44),
+              lineHeight: `${figmaPx(68)}px`,
               textAlign: "center",
               letterSpacing: "-0.02em",
               ...goldTextSx,
+              filter:
+                "drop-shadow(0 1.5px 0 #A9620F) drop-shadow(0 1.5px 0 #6B3804) drop-shadow(0 6px 10px rgba(0, 0, 0, 0.6))",
               whiteSpace: "nowrap",
             }}
           >
@@ -149,18 +141,19 @@ export default function TargetedSolutions() {
               alignItems: "center",
               p: 0,
               gap: `${figmaPx(10)}px`,
-              width: figmaPx(640),
+              width: figmaPx(820),
             }}
           >
             <Typography
               sx={{
                 ...barlow,
-                width: figmaPx(797),
+                width: figmaPx(900),
                 fontStyle: "normal",
                 fontWeight: 500,
-                fontSize: figmaPx(16.5),
+                fontSize: figmaPx(20),
                 lineHeight: "140%",
                 textAlign: "center",
+                textWrap: "balance",
                 color: "#FFFFFF",
               }}
             >
@@ -179,7 +172,7 @@ export default function TargetedSolutions() {
           alignItems: "center",
           width: "100%",
           flexShrink: 0,
-          pb: `${SOLUTIONS_RELEASE_HEIGHT}px`,
+          pb: `calc(${SOLUTIONS_RELEASE_HEIGHT}px + ${SOLUTIONS_TAIL_FADE_PAGES} * ${STAGE_VIEWPORT_PAGE_HEIGHT_CSS})`,
         }}
       >
         <SolutionsStickyRows iconSrcs={iconSrcs} morphSrc={morphSrc} />

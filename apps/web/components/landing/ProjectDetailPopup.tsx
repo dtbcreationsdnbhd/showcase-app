@@ -2,11 +2,16 @@
 
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Image from "next/image";
 import { Fragment, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import ProjectBodyText from "@/components/landing/ProjectBodyText";
+import ShowcaseMedia from "@/components/landing/ShowcaseMedia";
 import { LANDING_DESIGN_WIDTH, figmaPx } from "@/lib/landing-layout";
-import type { ShowcaseProject } from "@/lib/projects";
+import {
+  projectGalleryMedia,
+  type ShowcaseProject,
+} from "@/lib/projects";
+const GALLERY_ROTATE_MS = 5000;
 
 const barlow = {
   fontFamily:
@@ -15,12 +20,12 @@ const barlow = {
 
 const PAD_X = 44;
 const PAD_Y = 52;
-const PHOTO_W = 620;
-const PHOTO_H = 465;
-const THUMB_W = 120;
-const THUMB_H = 90;
-const COL_GAP = 60;
-const TEXT_W = 404;
+/** Same portrait ratio as ProjectCard (276 × 414.75). */
+const PHOTO_ASPECT = 276 / 414.75;
+const PHOTO_W = 480;
+const PHOTO_H = PHOTO_W / PHOTO_ASPECT;
+const COL_GAP = 48;
+const TEXT_W = 520;
 
 const labelSx = {
   ...barlow,
@@ -44,6 +49,7 @@ const bodySx = {
   lineHeight: "160%",
   letterSpacing: "0.02em",
   color: "#FFFFFF",
+  whiteSpace: "pre-wrap",
   overflowWrap: "anywhere",
   minWidth: 0,
 } as const;
@@ -53,45 +59,128 @@ function ProjectPhoto({
   width,
   height,
   alt,
+  controls = false,
+  objectFit = "cover",
+  aspectRatio = PHOTO_ASPECT,
 }: {
   src: string | null;
-  width: number;
-  height: number;
+  width: number | string;
+  height?: number | string;
   alt: string;
+  controls?: boolean;
+  objectFit?: "contain" | "cover";
+  aspectRatio?: number;
 }) {
+  const frameSx = {
+    position: "relative" as const,
+    boxSizing: "border-box" as const,
+    width,
+    ...(height !== undefined
+      ? { height }
+      : { aspectRatio: `${aspectRatio}`, height: "auto" }),
+    overflow: "hidden",
+    background:
+      "linear-gradient(180deg, rgba(255, 255, 255, 0.52) 0%, rgba(198, 206, 214, 0.36) 42%, rgba(132, 140, 150, 0.42) 100%)",
+    backdropFilter: "blur(22px) saturate(1.35)",
+    WebkitBackdropFilter: "blur(22px) saturate(1.35)",
+    border: "1px solid rgba(255, 255, 255, 0.05)",
+    borderRadius: `${figmaPx(12)}px`,
+    flexShrink: 0,
+  };
+
   if (!src) {
-    return <ImagePlaceholder width={width} height={height} />;
+    return (
+      <ImagePlaceholder
+        width={typeof width === "number" ? width : figmaPx(PHOTO_W)}
+        height={
+          typeof height === "number" ? height : figmaPx(PHOTO_H)
+        }
+      />
+    );
   }
 
+  const sizeHint =
+    typeof width === "number" ? `${width}px` : `${figmaPx(PHOTO_W)}px`;
+
   return (
-    <Box
-      sx={{
-        position: "relative",
-        boxSizing: "border-box",
-        width,
-        height,
-        overflow: "hidden",
-        background:
-          "linear-gradient(180deg, rgba(255, 255, 255, 0.52) 0%, rgba(198, 206, 214, 0.36) 42%, rgba(132, 140, 150, 0.42) 100%)",
-        backdropFilter: "blur(22px) saturate(1.35)",
-        WebkitBackdropFilter: "blur(22px) saturate(1.35)",
-        border: "1px solid rgba(255, 255, 255, 0.05)",
-        borderRadius: `${figmaPx(12)}px`,
-        flexShrink: 0,
-      }}
-    >
-      <Image
+    <Box sx={frameSx}>
+      <ShowcaseMedia
         src={src}
         alt={alt}
-        fill
-        sizes={`${width}px`}
-        style={{
-          objectFit: "contain",
-          objectPosition: "center",
-          filter:
-            "drop-shadow(0 0 1px rgba(255, 255, 255, 0.55)) drop-shadow(0 12px 22px rgba(0, 0, 0, 0.4))",
-        }}
+        sizes={sizeHint}
+        controls={controls}
+        autoPlay={!controls}
+        objectFit={objectFit}
+        filter="drop-shadow(0 0 1px rgba(255, 255, 255, 0.55)) drop-shadow(0 12px 22px rgba(0, 0, 0, 0.4))"
       />
+    </Box>
+  );
+}
+
+function GalleryArrow({
+  direction,
+  onClick,
+}: {
+  direction: "prev" | "next";
+  onClick: () => void;
+}) {
+  const isPrev = direction === "prev";
+  return (
+    <Box
+      component="button"
+      type="button"
+      aria-label={isPrev ? "Previous media" : "Next media"}
+      onClick={(event) => {
+        event.stopPropagation();
+        onClick();
+      }}
+      sx={{
+        position: "absolute",
+        top: "50%",
+        transform: "translateY(-50%)",
+        ...(isPrev ? { left: figmaPx(12) } : { right: figmaPx(12) }),
+        zIndex: 2,
+        width: figmaPx(40),
+        height: figmaPx(40),
+        p: 0,
+        m: 0,
+        border: "1px solid rgba(255, 255, 255, 0.18)",
+        borderRadius: "50%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        bgcolor: "rgba(8, 4, 12, 0.45)",
+        backdropFilter: "blur(10px)",
+        WebkitBackdropFilter: "blur(10px)",
+        cursor: "pointer",
+        appearance: "none",
+        color: "#FFFFFF",
+        transition: "background-color 160ms ease, border-color 160ms ease",
+        "&:hover": {
+          bgcolor: "rgba(8, 4, 12, 0.68)",
+          borderColor: "rgba(255, 215, 122, 0.55)",
+        },
+        "&:focus-visible": {
+          outline: "2px solid #FF2D78",
+          outlineOffset: 2,
+        },
+      }}
+    >
+      <Box
+        component="svg"
+        viewBox="0 0 24 24"
+        aria-hidden
+        sx={{ width: figmaPx(18), height: figmaPx(18), display: "block" }}
+      >
+        <path
+          d={isPrev ? "M14.5 5.5 8 12l6.5 6.5" : "M9.5 5.5 16 12l-6.5 6.5"}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </Box>
     </Box>
   );
 }
@@ -160,28 +249,56 @@ export default function ProjectDetailPopup({
   onClose: () => void;
 }) {
   const detail = project;
-  const images = project.detailImageUrls;
-  const [thumb, setThumb] = useState(0);
+  const { media } = projectGalleryMedia(project);
+  const [slide, setSlide] = useState(0);
+  const [resumeKey, setResumeKey] = useState(0);
   const [mounted, setMounted] = useState(false);
-  const imageSrc = images[thumb] ?? images[0] ?? null;
+  const imageSrc = media[slide] ?? media[0] ?? null;
+  const canSlide = media.length > 1;
+
+  function goTo(index: number) {
+    if (media.length < 1) return;
+    setSlide(((index % media.length) + media.length) % media.length);
+    setResumeKey((key) => key + 1);
+  }
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   useEffect(() => {
-    setThumb(0);
+    setSlide(0);
+    setResumeKey(0);
   }, [project.id]);
 
   useEffect(() => {
     function onKey(event: KeyboardEvent) {
       if (event.key === "Escape") {
         onClose();
+        return;
+      }
+      if (media.length < 2) return;
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        setSlide((current) => (current - 1 + media.length) % media.length);
+        setResumeKey((key) => key + 1);
+      } else if (event.key === "ArrowRight") {
+        event.preventDefault();
+        setSlide((current) => (current + 1) % media.length);
+        setResumeKey((key) => key + 1);
       }
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [onClose]);
+  }, [onClose, media.length]);
+
+  useEffect(() => {
+    if (!canSlide) return;
+    const id = window.setInterval(() => {
+      setSlide((current) => (current + 1) % media.length);
+    }, GALLERY_ROTATE_MS);
+    return () => window.clearInterval(id);
+  }, [canSlide, media.length, project.id, resumeKey]);
 
   useEffect(() => {
     const html = document.documentElement;
@@ -204,8 +321,7 @@ export default function ProjectDetailPopup({
 
   const cardW = figmaPx(PAD_X + PHOTO_W + COL_GAP + TEXT_W + PAD_X);
   const closeSize = figmaPx(44);
-  // Rough card height; the scale also fits it into the viewport height.
-  const cardH = figmaPx(PAD_Y * 2 + PHOTO_H + 24 * 2 + 1 + THUMB_H);
+  const cardH = figmaPx(PAD_Y * 2 + PHOTO_H);
 
   return createPortal(
     <Box
@@ -310,67 +426,75 @@ export default function ProjectDetailPopup({
           >
             <Box
               sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-                p: 0,
-                gap: `${figmaPx(24)}px`,
+                position: "relative",
                 width: figmaPx(PHOTO_W),
                 flexShrink: 0,
               }}
             >
-            <ProjectPhoto
-              src={imageSrc}
-              width={figmaPx(PHOTO_W)}
-              height={figmaPx(PHOTO_H)}
-              alt={detail.name}
-            />
-            <Box
-              sx={{
-                width: "100%",
-                borderTop: "1px solid rgba(255, 255, 255, 0.05)",
-              }}
-            />
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                p: 0,
-                gap: `${figmaPx(14)}px`,
-                width: figmaPx(PHOTO_W),
-                height: figmaPx(THUMB_H),
-              }}
-            >
-              {images.map((src, index) => (
-                <Box
-                  key={src}
-                  component="button"
-                  type="button"
-                  aria-label={`Image ${index + 1}`}
-                  onClick={() => setThumb(index)}
-                  sx={{
-                    p: 0,
-                    m: 0,
-                    border: 0,
-                    bgcolor: "transparent",
-                    cursor: "pointer",
-                    appearance: "none",
-                    lineHeight: 0,
-                    opacity: thumb === index ? 1 : 0.85,
-                    borderRadius: `${figmaPx(12)}px`,
-                  }}
-                >
-                  <ProjectPhoto
-                    src={src}
-                    width={figmaPx(THUMB_W)}
-                    height={figmaPx(THUMB_H)}
-                    alt=""
+              <ProjectPhoto
+                src={imageSrc}
+                width={figmaPx(PHOTO_W)}
+                height={figmaPx(PHOTO_H)}
+                alt={detail.name}
+                objectFit="cover"
+              />
+              {canSlide ? (
+                <>
+                  <GalleryArrow
+                    direction="prev"
+                    onClick={() => goTo(slide - 1)}
                   />
-                </Box>
-              ))}
+                  <GalleryArrow
+                    direction="next"
+                    onClick={() => goTo(slide + 1)}
+                  />
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      left: 0,
+                      right: 0,
+                      bottom: figmaPx(16),
+                      display: "flex",
+                      justifyContent: "center",
+                      gap: `${figmaPx(8)}px`,
+                      zIndex: 2,
+                    }}
+                  >
+                    {media.map((src, index) => (
+                      <Box
+                        key={`${src}-${index}`}
+                        component="button"
+                        type="button"
+                        aria-label={`Go to media ${index + 1}`}
+                        aria-current={slide === index ? "true" : undefined}
+                        onClick={() => goTo(index)}
+                        sx={{
+                          width: figmaPx(8),
+                          height: figmaPx(8),
+                          p: 0,
+                          m: 0,
+                          border: 0,
+                          borderRadius: "50%",
+                          cursor: "pointer",
+                          appearance: "none",
+                          bgcolor:
+                            slide === index
+                              ? "rgba(255, 215, 122, 0.95)"
+                              : "rgba(255, 255, 255, 0.35)",
+                          boxShadow: "0 1px 4px rgba(0, 0, 0, 0.35)",
+                          "&:hover": {
+                            bgcolor:
+                              slide === index
+                                ? "rgba(255, 215, 122, 1)"
+                                : "rgba(255, 255, 255, 0.55)",
+                          },
+                        }}
+                      />
+                    ))}
+                  </Box>
+                </>
+              ) : null}
             </Box>
-          </Box>
 
           <Box
             sx={{
@@ -378,10 +502,10 @@ export default function ProjectDetailPopup({
               flexDirection: "column",
               alignItems: "flex-start",
               p: 0,
-              gap: `${figmaPx(34)}px`,
+              gap: `${figmaPx(28)}px`,
               width: figmaPx(TEXT_W),
               minWidth: 0,
-              flexShrink: 0,
+              flex: "1 1 auto",
             }}
           >
             <Box
@@ -497,7 +621,7 @@ export default function ProjectDetailPopup({
               }}
             >
               <Typography sx={labelSx}>Challenge</Typography>
-              <Typography sx={bodySx}>{detail.challenge}</Typography>
+              <ProjectBodyText value={detail.challenge} sx={bodySx} />
             </Box>
 
             <Box
@@ -511,7 +635,7 @@ export default function ProjectDetailPopup({
               }}
             >
               <Typography sx={labelSx}>Solution</Typography>
-              <Typography sx={bodySx}>{detail.solution}</Typography>
+              <ProjectBodyText value={detail.solution} sx={bodySx} />
             </Box>
           </Box>
         </Box>

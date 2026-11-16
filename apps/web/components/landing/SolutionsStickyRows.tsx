@@ -6,7 +6,12 @@ import Image from "next/image";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Lottie, type LottieHandle } from "lottie-react";
-import { STAGE_VIEWPORT_PAGE_HEIGHT_CSS, figmaPx } from "@/lib/landing-layout";
+import { GOLD_TEXT_GLOW, goldTextSx } from "@/lib/gold-theme";
+import {
+  SOLUTIONS_SERVICE_HOLD_PAGES,
+  STAGE_VIEWPORT_PAGE_HEIGHT_CSS,
+  figmaPx,
+} from "@/lib/landing-layout";
 import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
 import {
   SERVICE_ROWS,
@@ -20,11 +25,12 @@ const barlow = {
 } as const;
 
 const ROW_H_CSS = STAGE_VIEWPORT_PAGE_HEIGHT_CSS;
+const GROUP_H_CSS = `calc(${1 + SOLUTIONS_SERVICE_HOLD_PAGES} * ${ROW_H_CSS})`;
 const ICON_W = figmaPx(317.25);
 const ICON_H = figmaPx(277.5);
 const ICON_REST_TOP = `calc((${ROW_H_CSS} - ${ICON_H}px) / 2)`;
 const COPY_GAP = figmaPx(60);
-const COPY_W = figmaPx(380);
+const COPY_W = figmaPx(460);
 const COL_GAP = figmaPx(210);
 const NAV_STAGE_H = 102;
 const ICON_FADE_MS = 720;
@@ -52,7 +58,7 @@ function playheadFrame(x: number) {
   );
 }
 
-const LIT_BASE = [255, 196, 107] as const;
+const LIT_BASE = [255, 222, 120] as const;
 const LIT_HOVER = [255, 236, 200] as const;
 const SPOT_RADIUS = 88;
 const SPOT_SCALE = 1.35;
@@ -290,10 +296,11 @@ function ServiceCopyBlock({ title, description }: ServiceCopy) {
           m: 0,
           fontStyle: "normal",
           fontWeight: 600,
-          fontSize: figmaPx(25.5),
-          lineHeight: `${figmaPx(41)}px`,
+          fontSize: figmaPx(32),
+          lineHeight: `${figmaPx(48)}px`,
           letterSpacing: "-0.02em",
-          color: "#FFC46B",
+          ...goldTextSx,
+          filter: `drop-shadow(0 2px 6px rgba(0, 0, 0, 0.75)) ${GOLD_TEXT_GLOW}`,
         }}
       >
         {title}
@@ -304,10 +311,11 @@ function ServiceCopyBlock({ title, description }: ServiceCopy) {
           m: 0,
           fontStyle: "normal",
           fontWeight: 500,
-          fontSize: figmaPx(12),
+          fontSize: figmaPx(15),
           lineHeight: "160%",
           letterSpacing: "0.02em",
           color: "#FFFFFF",
+          textShadow: "0 2px 10px rgba(0, 0, 0, 0.85)",
         }}
       >
         {description}
@@ -327,6 +335,7 @@ export default function SolutionsStickyRows({
   const slotRef = useRef<HTMLDivElement>(null);
   const pinRef = useRef<HTMLDivElement>(null);
   const groupRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const copyRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [active, setActive] = useState(0);
   const activeRef = useRef(0);
   const morphFrameRef = useRef(IDLE_RANGES[0][1]);
@@ -378,7 +387,7 @@ export default function SolutionsStickyRows({
       let bestDist = Infinity;
       const dists: number[] = [];
       const mids: number[] = [];
-      groupRefs.current.forEach((el, i) => {
+      copyRefs.current.forEach((el, i) => {
         if (!el) return;
         const r = el.getBoundingClientRect();
         const mid = r.top + r.height / 2;
@@ -392,16 +401,18 @@ export default function SolutionsStickyRows({
       });
       if (
         mids.length === SERVICE_ROWS.length &&
-        Number.isFinite(mids[0]) &&
-        Number.isFinite(mids[LAST_ICON]) &&
-        mids[LAST_ICON] !== mids[0]
+        mids.every((mid) => Number.isFinite(mid))
       ) {
-        const x =
-          LAST_ICON *
-          Math.min(
-            Math.max((target - mids[0]) / (mids[LAST_ICON] - mids[0]), 0),
-            1,
-          );
+        // Piecewise between neighbouring rows, so a held row reads as exactly
+        // its own icon state and the morph pauses with the copy.
+        let x = target <= mids[0] ? 0 : LAST_ICON;
+        for (let i = 0; i < LAST_ICON; i += 1) {
+          if (target >= mids[i] && target <= mids[i + 1]) {
+            const span = mids[i + 1] - mids[i];
+            x = i + (span > 0 ? (target - mids[i]) / span : 0);
+            break;
+          }
+        }
         morphFrameRef.current = playheadFrame(x);
         pinSeekRef.current?.(morphFrameRef.current);
       }
@@ -420,17 +431,47 @@ export default function SolutionsStickyRows({
       }
     };
 
+    // The hold runs on a scroll-driven CSS animation so the browser applies it
+    // in the same frame as the scroll; a per-frame JS transform lags a frame
+    // and visibly jitters. Only the range needs JS, and only on layout changes.
+    const placeHolds = () => {
+      if (!CSS.supports("animation-timeline: scroll()")) return;
+      const slotRect = slot.getBoundingClientRect();
+      if (slotRect.width < 1) return;
+      const scale = slotRect.width / ICON_W;
+      const vh = window.innerHeight;
+      const navView = NAV_STAGE_H * scale;
+      const target = navView + (vh - navView) / 2;
+      const holdView = vh * SOLUTIONS_SERVICE_HOLD_PAGES;
+      groupRefs.current.forEach((el, i) => {
+        const copy = copyRefs.current[i];
+        if (!el || !copy) return;
+        const r = el.getBoundingClientRect();
+        const start = r.top + window.scrollY + r.height / 2 - target - holdView / 2;
+        copy.style.setProperty("animation-range", `${start}px ${start + holdView}px`);
+        copy.style.setProperty("--hold-shift", `${holdView / 2 / scale}px`);
+      });
+    };
+
     const onScroll = () => {
       if (raf) return;
       raf = requestAnimationFrame(update);
     };
+    const onResize = () => {
+      placeHolds();
+      onScroll();
+    };
 
+    placeHolds();
     update();
+    const resizeObserver = new ResizeObserver(onResize);
+    resizeObserver.observe(document.body);
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    window.addEventListener("resize", onResize);
     return () => {
+      resizeObserver.disconnect();
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      window.removeEventListener("resize", onResize);
       if (raf) cancelAnimationFrame(raf);
     };
   }, [pinEl]);
@@ -494,9 +535,8 @@ export default function SolutionsStickyRows({
               alignItems: "flex-start",
               justifyContent: "center",
               p: 0,
-              gap: `${COPY_GAP}px`,
               width: "100%",
-              height: ROW_H_CSS,
+              height: GROUP_H_CSS,
               flexShrink: 0,
               opacity: i === active ? 1 : 0.38,
               transition: `opacity ${COPY_FADE}`,
@@ -506,8 +546,23 @@ export default function SolutionsStickyRows({
               },
             }}
           >
-            <ServiceCopyBlock {...row.services[0]} />
-            <ServiceCopyBlock {...row.services[1]} />
+            <Box
+              ref={(el) => {
+                copyRefs.current[i] = el instanceof HTMLDivElement ? el : null;
+              }}
+              className="service-copy-hold"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                gap: `${COPY_GAP}px`,
+                width: "100%",
+                willChange: "transform",
+              }}
+            >
+              <ServiceCopyBlock {...row.services[0]} />
+              <ServiceCopyBlock {...row.services[1]} />
+            </Box>
           </Box>
         ))}
       </Box>

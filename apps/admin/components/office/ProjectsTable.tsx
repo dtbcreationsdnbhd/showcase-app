@@ -11,14 +11,16 @@ import EditProjectButton from "@/components/office/EditProjectButton";
 import DeleteProjectButton from "@/components/office/DeleteProjectButton";
 import ProjectDetailsButton from "@/components/office/ProjectDetailsButton";
 import ProjectPhotosButton from "@/components/office/ProjectPhotosButton";
+import { projectCategoryLabel } from "@/lib/project-categories";
 import { formatProjectDate, type ShowcaseProject } from "@/lib/projects";
 
 const columns = [
   "No",
   "Name",
+  "Category",
   "Tags",
-  "Main image",
-  "Detail image",
+  "Main media",
+  "Detail media",
   "Created At",
   "Updated At",
   "Action",
@@ -92,6 +94,9 @@ export default function ProjectsTable({
                 <TableCell>{start + index}</TableCell>
                 <TableCell>{row.name}</TableCell>
                 <TableCell>
+                  {row.category ? projectCategoryLabel(row.category) : "—"}
+                </TableCell>
+                <TableCell>
                   {row.tags.length === 0 ? (
                     "—"
                   ) : (
@@ -105,14 +110,14 @@ export default function ProjectsTable({
                 <TableCell>
                   <ProjectPhotosButton
                     name={row.name}
-                    title="Main image"
+                    title="Main media"
                     urls={row.mainImageUrl ? [row.mainImageUrl] : []}
                   />
                 </TableCell>
                 <TableCell>
                   <ProjectPhotosButton
                     name={row.name}
-                    title="Detail image"
+                    title="Detail media"
                     urls={row.detailImageUrls}
                   />
                 </TableCell>
@@ -150,14 +155,15 @@ const chipSx = {
 function Cols() {
   return (
     <colgroup>
-      <col style={{ width: "5%" }} />
+      <col style={{ width: "4%" }} />
+      <col style={{ width: "14%" }} />
+      <col style={{ width: "14%" }} />
       <col style={{ width: "16%" }} />
-      <col style={{ width: "19%" }} />
-      <col style={{ width: "11%" }} />
-      <col style={{ width: "11%" }} />
-      <col style={{ width: "14%" }} />
-      <col style={{ width: "14%" }} />
       <col style={{ width: "10%" }} />
+      <col style={{ width: "10%" }} />
+      <col style={{ width: "12%" }} />
+      <col style={{ width: "12%" }} />
+      <col style={{ width: "8%" }} />
     </colgroup>
   );
 }

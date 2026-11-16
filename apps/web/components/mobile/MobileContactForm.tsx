@@ -89,13 +89,16 @@ function Chip({
         display: "flex",
         alignItems: "center",
         width: "100%",
-        height: CHIP_H,
+        minHeight: CHIP_H,
+        height: "auto",
+        py: "10px",
         pl: "24px",
         pr: "24px",
         border: 0,
         borderRadius: "11px",
         fontSize: 15,
         letterSpacing: "0.02em",
+        lineHeight: 1.35,
         ...(selected
           ? {
               background: GOLD_FILL,
@@ -110,7 +113,8 @@ function Chip({
               fontWeight: 500,
             }),
         textAlign: "left",
-        whiteSpace: "nowrap",
+        whiteSpace: "normal",
+        overflowWrap: "anywhere",
         appearance: "none",
         WebkitAppearance: "none",
       }}

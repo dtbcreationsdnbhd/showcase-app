@@ -2,15 +2,19 @@
 
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Image from "next/image";
 import { useEffect, useRef, useState, type TouchEvent } from "react";
 import { createPortal } from "react-dom";
+import ProjectBodyText from "@/components/landing/ProjectBodyText";
+import ShowcaseMedia from "@/components/landing/ShowcaseMedia";
 import {
   mobileSheetMotion,
   useMobileSheet,
 } from "@/components/mobile/use-mobile-sheet";
 import { goldTextSx } from "@/lib/gold-theme";
-import type { ShowcaseProject } from "@/lib/projects";
+import {
+  projectGalleryMedia,
+  type ShowcaseProject,
+} from "@/lib/projects";
 import {
   MOBILE_BREAKPOINT,
   MOBILE_DESIGN_WIDTH,
@@ -115,6 +119,18 @@ export default function MobileProjectDetailPopup({
     setDragging(false);
   }, [detail?.id]);
 
+  const galleryCount = detail
+    ? projectGalleryMedia(detail).media.length
+    : 0;
+
+  useEffect(() => {
+    if (!present || galleryCount < 2 || dragging) return;
+    const id = window.setInterval(() => {
+      setThumb((current) => (current + 1) % galleryCount);
+    }, 5000);
+    return () => window.clearInterval(id);
+  }, [present, galleryCount, dragging, detail?.id]);
+
   useEffect(() => {
     if (!present) return;
     const previousOverflow = document.body.style.overflow;
@@ -143,7 +159,8 @@ export default function MobileProjectDetailPopup({
 
   if (!present || !detail || typeof document === "undefined") return null;
 
-  const imageCount = detail.detailImageUrls.length;
+  const { media } = projectGalleryMedia(detail);
+  const imageCount = media.length;
 
   function localDrag(dx: number) {
     const photo = photoRef.current;
@@ -291,7 +308,7 @@ export default function MobileProjectDetailPopup({
               transition: dragging || reduced ? "none" : "transform 320ms cubic-bezier(0.22, 1, 0.36, 1)",
             }}
           >
-            {detail.detailImageUrls.map((src, index) => (
+            {media.map((src, index) => (
               <Box
                 key={`${detail.id}-${index}`}
                 sx={{
@@ -306,57 +323,54 @@ export default function MobileProjectDetailPopup({
                 }}
               >
                 {src ? (
-                  <Image
+                  <ShowcaseMedia
                     src={src}
                     alt=""
-                    fill
                     sizes="100vw"
-                    style={{
-                      objectFit: "contain",
-                      objectPosition: "center",
-                      filter:
-                        "drop-shadow(0 0 1px rgba(255, 255, 255, 0.55)) drop-shadow(0 12px 22px rgba(0, 0, 0, 0.4))",
-                    }}
+                    objectFit="cover"
+                    filter="drop-shadow(0 0 1px rgba(255, 255, 255, 0.55)) drop-shadow(0 12px 22px rgba(0, 0, 0, 0.4))"
                   />
                 ) : null}
               </Box>
             ))}
           </Box>
 
-          <Box
-            sx={{
-              position: "absolute",
-              zIndex: 1,
-              left: 0,
-              right: 0,
-              bottom: `${PANEL_OVERLAP + 16}px`,
-              display: "flex",
-              justifyContent: "center",
-              gap: "10px",
-            }}
-          >
-            {detail.detailImageUrls.map((_, index) => (
-              <Box
-                key={index}
-                component="button"
-                type="button"
-                aria-label={`Image ${index + 1}`}
-                onClick={() => setThumb(index)}
-                sx={{
-                  p: 0,
-                  m: 0,
-                  border: 0,
-                  appearance: "none",
-                  cursor: "pointer",
-                  width: 7,
-                  height: 7,
-                  borderRadius: "50%",
-                  bgcolor:
-                    thumb === index ? "#FFFFFF" : "rgba(255, 255, 255, 0.4)",
-                }}
-              />
-            ))}
-          </Box>
+          {imageCount > 1 ? (
+            <Box
+              sx={{
+                position: "absolute",
+                zIndex: 1,
+                left: 0,
+                right: 0,
+                bottom: `${PANEL_OVERLAP + 16}px`,
+                display: "flex",
+                justifyContent: "center",
+                gap: "10px",
+              }}
+            >
+              {media.map((_, index) => (
+                <Box
+                  key={index}
+                  component="button"
+                  type="button"
+                  aria-label={`Media ${index + 1}`}
+                  onClick={() => setThumb(index)}
+                  sx={{
+                    p: 0,
+                    m: 0,
+                    border: 0,
+                    appearance: "none",
+                    cursor: "pointer",
+                    width: 7,
+                    height: 7,
+                    borderRadius: "50%",
+                    bgcolor:
+                      thumb === index ? "#FFFFFF" : "rgba(255, 255, 255, 0.4)",
+                  }}
+                />
+              ))}
+            </Box>
+          ) : null}
         </Box>
 
         <Box
@@ -414,11 +428,11 @@ export default function MobileProjectDetailPopup({
           </Section>
 
           <Section label="Challenge">
-            <Typography sx={bodySx}>{detail.challenge}</Typography>
+            <ProjectBodyText value={detail.challenge} sx={bodySx} />
           </Section>
 
           <Section label="Solution">
-            <Typography sx={bodySx}>{detail.solution}</Typography>
+            <ProjectBodyText value={detail.solution} sx={bodySx} />
           </Section>
         </Box>
       </Box>

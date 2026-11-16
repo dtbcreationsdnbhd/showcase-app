@@ -43,7 +43,7 @@ export default function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
   const n = slides.length;
   // Three copies of the slides let the track loop: `pos` stays in the middle copy
   // and snaps back there (without animation) whenever it drifts into an outer copy.
-  const initialPos = n + Math.min(1, n - 1);
+  const initialPos = n === 0 ? 0 : n + Math.min(1, n - 1);
   const [pos, setPos] = useState(initialPos);
   const [animate, setAnimate] = useState(true);
   const [dragX, setDragX] = useState(0);
@@ -185,6 +185,8 @@ export default function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
   const transition = (props: string) =>
     animate && !dragging ? props : "none";
 
+  if (n === 0) return null;
+
   return (
     <Box
       ref={rootRef}
@@ -260,15 +262,35 @@ export default function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
             >
               <Box sx={{ position: "relative", height: IMAGE_H, flexShrink: 0 }}>
                 {s.src ? (
-                  <Image
-                    src={s.src}
-                    alt={s.title}
-                    fill
-                    draggable={false}
-                    loading="eager"
-                    sizes={`${CARD_W * 2}px`}
-                    style={{ objectFit: "cover" }}
-                  />
+                  s.isVideo ? (
+                    <Box
+                      component="video"
+                      src={s.src}
+                      muted
+                      autoPlay
+                      loop
+                      playsInline
+                      preload="auto"
+                      draggable={false}
+                      sx={{
+                        position: "absolute",
+                        inset: 0,
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  ) : (
+                    <Image
+                      src={s.src}
+                      alt={s.title}
+                      fill
+                      draggable={false}
+                      loading="eager"
+                      sizes={`${CARD_W * 2}px`}
+                      style={{ objectFit: "cover" }}
+                    />
+                  )
                 ) : (
                   <Box
                     sx={{
@@ -280,30 +302,6 @@ export default function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                   />
                 )}
 
-                {s.isVideo && (
-                  <Box
-                    aria-hidden
-                    sx={{
-                      position: "absolute",
-                      top: "50%",
-                      left: "50%",
-                      transform: "translate(-50%, -50%)",
-                      width: 76,
-                      height: 76,
-                      borderRadius: "50%",
-                      bgcolor: "rgba(42, 9, 24, 0.6)",
-                      border: "1px solid rgba(255, 255, 255, 0.35)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      color: "#FFFFFF",
-                      fontSize: 26,
-                      pl: "4px",
-                    }}
-                  >
-                    ▶
-                  </Box>
-                )}
               </Box>
 
               <Box

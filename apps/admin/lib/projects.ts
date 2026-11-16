@@ -1,6 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
 
 import {
+  isProjectCategory,
+  type ProjectCategory,
+} from "@/lib/project-categories";
+import {
   PROJECT_PAGE_SIZE,
   isPageSize,
 } from "@/lib/project-filters";
@@ -12,6 +16,13 @@ export {
   projectPageHref,
 } from "@/lib/project-filters";
 
+export {
+  PROJECT_CATEGORIES,
+  isProjectCategory,
+  projectCategoryLabel,
+  type ProjectCategory,
+} from "@/lib/project-categories";
+
 const PROJECT_TABLES = ["staging_projects", "production_projects"] as const;
 
 export type ProjectTable = (typeof PROJECT_TABLES)[number];
@@ -19,6 +30,7 @@ export type ProjectTable = (typeof PROJECT_TABLES)[number];
 export type ShowcaseProject = {
   id: string;
   name: string;
+  category: ProjectCategory | "";
   tags: string[];
   challenge: string;
   solution: string;
@@ -41,6 +53,7 @@ export type ProjectList =
 type ProjectRow = {
   id: string;
   name: string;
+  category: string | null;
   tags: string[] | null;
   challenge: string;
   solution: string;
@@ -87,7 +100,7 @@ export async function listProjects({
   const { data, error } = await supabase
     .from(table)
     .select(
-      "id, name, tags, challenge, solution, main_image_url, detail_image_urls, created_at, updated_at",
+      "id, name, category, tags, challenge, solution, main_image_url, detail_image_urls, created_at, updated_at",
     )
     .order("created_at", { ascending: false });
 
@@ -123,6 +136,8 @@ function toProject(row: ProjectRow): ShowcaseProject {
   return {
     id: row.id,
     name: row.name,
+    category:
+      row.category && isProjectCategory(row.category) ? row.category : "",
     tags: row.tags ?? [],
     challenge: row.challenge,
     solution: row.solution,
@@ -134,7 +149,13 @@ function toProject(row: ProjectRow): ShowcaseProject {
 }
 
 function projectSearchText(row: ShowcaseProject) {
-  return [row.name, row.tags.join(" "), row.challenge, row.solution]
+  return [
+    row.name,
+    row.category,
+    row.tags.join(" "),
+    row.challenge,
+    row.solution,
+  ]
     .join(" ")
     .toLowerCase();
 }

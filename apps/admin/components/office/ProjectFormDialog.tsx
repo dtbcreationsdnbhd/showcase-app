@@ -7,12 +7,23 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
+import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { useEffect, useId, useRef, useState, useTransition, type DragEvent, type FormEvent } from "react";
 
 import { createShowcaseProject, updateShowcaseProject } from "@/app/(office)/projects/actions";
 import NoticeSnackbar, { type AuthNotice } from "@/components/NoticeSnackbar";
+import RichTextField from "@/components/office/RichTextField";
+import { PROJECT_CATEGORIES } from "@/lib/project-categories";
+import {
+  MAX_UPLOAD_TOTAL_BYTES,
+  PROJECT_MEDIA_ACCEPT,
+  isProjectVideoType,
+  isVideoUrl,
+  mediaFileError,
+  totalUploadBytes,
+} from "@/lib/project-media";
 import type { ShowcaseProject } from "@/lib/projects";
 import { cornerRadius } from "@/lib/ui";
 
@@ -45,23 +56,36 @@ export default function ProjectFormDialog(props: ProjectFormDialogProps) {
 
   function onSave(data: FormData) {
     startTransition(async () => {
-      const result =
-        mode === "edit" ? await updateShowcaseProject(data) : await createShowcaseProject(data);
-      if (!result.ok) {
+      try {
+        const result =
+          mode === "edit"
+            ? await updateShowcaseProject(data)
+            : await createShowcaseProject(data);
+        if (!result.ok) {
+          setNotice({
+            id: crypto.randomUUID(),
+            message: result.message,
+            tone: "error",
+          });
+          return;
+        }
+
+        onClose();
         setNotice({
           id: crypto.randomUUID(),
-          message: result.message,
+          message: mode === "edit" ? "Project updated" : "Project created",
+          tone: "success",
+        });
+      } catch (error) {
+        const text = error instanceof Error ? error.message : "";
+        setNotice({
+          id: crypto.randomUUID(),
+          message: /Unexpected end of form/i.test(text)
+            ? "Upload too large. Keep all new media under 100 MB total (each video ≤50 MB)."
+            : "Could not save the project.",
           tone: "error",
         });
-        return;
       }
-
-      onClose();
-      setNotice({
-        id: crypto.randomUUID(),
-        message: mode === "edit" ? "Project updated" : "Project created",
-        tone: "success",
-      });
     });
   }
 
@@ -103,6 +127,7 @@ export default function ProjectFormDialog(props: ProjectFormDialogProps) {
             pending={pending}
             onSave={onSave}
             onCancel={close}
+            onNotice={setNotice}
           />
         ) : null}
       </Dialog>
@@ -117,12 +142,14 @@ function ProjectFormFields({
   pending,
   onSave,
   onCancel,
+  onNotice,
 }: {
   mode: "create" | "edit";
   project?: ShowcaseProject;
   pending: boolean;
   onSave: (data: FormData) => void;
   onCancel: () => void;
+  onNotice: (notice: AuthNotice) => void;
 }) {
   const [tags, setTags] = useState(project?.tags ?? []);
   const [tagInput, setTagInput] = useState("");
@@ -136,6 +163,27 @@ function ProjectFormFields({
     const data = new FormData(event.currentTarget);
     data.set("tags", nextTags.join(","));
     if (project) data.set("id", project.id);
+
+    const files = [...data.getAll("mainImage"), ...data.getAll("detailImages")].filter(
+      (value): value is File => value instanceof File && value.size > 0,
+    );
+    for (const file of files) {
+      const problem = mediaFileError(file);
+      if (problem) {
+        onNotice({ id: crypto.randomUUID(), message: problem, tone: "error" });
+        return;
+      }
+    }
+    if (totalUploadBytes(files) > MAX_UPLOAD_TOTAL_BYTES) {
+      onNotice({
+        id: crypto.randomUUID(),
+        message:
+          "All new media together must be 100 MB or smaller (each video ≤50 MB).",
+        tone: "error",
+      });
+      return;
+    }
+
     onSave(data);
   }
 
@@ -178,6 +226,26 @@ function ProjectFormFields({
             defaultValue={project?.name ?? ""}
             sx={fieldSx}
           />
+          <TextField
+            name="category"
+            label="Category"
+            select
+            required
+            fullWidth
+            size="small"
+            disabled={pending}
+            defaultValue={project?.category ?? ""}
+            sx={fieldSx}
+          >
+            <MenuItem value="" disabled>
+              Select a category
+            </MenuItem>
+            {PROJECT_CATEGORIES.map((item) => (
+              <MenuItem key={item.value} value={item.value}>
+                {item.label}
+              </MenuItem>
+            ))}
+          </TextField>
           <TagField
             tags={tags}
             inputValue={tagInput}
@@ -186,41 +254,31 @@ function ProjectFormFields({
             onInputChange={setTagInput}
           />
         </Box>
-        <TextField
+        <RichTextField
           name="challenge"
           label="Challenge"
           required
-          fullWidth
-          size="small"
-          multiline
-          minRows={3}
           disabled={pending}
           defaultValue={project?.challenge ?? ""}
-          sx={fieldSx}
         />
-        <TextField
+        <RichTextField
           name="solution"
           label="Solution"
           required
-          fullWidth
-          size="small"
-          multiline
-          minRows={3}
           disabled={pending}
           defaultValue={project?.solution ?? ""}
-          sx={fieldSx}
         />
         <ImageField
           name="mainImage"
           keptName="keptMainImage"
-          label="Main image"
+          label="Main media (required)"
           disabled={pending}
           existingUrls={project?.mainImageUrl ? [project.mainImageUrl] : []}
         />
         <ImageField
           name="detailImages"
           keptName="keptDetailImages"
-          label="Detail images"
+          label="Detail media (optional)"
           disabled={pending}
           multiple
           existingUrls={project?.detailImageUrls ?? []}
@@ -300,7 +358,7 @@ function TagField({
   );
 }
 
-const ACCEPT = ["image/jpeg", "image/png", "image/webp"];
+type MediaPreview = { url: string; isVideo: boolean };
 
 function ImageField({
   name,
@@ -320,15 +378,15 @@ function ImageField({
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
   const filesRef = useRef<File[]>([]);
-  const previewsRef = useRef<string[]>([]);
+  const previewsRef = useRef<MediaPreview[]>([]);
   const [kept, setKept] = useState(existingUrls);
-  const [previews, setPreviews] = useState<string[]>([]);
+  const [previews, setPreviews] = useState<MediaPreview[]>([]);
   const [dragging, setDragging] = useState(false);
-  const hasImages = kept.length > 0 || previews.length > 0;
+  const hasMedia = kept.length > 0 || previews.length > 0;
 
   useEffect(() => {
     return () => {
-      for (const url of previewsRef.current) URL.revokeObjectURL(url);
+      for (const item of previewsRef.current) URL.revokeObjectURL(item.url);
     };
   }, []);
 
@@ -338,17 +396,24 @@ function ImageField({
     for (const file of next) transfer.items.add(file);
     if (inputRef.current) inputRef.current.files = transfer.files;
 
-    for (const url of previewsRef.current) URL.revokeObjectURL(url);
-    const urls = next.map((file) => URL.createObjectURL(file));
-    previewsRef.current = urls;
-    setPreviews(urls);
+    for (const item of previewsRef.current) URL.revokeObjectURL(item.url);
+    const nextPreviews = next.map((file) => ({
+      url: URL.createObjectURL(file),
+      isVideo: isProjectVideoType(file.type),
+    }));
+    previewsRef.current = nextPreviews;
+    setPreviews(nextPreviews);
   }
 
   function addFiles(incoming: File[]) {
-    const images = incoming.filter((file) => ACCEPT.includes(file.type));
-    if (images.length === 0) return;
+    const media: File[] = [];
+    for (const file of incoming) {
+      if (mediaFileError(file)) continue;
+      media.push(file);
+    }
+    if (media.length === 0) return;
     if (!multiple) setKept([]);
-    applyFiles(multiple ? [...filesRef.current, ...images] : images.slice(0, 1));
+    applyFiles(multiple ? [...filesRef.current, ...media] : media.slice(0, 1));
   }
 
   function removeFileAt(index: number) {
@@ -385,7 +450,7 @@ function ImageField({
           flexDirection: "column",
           alignItems: "stretch",
           gap: 1.5,
-          minHeight: hasImages ? 0 : 148,
+          minHeight: hasMedia ? 0 : 148,
           px: 2,
           py: 2,
           borderRadius: cornerRadius,
@@ -402,7 +467,7 @@ function ImageField({
           ref={inputRef}
           name={name}
           type="file"
-          accept={ACCEPT.join(",")}
+          accept={PROJECT_MEDIA_ACCEPT.join(",")}
           multiple={multiple}
           disabled={disabled}
           onChange={(event) => {
@@ -422,7 +487,7 @@ function ImageField({
             border: 0,
           }}
         />
-        {hasImages ? (
+        {hasMedia ? (
           <Box
             sx={{
               display: "grid",
@@ -436,15 +501,17 @@ function ImageField({
               <Preview
                 key={src}
                 src={src}
+                isVideo={isVideoUrl(src)}
                 multiple={multiple}
                 disabled={disabled}
                 onRemove={() => setKept((urls) => urls.filter((url) => url !== src))}
               />
             ))}
-            {previews.map((src, index) => (
+            {previews.map((item, index) => (
               <Preview
-                key={src}
-                src={src}
+                key={item.url}
+                src={item.url}
+                isVideo={item.isVideo}
                 multiple={multiple}
                 disabled={disabled}
                 onRemove={() => removeFileAt(index)}
@@ -457,7 +524,7 @@ function ImageField({
           </Box>
         )}
         <Typography variant="body2" sx={{ color: "#1F2937", fontWeight: 500, textAlign: "center" }}>
-          {multiple ? "Drop your images here, or " : "Drop your image here, or "}
+          {multiple ? "Drop your files here, or " : "Drop your file here, or "}
           <Box
             component="span"
             sx={{ color: "primary.main", textDecoration: "underline" }}
@@ -466,7 +533,9 @@ function ImageField({
           </Box>
         </Typography>
         <Typography variant="caption" sx={{ color: "#9AA3B2", textAlign: "center" }}>
-          {multiple ? "Select more than one. Supports: JPG, PNG, WebP" : "Supports: JPG, PNG, WebP"}
+          {multiple
+            ? "Select more than one. JPG/PNG/WebP ≤5MB · MP4/WebM ≤50MB · all new files ≤100MB total"
+            : "JPG/PNG/WebP ≤5MB · MP4/WebM ≤50MB · all new files ≤100MB total"}
         </Typography>
       </Box>
     </Box>
@@ -475,11 +544,13 @@ function ImageField({
 
 function Preview({
   src,
+  isVideo,
   multiple,
   disabled,
   onRemove,
 }: {
   src: string;
+  isVideo: boolean;
   multiple: boolean;
   disabled: boolean;
   onRemove: () => void;
@@ -497,20 +568,35 @@ function Preview({
         overflow: "hidden",
       }}
     >
-      <Box
-        component="img"
-        src={src}
-        alt=""
-        sx={{
-          maxWidth: "100%",
-          maxHeight: "100%",
-          objectFit: "contain",
-        }}
-      />
+      {isVideo ? (
+        <Box
+          component="video"
+          src={src}
+          muted
+          playsInline
+          preload="metadata"
+          sx={{
+            maxWidth: "100%",
+            maxHeight: "100%",
+            objectFit: "contain",
+          }}
+        />
+      ) : (
+        <Box
+          component="img"
+          src={src}
+          alt=""
+          sx={{
+            maxWidth: "100%",
+            maxHeight: "100%",
+            objectFit: "contain",
+          }}
+        />
+      )}
       <Box
         component="button"
         type="button"
-        aria-label="Remove image"
+        aria-label="Remove media"
         disabled={disabled}
         onMouseDown={(event) => {
           event.preventDefault();

@@ -267,54 +267,41 @@ export default function MobileHeroCards({
                 sx={{ position: "relative", width: CARD_W, height: IMAGE_H }}
               >
                 {slide.src ? (
-                  <Image
-                    src={slide.src}
-                    alt=""
-                    width={CARD_W * 2}
-                    height={IMAGE_H * 2}
-                    sizes="50vw"
-                    draggable={false}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      display: "block",
-                      pointerEvents: "none",
-                    }}
-                  />
-                ) : null}
-                {slide.isVideo ? (
-                  <Box
-                    aria-hidden
-                    sx={{
-                      position: "absolute",
-                      inset: 0,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
+                  slide.isVideo ? (
                     <Box
+                      component="video"
+                      src={slide.src}
+                      muted
+                      autoPlay
+                      loop
+                      playsInline
+                      preload="auto"
+                      draggable={false}
                       sx={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: "50%",
-                        bgcolor: "rgba(42, 9, 24, 0.6)",
-                        border: "1px solid rgba(255, 255, 255, 0.35)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        display: "block",
+                        pointerEvents: "none",
                       }}
-                    >
-                      <Box
-                        component="svg"
-                        viewBox="0 0 24 24"
-                        sx={{ width: 16, height: 16, ml: "2px" }}
-                      >
-                        <path d="M8 5v14l11-7z" fill="#FFFFFF" />
-                      </Box>
-                    </Box>
-                  </Box>
+                    />
+                  ) : (
+                    <Image
+                      src={slide.src}
+                      alt=""
+                      width={CARD_W * 2}
+                      height={IMAGE_H * 2}
+                      sizes="50vw"
+                      draggable={false}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        display: "block",
+                        pointerEvents: "none",
+                      }}
+                    />
+                  )
                 ) : null}
               </Box>
               <Box

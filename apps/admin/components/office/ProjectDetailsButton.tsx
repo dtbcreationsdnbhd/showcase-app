@@ -8,6 +8,8 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import { useState } from "react";
 
+import RichTextView from "@/components/office/RichTextView";
+
 export default function ProjectDetailsButton({
   name,
   challenge,
@@ -108,21 +110,17 @@ function DetailSection({ title, body }: { title: string; body: string }) {
       <Typography variant="body2" sx={{ flexShrink: 0, fontWeight: 600 }}>
         {title}
       </Typography>
-      <Typography
-        variant="body2"
+      <Box
         sx={{
           mt: 1.5,
           minHeight: 0,
           flex: 1,
           overflowX: "hidden",
           overflowY: "auto",
-          lineHeight: "24px",
-          whiteSpace: "pre-wrap",
-          overflowWrap: "anywhere",
         }}
       >
-        {body || "—"}
-      </Typography>
+        <RichTextView value={body} />
+      </Box>
     </Box>
   );
 }

@@ -52,21 +52,24 @@ const chipBase = {
   flexDirection: "row",
   justifyContent: "center",
   alignItems: "center",
-  py: `${figmaPx(12)}px`,
-  px: `${figmaPx(24)}px`,
-  height: figmaPx(37.5),
-  width: figmaPx(116.25),
+  py: `${figmaPx(10)}px`,
+  px: `${figmaPx(16)}px`,
+  minHeight: figmaPx(37.5),
+  height: "auto",
+  width: "auto",
+  maxWidth: "100%",
   border: 0,
   borderRadius: `${figmaPx(12)}px`,
   fontStyle: "normal",
   fontWeight: 500,
   fontSize: figmaPx(12),
-  lineHeight: "160%",
+  lineHeight: "140%",
   letterSpacing: "0.02em",
   color: "#FFFFFF",
   textAlign: "center",
   cursor: "pointer",
-  whiteSpace: "nowrap",
+  whiteSpace: "normal",
+  overflowWrap: "anywhere",
   appearance: "none",
   WebkitAppearance: "none",
 } as const;
@@ -341,7 +344,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
   return (
     <Box
       component="section"
-      id="contact-form"
+      id="contact"
       sx={{
         position: "relative",
         boxSizing: "border-box",

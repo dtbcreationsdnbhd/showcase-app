@@ -15,9 +15,14 @@ export const HERO_DESIGN_HEIGHT = 1200;
  * viewport. See the design spec before changing it — it drives three sections.
  */
 export const TITLE_HOLD_PAGES = 2;
-/** Pinned title page + its hold + AI / web / star / refresh — each one viewport. */
-export const SOLUTIONS_PAGE_COUNT = 5 + TITLE_HOLD_PAGES;
 export const SOLUTIONS_SERVICE_PAGES = 4;
+/** Extra scroll, in viewport pages, each service row's copy holds still for. */
+export const SOLUTIONS_SERVICE_HOLD_PAGES = 0.5;
+/** Pinned title page + its hold + AI / web / star / refresh, each one viewport plus its hold. */
+export const SOLUTIONS_PAGE_COUNT =
+  1 +
+  TITLE_HOLD_PAGES +
+  SOLUTIONS_SERVICE_PAGES * (1 + SOLUTIONS_SERVICE_HOLD_PAGES);
 /**
  * Stage px for one viewport tall page: after `scale(100vw/1920)` it reads as 100vh.
  * Use in CSS height: `calc(${LANDING_DESIGN_WIDTH}px * 100vh / 100vw)`.
@@ -70,10 +75,14 @@ export function showcaseSectionHeight(projectCount: number) {
 }
 /** FAQ: one viewport page for the pinned panel plus its hold. */
 export const FAQ_VIEWPORT_PAGES = 1 + TITLE_HOLD_PAGES;
+/** @deprecated FAQ no longer reserves empty scroll for a soft exit. */
+export const FAQ_TAIL_FADE_PAGES = 0;
 /** Contact CTA: one viewport page for the pinned title plus its hold. */
 export const CONTACT_CTA_VIEWPORT_PAGES = 1 + TITLE_HOLD_PAGES;
 /** Contact form is one full viewport on the scaled stage (not fixed Figma px). */
 export const CONTACT_FORM_VIEWPORT_PAGES = 1;
+/** @deprecated Contact form backdrop is a fixed viewport layer; no tail pad. */
+export const CONTACT_FORM_TAIL_FADE_PAGES = 0;
 export const CONTACT_FORM_HEIGHT_CSS = STAGE_VIEWPORT_PAGE_HEIGHT_CSS;
 export const CONTACT_FORM_PAD_TOP = figmaPx(56);
 export const CONTACT_FORM_PAD_BOTTOM = figmaPx(80);
@@ -89,12 +98,30 @@ export const HERO_BOTTOM_FADE = figmaPx(110);
  */
 export const CONTACT_WAVE_MASK_HOLD_PCT = 46;
 export const CONTACT_WAVE_MASK_FADE = HERO_BOTTOM_FADE * 1.8;
-export const FOOTER_HEIGHT = figmaPx(315);
+export const FOOTER_HEIGHT = figmaPx(220);
+/** Projects page grid: wider than the landing's 3-card row. */
+export const PROJECTS_PAGE_COLUMNS = 4;
+
+export function projectsGridHeight(projectCount: number, columns: number) {
+  const rows = Math.max(1, Math.ceil(projectCount / columns));
+  return rows * SHOWCASE_CARD_H + (rows - 1) * SHOWCASE_CARD_GAP;
+}
+
 /** Navbar is 102 on the 1920 stage; projects page has no Hero under it. */
 export const PROJECTS_PAGE_NAV_HEIGHT = 40;
 export const PROJECTS_PAGE_HEIGHT = PROJECTS_PAGE_NAV_HEIGHT + SHOWCASE_HEIGHT;
 
-/** Everything except Targeted Solutions / Process / Showcase / Contact CTA / Contact form (those use viewport pages). */
+/** Desktop Why Us poster, 3840×2400, drawn across the full 1920 stage. */
+export const WHY_US_DESKTOP_HEIGHT = (LANDING_DESIGN_WIDTH * 2400) / 3840 * 0.88;
+/**
+ * Why Choose: one page to settle the poster, then the same title hold as FAQ.
+ * Track height is viewport pages (not fixed stage px) so the pin can hold still.
+ */
+export const WHY_US_VIEWPORT_PAGES = 1 + TITLE_HOLD_PAGES;
+/** Soft bottom edge of the solutions backdrop as it scrolls off, in viewport pages. */
+export const SOLUTIONS_TAIL_FADE_PAGES = 0.5;
+
+/** Fixed stage sections. Why Us / Solutions / Contact / FAQ use viewport pages. */
 export const LANDING_HEIGHT_WITHOUT_SOLUTIONS = HERO_DESIGN_HEIGHT + FOOTER_HEIGHT;
 
 /**
@@ -103,10 +130,8 @@ export const LANDING_HEIGHT_WITHOUT_SOLUTIONS = HERO_DESIGN_HEIGHT + FOOTER_HEIG
  */
 export const LANDING_DESIGN_HEIGHT =
   LANDING_HEIGHT_WITHOUT_SOLUTIONS +
-  PROCESS_INTRO_PAGES * (LANDING_DESIGN_WIDTH * (9 / 16)) +
-  PROCESS_PAGE_COUNT * (LANDING_DESIGN_WIDTH * (9 / 16)) +
-  SOLUTIONS_PAGE_COUNT * (LANDING_DESIGN_WIDTH * (9 / 16)) +
-  CONTACT_CTA_VIEWPORT_PAGES * (LANDING_DESIGN_WIDTH * (9 / 16)) +
+  (SOLUTIONS_PAGE_COUNT + SOLUTIONS_TAIL_FADE_PAGES) * (LANDING_DESIGN_WIDTH * (9 / 16)) +
+  WHY_US_VIEWPORT_PAGES * (LANDING_DESIGN_WIDTH * (9 / 16)) +
   CONTACT_FORM_VIEWPORT_PAGES * (LANDING_DESIGN_WIDTH * (9 / 16)) +
   FAQ_VIEWPORT_PAGES * (LANDING_DESIGN_WIDTH * (9 / 16)) +
   SHOWCASE_VIEWPORT_PAGES * (LANDING_DESIGN_WIDTH * (9 / 16)) +
@@ -116,5 +141,5 @@ export const LANDING_DESIGN_HEIGHT =
 export function landingFrameHeightCss(includeShowcase = true): string {
   const fixed = LANDING_HEIGHT_WITHOUT_SOLUTIONS + SOLUTIONS_RELEASE_HEIGHT;
   const showcase = includeShowcase ? ` + ${SHOWCASE_VIEWPORT_PAGES} * 100vh` : "";
-  return `calc(100vw * ${fixed} / ${LANDING_DESIGN_WIDTH} + ${SOLUTIONS_PAGE_COUNT + PROCESS_INTRO_PAGES + PROCESS_PAGE_COUNT + CONTACT_CTA_VIEWPORT_PAGES + CONTACT_FORM_VIEWPORT_PAGES + FAQ_VIEWPORT_PAGES} * 100vh${showcase})`;
+  return `calc(100vw * ${fixed} / ${LANDING_DESIGN_WIDTH} + ${SOLUTIONS_PAGE_COUNT + SOLUTIONS_TAIL_FADE_PAGES + WHY_US_VIEWPORT_PAGES + CONTACT_FORM_VIEWPORT_PAGES + FAQ_VIEWPORT_PAGES} * 100vh${showcase})`;
 }

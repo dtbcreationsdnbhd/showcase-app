@@ -101,13 +101,14 @@ export default function ServicesMenu({ children }: { children: ReactNode }) {
       className={SERVICES_MENU_CLASS}
       sx={{
         display: "flex",
-        [`&:hover > .${PANEL_CLASS}, &:has(:focus-visible) > .${PANEL_CLASS}`]: {
-          opacity: 1,
-          visibility: "visible",
-          transform: "translate(-50%, 0)",
-          pointerEvents: "auto",
-          transition: "opacity 0.2s ease, transform 0.2s ease, visibility 0s",
-        },
+        [`&:hover > .${PANEL_CLASS}, &:has(:focus-visible) > .${PANEL_CLASS}`]:
+          {
+            opacity: 1,
+            visibility: "visible",
+            transform: "translate(-50%, 0)",
+            pointerEvents: "auto",
+            transition: "opacity 0.2s ease, transform 0.2s ease, visibility 0s",
+          },
         [`&:hover .${CARET_CLASS}, &:has(:focus-visible) .${CARET_CLASS}`]: {
           transform: "rotate(180deg)",
         },
@@ -238,7 +239,11 @@ function ServicesPanel() {
             {group.items.map((item) => (
               <Box
                 key={item.label}
+                component="a"
+                href="/projects"
                 sx={{
+                  textDecoration: "none",
+                  cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
@@ -246,7 +251,12 @@ function ServicesPanel() {
                   py: "18px",
                   borderTop: "1px solid rgba(255, 255, 255, 0.08)",
                   "&:first-of-type": { borderTop: "none" },
-                  "&:hover .services-item-title": { color: "#FFFFFF" },
+                  "&:hover .services-item-title": { color: "#FFD866" },
+                  "&:hover .services-item-dot": {
+                    width: 8,
+                    mr: 0,
+                    opacity: 1,
+                  },
                   "&:hover .services-item-icon": {
                     color: "#FFD866",
                     transform: "scale(1.1)",
@@ -268,6 +278,24 @@ function ServicesPanel() {
                       transition: "color 0.15s ease",
                     }}
                   >
+                    {/* Collapsed with a negative margin so it cancels the row gap until hover. */}
+                    <Box
+                      component="span"
+                      className="services-item-dot"
+                      aria-hidden
+                      sx={{
+                        flexShrink: 0,
+                        width: 0,
+                        height: 8,
+                        mr: "-10px",
+                        borderRadius: "50%",
+                        background: "#FFD866",
+                        boxShadow: "0 0 10px rgba(255, 216, 102, 0.8)",
+                        opacity: 0,
+                        transition:
+                          "width 0.2s ease, margin 0.2s ease, opacity 0.2s ease",
+                      }}
+                    />
                     {item.label}
                     {item.tag ? (
                       <Box

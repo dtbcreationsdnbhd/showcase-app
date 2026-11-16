@@ -156,8 +156,8 @@ export default function Navbar({
             flexDirection: "row",
             alignItems: "center",
             p: 0,
-            gap: "36px",
-            width: 560,
+            gap: "20px",
+            width: "auto",
             height: 54,
             flexShrink: 0,
           }}
@@ -182,8 +182,8 @@ export default function Navbar({
                 component="span"
                 sx={{
                   ...headerFont,
-                  fontSize: 18,
-                  lineHeight: "22px",
+                  fontSize: 21,
+                  lineHeight: "26px",
                   textTransform: "uppercase",
                   color: "rgba(255, 255, 255, 0.92)",
                   textShadow: "0 1px 10px rgba(60, 0, 24, 0.55)",

@@ -12,6 +12,7 @@ export const DESKTOP_NAV_LINKS = [
   { label: "SERVICES/PROJECTS", hash: "#services", center: true },
   { label: "WHY US", hash: "#why-us", center: true },
   { label: "FAQ", hash: "#faq", center: true },
+  { label: "CONTACT", hash: "#contact", center: true },
 ] as const;
 
 export type ServiceIcon =
@@ -34,15 +35,15 @@ export type ServiceGroup = {
 /** Desktop SERVICES dropdown. Items are display-only until they get links. */
 export const SERVICES_MENU: ServiceGroup[] = [
   {
-    title: "Tools",
+    title: "DigitalTools",
     accent: "pink",
     items: [
       { label: "TeleFlies", desc: "Telegram marketing automation", icon: "send" },
-      { label: "FindSEO", desc: "SEO audits and keyword insights", icon: "search" },
+      { label: "SEO", desc: "SEO audits and keyword insights", icon: "search" },
     ],
   },
   {
-    title: "Designs",
+    title: "Website Designs",
     accent: "gradient",
     items: [
       { label: "AI Video", desc: "Brand videos generated with AI", icon: "video" },
