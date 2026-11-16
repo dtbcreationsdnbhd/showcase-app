@@ -40,7 +40,12 @@ export default async function ProjectsPage() {
           minHeight: "100vh",
           // The stage is scaled with transform, so it can't size the frame itself.
           height: `max(100vh, calc(100vw * ${stageHeight} / ${LANDING_DESIGN_WIDTH}))`,
-          backgroundColor: "#22060F",
+          backgroundImage:
+            'linear-gradient(rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.58)), url("/landing/contact-form-bg.png")',
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          backgroundAttachment: "fixed",
         }}
         sx={{ [MOBILE_ONLY]: { display: "none" } }}
       >

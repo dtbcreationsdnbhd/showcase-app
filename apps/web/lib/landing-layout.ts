@@ -98,7 +98,7 @@ export const HERO_BOTTOM_FADE = figmaPx(110);
  */
 export const CONTACT_WAVE_MASK_HOLD_PCT = 46;
 export const CONTACT_WAVE_MASK_FADE = HERO_BOTTOM_FADE * 1.8;
-export const FOOTER_HEIGHT = figmaPx(315);
+export const FOOTER_HEIGHT = figmaPx(220);
 /** Projects page grid: wider than the landing's 3-card row. */
 export const PROJECTS_PAGE_COLUMNS = 4;
 

@@ -12,7 +12,20 @@ const barlow = {
     'var(--font-barlow-semi-condensed), "Barlow Semi Condensed", sans-serif',
 } as const;
 
-const LETTERS = ["A", "P", "E", "X"] as const;
+const LETTERS = [
+  "V",
+  "I",
+  "S",
+  "I",
+  "O",
+  "N",
+  " ",
+  "C",
+  "R",
+  "A",
+  "F",
+  "T",
+] as const;
 /** Hidden position, below the footer edge. */
 const TRAVEL_EM = 0.95;
 /** Same delay both ways. Retract uses the reverse order. */
@@ -170,14 +183,15 @@ export default function Footer() {
         sx={{
           ...barlow,
           position: "absolute",
-          width: figmaPx(1086),
+          // width: figmaPx(1086),
           height: figmaPx(500),
-          left: figmaPx(177),
+          width: "100%",
+          left: 0,
           top: figmaPx(35),
           m: 0,
           fontStyle: "normal",
           fontWeight: 700,
-          fontSize: figmaPx(375),
+          fontSize: figmaPx(240),
           lineHeight: "100%",
           textAlign: "center",
           textTransform: "uppercase",
@@ -193,7 +207,7 @@ export default function Footer() {
           >
             <Box
               component="span"
-              className="footer-apex-glyph"
+              className="footer-apex-glyph solutions-title-3d"
               sx={{
                 backgroundImage: GOLD_TEXT,
                 backgroundClip: "text",
