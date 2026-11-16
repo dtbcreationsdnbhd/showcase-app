@@ -16,9 +16,9 @@ import { DESKTOP_ONLY, MOBILE_ONLY } from "@/lib/landing-layout-mobile";
 import { listProjects } from "@/lib/projects";
 
 const NAV_HEIGHT = 102;
-const PAD_TOP = figmaPx(60);
+const PAD_TOP = figmaPx(12);
 const TITLE_HEIGHT = figmaPx(64);
-const TITLE_GAP = figmaPx(40);
+const TITLE_GAP = figmaPx(28);
 const PAD_BOTTOM = figmaPx(100);
 
 export default async function ProjectsPage() {

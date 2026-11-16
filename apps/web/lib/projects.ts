@@ -1,4 +1,12 @@
 import { createClient } from "@supabase/supabase-js";
+import type { HeroSlide } from "@/components/landing/HeroCarousel";
+import {
+  HERO_CATEGORY_ORDER,
+  isProjectCategory,
+  projectCategoryLabel,
+  type ProjectCategory,
+} from "@/lib/project-categories";
+import { isVideoUrl } from "@/lib/project-media";
 
 const PROJECT_TABLES = ["staging_projects", "production_projects"] as const;
 
@@ -7,6 +15,7 @@ type ProjectTable = (typeof PROJECT_TABLES)[number];
 export type ShowcaseProject = {
   id: string;
   name: string;
+  category: ProjectCategory | "";
   tags: string[];
   challenge: string;
   solution: string;
@@ -18,6 +27,7 @@ export type ShowcaseProject = {
 type ProjectRow = {
   id: string;
   name: string;
+  category: string | null;
   tags: string[] | null;
   challenge: string;
   solution: string;
@@ -57,6 +67,52 @@ export function pickRandomProjects<T>(projects: readonly T[], count = 3): T[] {
     .map((index) => projects[index]);
 }
 
+/**
+ * Hero picks: one project per top category (when available), then fill
+ * from the rest so we still get up to `count` cards.
+ */
+export function pickHeroProjects(
+  projects: readonly ShowcaseProject[],
+  count = 3,
+): ShowcaseProject[] {
+  if (projects.length === 0) return [];
+
+  const picked: ShowcaseProject[] = [];
+  const used = new Set<string>();
+
+  for (const category of HERO_CATEGORY_ORDER) {
+    if (picked.length >= count) break;
+    const hit = projects.find(
+      (project) => project.category === category && !used.has(project.id),
+    );
+    if (!hit) continue;
+    picked.push(hit);
+    used.add(hit.id);
+  }
+
+  for (const project of projects) {
+    if (picked.length >= count) break;
+    if (used.has(project.id)) continue;
+    picked.push(project);
+    used.add(project.id);
+  }
+
+  return picked;
+}
+
+export function projectToHeroSlide(project: ShowcaseProject): HeroSlide {
+  return {
+    key: project.id,
+    category: project.category
+      ? projectCategoryLabel(project.category)
+      : "Project",
+    title: project.name,
+    href: "/projects",
+    src: project.mainImageUrl || null,
+    isVideo: Boolean(project.mainImageUrl && isVideoUrl(project.mainImageUrl)),
+  };
+}
+
 export async function listProjects(): Promise<ShowcaseProject[]> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
@@ -75,7 +131,7 @@ export async function listProjects(): Promise<ShowcaseProject[]> {
   const { data, error } = await supabase
     .from(projectTable())
     .select(
-      "id, name, tags, challenge, solution, main_image_url, detail_image_urls, updated_at",
+      "id, name, category, tags, challenge, solution, main_image_url, detail_image_urls, updated_at",
     )
     .order("created_at", { ascending: true });
 
@@ -84,6 +140,8 @@ export async function listProjects(): Promise<ShowcaseProject[]> {
   return (data as ProjectRow[]).map((row) => ({
     id: row.id,
     name: row.name,
+    category:
+      row.category && isProjectCategory(row.category) ? row.category : "",
     tags: row.tags ?? [],
     challenge: row.challenge,
     solution: row.solution,

@@ -8,6 +8,7 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import { useState } from "react";
 
+import { isVideoUrl } from "@/lib/project-media";
 import { cornerRadius } from "@/lib/ui";
 
 export default function ProjectPhotosButton({
@@ -111,21 +112,36 @@ export default function ProjectPhotosButton({
               bgcolor: "#F4F1FB",
             }}
           >
-            <Box
-              component="img"
-              src={current}
-              alt={
-                urls.length === 1
-                  ? `${name} ${title.toLowerCase()}`
-                  : `${name} ${title.toLowerCase()} ${index + 1}`
-              }
-              sx={{
-                display: "block",
-                maxWidth: "100%",
-                maxHeight: "100%",
-                objectFit: "contain",
-              }}
-            />
+            {current && isVideoUrl(current) ? (
+              <Box
+                component="video"
+                src={current}
+                controls
+                playsInline
+                sx={{
+                  display: "block",
+                  maxWidth: "100%",
+                  maxHeight: "100%",
+                  objectFit: "contain",
+                }}
+              />
+            ) : (
+              <Box
+                component="img"
+                src={current}
+                alt={
+                  urls.length === 1
+                    ? `${name} ${title.toLowerCase()}`
+                    : `${name} ${title.toLowerCase()} ${index + 1}`
+                }
+                sx={{
+                  display: "block",
+                  maxWidth: "100%",
+                  maxHeight: "100%",
+                  objectFit: "contain",
+                }}
+              />
+            )}
           </Box>
           {urls.length > 1 ? (
             <Box
@@ -141,7 +157,7 @@ export default function ProjectPhotosButton({
                   key={`${url}-${itemIndex}`}
                   component="button"
                   type="button"
-                  aria-label={`Image ${itemIndex + 1}`}
+                  aria-label={`Media ${itemIndex + 1}`}
                   aria-pressed={itemIndex === index}
                   onClick={() => setIndex(itemIndex)}
                   sx={{
@@ -157,17 +173,33 @@ export default function ProjectPhotosButton({
                     cursor: "pointer",
                   }}
                 >
-                  <Box
-                    component="img"
-                    src={url}
-                    alt=""
-                    sx={{
-                      display: "block",
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
+                  {isVideoUrl(url) ? (
+                    <Box
+                      component="video"
+                      src={url}
+                      muted
+                      playsInline
+                      preload="metadata"
+                      sx={{
+                        display: "block",
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  ) : (
+                    <Box
+                      component="img"
+                      src={url}
+                      alt=""
+                      sx={{
+                        display: "block",
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  )}
                 </Box>
               ))}
             </Box>

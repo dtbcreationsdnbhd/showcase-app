@@ -2,7 +2,7 @@
 
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Image from "next/image";
+import ShowcaseMedia from "@/components/landing/ShowcaseMedia";
 
 const barlow = {
   fontFamily:
@@ -52,18 +52,12 @@ export default function MobileProjectCard({
       }}
     >
       {imageSrc ? (
-        <Image
+        <ShowcaseMedia
           src={imageSrc}
           alt={title}
-          fill
           sizes="85vw"
-          style={{
-            objectFit: "contain",
-            objectPosition: "center",
-            zIndex: 1,
-            filter:
-              "drop-shadow(0 0 1px rgba(255, 255, 255, 0.85)) drop-shadow(0 18px 28px rgba(0, 0, 0, 0.55))",
-          }}
+          objectFit="cover"
+          filter="drop-shadow(0 0 1px rgba(255, 255, 255, 0.85)) drop-shadow(0 18px 28px rgba(0, 0, 0, 0.55))"
         />
       ) : null}
 

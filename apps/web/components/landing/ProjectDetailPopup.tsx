@@ -2,9 +2,9 @@
 
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Image from "next/image";
 import { Fragment, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import ShowcaseMedia from "@/components/landing/ShowcaseMedia";
 import { LANDING_DESIGN_WIDTH, figmaPx } from "@/lib/landing-layout";
 import type { ShowcaseProject } from "@/lib/projects";
 
@@ -53,11 +53,13 @@ function ProjectPhoto({
   width,
   height,
   alt,
+  controls = false,
 }: {
   src: string | null;
   width: number;
   height: number;
   alt: string;
+  controls?: boolean;
 }) {
   if (!src) {
     return <ImagePlaceholder width={width} height={height} />;
@@ -80,17 +82,13 @@ function ProjectPhoto({
         flexShrink: 0,
       }}
     >
-      <Image
+      <ShowcaseMedia
         src={src}
         alt={alt}
-        fill
         sizes={`${width}px`}
-        style={{
-          objectFit: "contain",
-          objectPosition: "center",
-          filter:
-            "drop-shadow(0 0 1px rgba(255, 255, 255, 0.55)) drop-shadow(0 12px 22px rgba(0, 0, 0, 0.4))",
-        }}
+        controls={controls}
+        autoPlay={!controls}
+        filter="drop-shadow(0 0 1px rgba(255, 255, 255, 0.55)) drop-shadow(0 12px 22px rgba(0, 0, 0, 0.4))"
       />
     </Box>
   );
@@ -324,6 +322,7 @@ export default function ProjectDetailPopup({
               width={figmaPx(PHOTO_W)}
               height={figmaPx(PHOTO_H)}
               alt={detail.name}
+              controls
             />
             <Box
               sx={{

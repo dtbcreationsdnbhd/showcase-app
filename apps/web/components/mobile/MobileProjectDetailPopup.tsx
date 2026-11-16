@@ -2,9 +2,9 @@
 
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Image from "next/image";
 import { useEffect, useRef, useState, type TouchEvent } from "react";
 import { createPortal } from "react-dom";
+import ShowcaseMedia from "@/components/landing/ShowcaseMedia";
 import {
   mobileSheetMotion,
   useMobileSheet,
@@ -306,17 +306,12 @@ export default function MobileProjectDetailPopup({
                 }}
               >
                 {src ? (
-                  <Image
+                  <ShowcaseMedia
                     src={src}
                     alt=""
-                    fill
                     sizes="100vw"
-                    style={{
-                      objectFit: "contain",
-                      objectPosition: "center",
-                      filter:
-                        "drop-shadow(0 0 1px rgba(255, 255, 255, 0.55)) drop-shadow(0 12px 22px rgba(0, 0, 0, 0.4))",
-                    }}
+                    controls
+                    filter="drop-shadow(0 0 1px rgba(255, 255, 255, 0.55)) drop-shadow(0 12px 22px rgba(0, 0, 0, 0.4))"
                   />
                 ) : null}
               </Box>
