@@ -198,9 +198,9 @@ export default function Footer() {
           whiteSpace: "nowrap",
         }}
       >
-        {LETTERS.map((letter) => (
+        {LETTERS.map((letter, index) => (
           <Box
-            key={letter}
+            key={`${letter}-${index}`}
             component="span"
             className="footer-apex-letter"
             data-letter={letter}

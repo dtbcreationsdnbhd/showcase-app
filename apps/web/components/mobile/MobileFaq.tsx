@@ -140,6 +140,7 @@ export default function MobileFaq() {
         >
           <Typography
             component="h2"
+            className="solutions-title-3d"
             sx={{
               ...barlow,
               m: 0,
@@ -147,7 +148,11 @@ export default function MobileFaq() {
               fontSize: 48,
               lineHeight: "58px",
               letterSpacing: "-0.02em",
-              ...goldTextSx,
+              backgroundImage: goldTextSx.backgroundImage,
+              backgroundClip: "text",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              color: "transparent",
             }}
           >
             {FAQ_TITLE}

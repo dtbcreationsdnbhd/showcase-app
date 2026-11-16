@@ -35,15 +35,15 @@ export type ServiceGroup = {
 /** Desktop SERVICES dropdown. Items are display-only until they get links. */
 export const SERVICES_MENU: ServiceGroup[] = [
   {
-    title: "Tools",
+    title: "DigitalTools",
     accent: "pink",
     items: [
       { label: "TeleFlies", desc: "Telegram marketing automation", icon: "send" },
-      { label: "FindSEO", desc: "SEO audits and keyword insights", icon: "search" },
+      { label: "SEO", desc: "SEO audits and keyword insights", icon: "search" },
     ],
   },
   {
-    title: "Designs",
+    title: "Website Designs",
     accent: "gradient",
     items: [
       { label: "AI Video", desc: "Brand videos generated with AI", icon: "video" },

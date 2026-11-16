@@ -195,6 +195,7 @@ export default function Faq() {
             >
               <Typography
                 component="h2"
+                className="solutions-title-3d"
                 sx={{
                   ...barlow,
                   m: 0,
@@ -202,9 +203,11 @@ export default function Faq() {
                   fontSize: figmaPx(48),
                   lineHeight: 1,
                   letterSpacing: "-0.02em",
-                  ...goldTextSx,
-                  filter:
-                    "drop-shadow(0 1.5px 0 #A9620F) drop-shadow(0 1.5px 0 #6B3804) drop-shadow(0 6px 10px rgba(0, 0, 0, 0.6))",
+                  backgroundImage: goldTextSx.backgroundImage,
+                  backgroundClip: "text",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  color: "transparent",
                   alignSelf: "flex-start",
                 }}
               >

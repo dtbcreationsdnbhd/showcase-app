@@ -143,8 +143,13 @@ export default function MobileHero({
               {before}
               <Box
                 component="span"
+                className="solutions-title-3d"
                 sx={{
-                  ...goldTextSx,
+                  backgroundImage: goldTextSx.backgroundImage,
+                  backgroundClip: "text",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  color: "transparent",
                 }}
               >
                 {accent}
