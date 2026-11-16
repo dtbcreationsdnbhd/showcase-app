@@ -280,14 +280,14 @@ function ProjectFormFields({
         <ImageField
           name="mainImage"
           keptName="keptMainImage"
-          label="Main media"
+          label="Main media (required)"
           disabled={pending}
           existingUrls={project?.mainImageUrl ? [project.mainImageUrl] : []}
         />
         <ImageField
           name="detailImages"
           keptName="keptDetailImages"
-          label="Detail media"
+          label="Detail media (optional)"
           disabled={pending}
           multiple
           existingUrls={project?.detailImageUrls ?? []}

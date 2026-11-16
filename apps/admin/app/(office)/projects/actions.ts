@@ -39,10 +39,10 @@ export async function createShowcaseProject(
     return { ok: false, message: "Fill in every field." };
   }
 
-  if (!mainImage || detailImages.length === 0) {
+  if (!mainImage) {
     return {
       ok: false,
-      message: "Upload a main media file and at least one detail media file.",
+      message: "Upload a main media file.",
     };
   }
 
@@ -174,10 +174,10 @@ export async function updateShowcaseProject(
     return { ok: false, message: mediaProblem };
   }
 
-  if (!mainImage && !keptMain && detailImages.length === 0 && keptDetailInputs.length === 0) {
+  if (!mainImage && !keptMain) {
     return {
       ok: false,
-      message: "Upload a main media file and at least one detail media file.",
+      message: "Upload a main media file.",
     };
   }
 
@@ -229,11 +229,13 @@ export async function updateShowcaseProject(
     return { ok: false, message: "Could not save the project." };
   }
 
-  const keptDetailUrls = currentDetails.filter((url) => keptDetailInputs.includes(url));
-  if ((!mainImage && !keptMain) || (detailImages.length === 0 && keptDetailUrls.length === 0)) {
+  const keptDetailUrls = currentDetails.filter((url) =>
+    keptDetailInputs.includes(url),
+  );
+  if (!mainImage && !keptMain) {
     return {
       ok: false,
-      message: "Upload a main media file and at least one detail media file.",
+      message: "Upload a main media file.",
     };
   }
 

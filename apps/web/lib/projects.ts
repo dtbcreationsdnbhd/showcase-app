@@ -113,6 +113,20 @@ export function projectToHeroSlide(project: ShowcaseProject): HeroSlide {
   };
 }
 
+/**
+ * Detail popup gallery: main first, then optional details.
+ * One frame — auto-slides when there is more than one item.
+ */
+export function projectGalleryMedia(project: ShowcaseProject): {
+  media: string[];
+} {
+  const media = [project.mainImageUrl, ...project.detailImageUrls].filter(
+    (url, index, list) => Boolean(url) && list.indexOf(url) === index,
+  );
+
+  return { media };
+}
+
 export async function listProjects(): Promise<ShowcaseProject[]> {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
