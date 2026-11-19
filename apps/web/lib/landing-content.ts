@@ -318,117 +318,69 @@ export const FAQ_GROUPS: readonly FaqGroup[] = [
     title: "General",
     items: [
       {
-        question: "What is VisionCraft and what services do you provide?",
+        question: "What services does VisionCraft offer?",
         answer:
-          "VisionCraft is an AI-powered digital creation and marketing solution platform designed to streamline content production, boost online visibility, and drive commercial success. Our service suite includes:",
-        points: [
-          {
-            label: "AI Tools",
-            text: "Next-gen tools like TeleFlies (social content automation) and FindSEO (search optimization).",
-          },
-          {
-            label: "AI Design & Video Production",
-            text: "High-end visual solutions including AI Commercial Video, AI Digital Human / IP Video, AI Drama (with in-scene ad placement), and AI Music Videos.",
-          },
-          {
-            label: "Platform Creation",
-            text: "Full turnkey web platform development (such as streaming and niche entertainment sites) complete with built-in Ads Dashboards for instant monetization.",
-          },
-        ],
+          "VisionCraft provides digital advertising, AI-powered content creation, marketing automation, SEO solutions, and advertising platform development. Our services help businesses increase brand visibility, streamline marketing operations, and explore new growth opportunities.",
       },
       {
-        question: "Who can benefit from using VisionCraft’s tools and solutions?",
-        answer: "Our solutions are built for:",
-        points: [
-          {
-            label: "Digital Marketers & Brands",
-            text: "Looking to scale visual content quickly without traditional studio production budgets.",
-          },
-          {
-            label: "Content Creators & Agencies",
-            text: "Seeking automated workflows for social media, SEO analytics, and video editing.",
-          },
-          {
-            label: "Platform Operators & Entrepreneurs",
-            text: "Planning to launch, manage, and monetize content streaming platforms (like movie or entertainment sites) with integrated ad networks.",
-          },
-        ],
+        question: "Who can benefit from VisionCraft's solutions?",
+        answer:
+          "Our solutions are designed for businesses, brands, advertisers, and operators looking to improve their digital marketing performance. We have a particular focus on the entertainment and iGaming industries, while also supporting businesses across other sectors.",
+      },
+      {
+        question: "Can VisionCraft customize solutions for my business?",
+        answer:
+          "Yes. We understand that every business has different objectives and marketing needs. Our team can recommend suitable advertising channels, creative services, and digital tools based on your goals and project requirements.",
+      },
+      {
+        question: "How much do VisionCraft's services cost?",
+        answer:
+          "Pricing depends on the selected services, project scope, advertising placements, and specific requirements. Contact our team to discuss your needs and receive a tailored quotation.",
+      },
+      {
+        question: "How do I get started with VisionCraft?",
+        answer:
+          "Simply submit an inquiry through our contact form or reach out via Telegram. Share your business goals and the services you're interested in, and our team will help you explore suitable solutions and the next steps.",
       },
     ],
   },
   {
-    title: "AI Tools & SEO",
+    title: "Advertising",
     items: [
       {
-        question: "What is TeleFlies and how does it assist with content management?",
+        question: "How can VisionCraft help increase my brand's visibility?",
         answer:
-          "TeleFlies is an AI-driven tool built for automated social content creation and workflow enhancement. It helps users draft engaging captions, structure campaign messaging, and schedule content publishing efficiently—reducing manual social media management effort while maintaining brand consistency across channels.",
+          "We offer advertising placements across entertainment and niche-content websites, including movie, streaming, and adult entertainment platforms. These channels help brands reach relevant audiences, expand their advertising exposure, and discover new marketing opportunities.",
       },
       {
-        question: "How does FindSEO help improve my website’s search engine rankings?",
+        question: "Can I track the performance of my advertising campaigns?",
         answer:
-          "FindSEO uses AI analytics to discover high-volume keywords, optimize on-page content structures, and analyze competitor strategies. It delivers actionable insights to increase organic search traffic, elevate domain authority, and secure higher rankings on search engine result pages.",
+          "Yes. For supported advertising placements, we provide access to available traffic, viewing, and engagement insights. These insights help you better understand your campaign's visibility and make more informed marketing decisions.",
       },
     ],
   },
   {
-    title: "AI Video & Design",
+    title: "AI Creative",
     items: [
       {
-        question: "What is the difference between standard AI Video and AI IP Video creation?",
-        points: [
-          {
-            label: "Standard AI Video",
-            text: "Generates cinematic, general-purpose commercial visuals, promotional clips, and motion graphics based on text or visual prompts.",
-          },
-          {
-            label: "AI IP Video",
-            text: "Focuses on creating and animating a custom digital persona or brand mascot (Intellectual Property). This allows you to generate consistent human-like presenters or avatar-driven video series repeatedly without re-hiring actors or crew.",
-          },
-        ],
-      },
-      {
-        question: "How does AI Drama work, and how are in-scene ads integrated?",
+        question: "What AI creative services does VisionCraft provide?",
         answer:
-          "AI Drama utilizes AI scriptwriting and scene rendering to produce narrative-driven short-form drama series rapidly. During production, we integrate In-Scene Ads by digitally placing brand product images, banner placements, or sponsored props seamlessly into the video environment itself—creating monetization opportunities without disrupting the viewer experience.",
-      },
-      {
-        question: "Can I commission custom AI MV (Music Video) production for my brand?",
-        answer:
-          "Yes! Our AI MV service blends AI audio-visual sync with stylised animations and visual effects. Whether for a product launch soundtrack, brand anthem, or artistic promotional campaign, we can produce high-impact, custom music videos tailored to your brand identity.",
+          "We offer AI-assisted promotional videos, branded character videos, short dramas, music videos, and audio production. These services help businesses create engaging marketing content, communicate brand messages, and strengthen brand recognition.",
       },
     ],
   },
   {
-    title: "Platform Creation & Ads Dashboard",
+    title: "TeleFlies & SEO",
     items: [
       {
-        question: "What is included in your Platform Creation service with the Ads Dashboard?",
-        answer: "Our Platform Creation package offers an end-to-end web deployment solution:",
-        points: [
-          {
-            label: "Custom Frontend & Backend Architecture",
-            text: "Fully responsive, high-speed UI tailored to your niche.",
-          },
-          {
-            label: "Integrated Media Streaming / Content Systems",
-            text: "Optimized for low-latency playback.",
-          },
-          {
-            label: "Ads Dashboard",
-            text: "A centralized management hub that lets you insert banner ads, video pre-roll/post-roll ads, or pop-ups, track impression metrics, and monitor revenue payouts in real-time.",
-          },
-        ],
+        question: "How can TeleFlies improve my Telegram marketing?",
+        answer:
+          "TeleFlies helps businesses manage Telegram marketing through customized bots, automated replies, scheduled broadcasts, and contact management. It simplifies daily operations and provides available interaction insights to support better audience engagement.",
       },
       {
-        question: "Can VisionCraft build custom streaming platforms like Niuniutv or niche entertainment sites?",
+        question: "How can VisionCraft's SEO services help grow my website traffic?",
         answer:
-          "Absolutely. We build scalable streaming architectures modeled after popular media platforms like Niuniutv as well as specialized niche entertainment portals. Each platform comes fully equipped with user management, category tagging, video hosting compatibility, and ad integration ready for immediate deployment.",
-      },
-      {
-        question: "How do I get started with a project or request a free consultation?",
-        answer:
-          "You can get started by clicking the \"Start a Project\" or \"Get a Free Consultation\" button on our website navigation bar. Fill out the short inquiry form with your project scope, and our team will get back to you within 24 hours with a tailored strategy and custom price quote.",
+          "Our SEO services help improve your Google visibility and attract relevant organic traffic through keyword research, on-page optimization, content creation, and backlink building. With tailored strategies, expert consultation, and weekly reports, we support long-term search growth and help reduce reliance on paid advertising.",
       },
     ],
   },
