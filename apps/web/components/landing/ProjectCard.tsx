@@ -18,7 +18,7 @@ const TITLE_INNER_W = CARD_W - TITLE_PAD * 2;
 
 export default function ProjectCard({
   title,
-  description,
+  description = "",
   imageSrc,
   cursorLabel,
   href,
@@ -26,7 +26,7 @@ export default function ProjectCard({
   eager = false,
 }: {
   title: string;
-  description: string;
+  description?: string;
   imageSrc: string | null;
   cursorLabel?: string;
   href?: string;
@@ -78,6 +78,7 @@ export default function ProjectCard({
             sizes={`${CARD_W}px`}
             eager={eager}
             objectFit="cover"
+            objectPosition="center top"
             filter="drop-shadow(0 0 1px rgba(255, 255, 255, 0.85)) drop-shadow(0 18px 28px rgba(0, 0, 0, 0.55))"
           />
         ) : (
@@ -166,6 +167,7 @@ export default function ProjectCard({
             >
               {title}
             </Typography>
+            {description ? (
             <Typography
               sx={{
                 ...barlow,
@@ -184,6 +186,7 @@ export default function ProjectCard({
             >
               {description}
             </Typography>
+            ) : null}
           </Box>
         </Box>
       </Box>

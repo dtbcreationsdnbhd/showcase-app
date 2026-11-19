@@ -7,6 +7,7 @@ import {
   type ProjectCategory,
 } from "@/lib/project-categories";
 import { isVideoUrl } from "@/lib/project-media";
+import { parseProjectFeatures, type ProjectFeature } from "@/lib/project-sheet";
 
 const PROJECT_TABLES = ["staging_projects", "production_projects"] as const;
 
@@ -17,6 +18,12 @@ export type ShowcaseProject = {
   name: string;
   category: ProjectCategory | "";
   tags: string[];
+  subtitle: string;
+  features: ProjectFeature[];
+  whyIt: string;
+  howWeHelp: string;
+  ctaText: string;
+  footerText: string;
   challenge: string;
   solution: string;
   mainImageUrl: string;
@@ -29,6 +36,12 @@ type ProjectRow = {
   name: string;
   category: string | null;
   tags: string[] | null;
+  subtitle?: string | null;
+  features?: unknown;
+  why_it?: string | null;
+  how_we_help?: string | null;
+  cta_text?: string | null;
+  footer_text?: string | null;
   challenge: string;
   solution: string;
   main_image_url: string;
@@ -142,12 +155,22 @@ export async function listProjects(): Promise<ShowcaseProject[]> {
     },
   });
 
-  const { data, error } = await supabase
+  const baseColumns =
+    "id, name, category, tags, challenge, solution, main_image_url, detail_image_urls, updated_at";
+  const sheetColumns =
+    "subtitle, features, why_it, how_we_help, cta_text, footer_text";
+  const listed = await supabase
     .from(projectTable())
-    .select(
-      "id, name, category, tags, challenge, solution, main_image_url, detail_image_urls, updated_at",
-    )
+    .select(`${baseColumns}, ${sheetColumns}`)
     .order("created_at", { ascending: true });
+  const fallback = listed.error
+    ? await supabase
+        .from(projectTable())
+        .select(baseColumns)
+        .order("created_at", { ascending: true })
+    : null;
+  const data = listed.error ? fallback?.data : listed.data;
+  const error = listed.error ? fallback?.error : null;
 
   if (error || !data) return [];
 
@@ -157,6 +180,12 @@ export async function listProjects(): Promise<ShowcaseProject[]> {
     category:
       row.category && isProjectCategory(row.category) ? row.category : "",
     tags: row.tags ?? [],
+    subtitle: row.subtitle ?? "",
+    features: parseProjectFeatures(row.features),
+    whyIt: row.why_it ?? "",
+    howWeHelp: row.how_we_help ?? "",
+    ctaText: row.cta_text ?? "",
+    footerText: row.footer_text ?? "",
     challenge: row.challenge,
     solution: row.solution,
     mainImageUrl: row.main_image_url,

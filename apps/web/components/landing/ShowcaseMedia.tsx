@@ -13,6 +13,7 @@ export default function ShowcaseMedia({
   controls = false,
   autoPlay = true,
   objectFit = "contain",
+  objectPosition = "center",
   filter,
 }: {
   src: string;
@@ -24,6 +25,7 @@ export default function ShowcaseMedia({
   /** Cards mute+loop; turn off when controls are enough. */
   autoPlay?: boolean;
   objectFit?: "contain" | "cover";
+  objectPosition?: string;
   filter?: string;
 }) {
   if (isVideoUrl(src)) {
@@ -43,7 +45,7 @@ export default function ShowcaseMedia({
           width: "100%",
           height: "100%",
           objectFit,
-          objectPosition: "center",
+          objectPosition,
           zIndex: 1,
           filter,
         }}
@@ -60,7 +62,7 @@ export default function ShowcaseMedia({
       sizes={sizes}
       style={{
         objectFit,
-        objectPosition: "center",
+        objectPosition,
         zIndex: 1,
         filter,
       }}

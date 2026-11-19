@@ -47,7 +47,7 @@ export default function ProjectShowcaseGallery({
           <ProjectCard
             key={project.id}
             title={project.name}
-            description={projectTagLine(project.tags)}
+            description={projectTagLine(project.features.map((feature) => feature.label))}
             imageSrc={project.mainImageUrl}
             cursorLabel="View Project"
             onOpen={() => setSelectedId(project.id)}
