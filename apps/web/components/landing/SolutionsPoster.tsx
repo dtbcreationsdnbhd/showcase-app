@@ -13,7 +13,7 @@ const getHydrated = () => true;
 const getServerSnapshot = () => false;
 
 const SRC = "/landing/solutions-bg.png";
-/** Thin bottom edge so Why Choose can peek through without eating the slogan. */
+/** Thin bottom edge so the next poster can peek through without eating the slogan. */
 const EXIT_MASK =
   "linear-gradient(180deg, #000 0%, #000 97%, transparent 100%)";
 
@@ -48,9 +48,11 @@ export default function SolutionsPoster({ sectionId }: { sectionId: string }) {
       const pinned = rect.top < vh && rect.bottom > 0;
       const leaveY =
         pinned && rect.top <= 0 && rect.bottom < vh ? rect.bottom - vh : 0;
+      const fade = leaveY !== 0 ? Math.max(rect.bottom / vh, 0) : 1;
 
       layer.style.height = `${posterScreenH}px`;
       layer.style.transform = leaveY !== 0 ? `translateY(${leaveY}px)` : "none";
+      layer.style.opacity = fade.toFixed(3);
       layer.style.visibility = pinned ? "visible" : "hidden";
       img.style.visibility = pinned ? "hidden" : "visible";
     };

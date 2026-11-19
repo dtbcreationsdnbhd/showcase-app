@@ -163,7 +163,7 @@ export default function Faq() {
       }}
     >
       <FaqBackdrop targetId="faq" />
-      <ScrollRevealPin holdPages={TITLE_HOLD_PAGES}>
+      <ScrollRevealPin holdPages={TITLE_HOLD_PAGES} enterAt={0.12}>
         <Box
           sx={{
             boxSizing: "border-box",

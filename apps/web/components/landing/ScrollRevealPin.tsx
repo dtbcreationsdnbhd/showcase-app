@@ -29,12 +29,15 @@ export default function ScrollRevealPin({
   anchorId,
   zIndex = 20,
   background = "transparent",
+  enterAt = 0.55,
   children,
 }: {
   holdPages: number;
   anchorId?: string;
   zIndex?: number;
   background?: string;
+  /** Section top, as a fraction of the viewport, where the block may fade in. */
+  enterAt?: number;
   children: ReactNode;
 }) {
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -107,7 +110,7 @@ export default function ScrollRevealPin({
 
       // The block is centred in a viewport-tall pin, so its centre sits at
       // rect.top + vh / 2 until the pin engages. Trigger as that crosses in.
-      if (rect.top > vh * 0.55) {
+      if (rect.top > vh * enterAt) {
         if (entered) {
           entered = false;
           exiting = false;
@@ -157,7 +160,7 @@ export default function ScrollRevealPin({
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
-  }, [reducedMotion, hydrated]);
+  }, [reducedMotion, hydrated, enterAt]);
 
   return (
     <Box

@@ -111,13 +111,14 @@ export function projectsGridHeight(projectCount: number, columns: number) {
 export const PROJECTS_PAGE_NAV_HEIGHT = 40;
 export const PROJECTS_PAGE_HEIGHT = PROJECTS_PAGE_NAV_HEIGHT + SHOWCASE_HEIGHT;
 
-/** Desktop Why Us poster, 3840×2400, drawn across the full 1920 stage. */
+/** Desktop Why Us poster height, kept for the pinned frame. */
 export const WHY_US_DESKTOP_HEIGHT = (LANDING_DESIGN_WIDTH * 2400) / 3840 * 0.88;
 /**
- * Why Choose: one page to settle the poster, then the same title hold as FAQ.
- * Track height is viewport pages (not fixed stage px) so the pin can hold still.
+ * Why Choose: three scrolling copy rows. Each row is one viewport, then holds
+ * still in the middle for another viewport so it takes extra scrolling to leave.
  */
-export const WHY_US_VIEWPORT_PAGES = 1 + TITLE_HOLD_PAGES;
+export const WHY_US_HOLD_PAGES = 1;
+export const WHY_US_VIEWPORT_PAGES = 3 * (1 + WHY_US_HOLD_PAGES);
 /** Desktop Solutions poster, 5760×3240 (16:9), drawn across the full 1920 stage. */
 export const SOLUTIONS_DESKTOP_HEIGHT = (LANDING_DESIGN_WIDTH * 3240) / 5760;
 /**
