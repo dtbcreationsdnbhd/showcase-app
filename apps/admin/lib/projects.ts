@@ -8,6 +8,10 @@ import {
   PROJECT_PAGE_SIZE,
   isPageSize,
 } from "@/lib/project-filters";
+import {
+  parseProjectFeatures,
+  type ProjectFeature,
+} from "@/lib/project-sheet";
 
 export {
   PROJECT_PAGE_SIZE,
@@ -32,6 +36,12 @@ export type ShowcaseProject = {
   name: string;
   category: ProjectCategory | "";
   tags: string[];
+  subtitle: string;
+  features: ProjectFeature[];
+  whyIt: string;
+  howWeHelp: string;
+  ctaText: string;
+  footerText: string;
   challenge: string;
   solution: string;
   mainImageUrl: string;
@@ -55,6 +65,12 @@ type ProjectRow = {
   name: string;
   category: string | null;
   tags: string[] | null;
+  subtitle?: string | null;
+  features?: unknown;
+  why_it?: string | null;
+  how_we_help?: string | null;
+  cta_text?: string | null;
+  footer_text?: string | null;
   challenge: string;
   solution: string;
   main_image_url: string;
@@ -62,6 +78,12 @@ type ProjectRow = {
   created_at: string;
   updated_at: string;
 };
+
+const PROJECT_COLUMNS =
+  "id, name, category, tags, challenge, solution, main_image_url, detail_image_urls, created_at, updated_at";
+
+const SHEET_COLUMNS =
+  "subtitle, features, why_it, how_we_help, cta_text, footer_text";
 
 export function projectTable(): ProjectTable {
   const name = process.env.NEXT_PUBLIC_PROJECT_TABLE;
@@ -97,12 +119,19 @@ export async function listProjects({
   }
 
   const supabase = await createClient();
-  const { data, error } = await supabase
+  const listed = await supabase
     .from(table)
-    .select(
-      "id, name, category, tags, challenge, solution, main_image_url, detail_image_urls, created_at, updated_at",
-    )
+    .select(`${PROJECT_COLUMNS}, ${SHEET_COLUMNS}`)
     .order("created_at", { ascending: false });
+  const fallback =
+    listed.error
+      ? await supabase
+          .from(table)
+          .select(PROJECT_COLUMNS)
+          .order("created_at", { ascending: false })
+      : null;
+  const data = listed.error ? fallback?.data : listed.data;
+  const error = listed.error ? fallback?.error : null;
 
   if (error) {
     return {
@@ -132,6 +161,59 @@ export async function listProjects({
   };
 }
 
+const PROJECT_ID =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+export async function getProject(
+  id: string,
+): Promise<
+  | { ok: true; project: ShowcaseProject }
+  | { ok: false; message: string }
+> {
+  if (!PROJECT_ID.test(id)) {
+    return { ok: false, message: "Project not found." };
+  }
+
+  let table: ProjectTable;
+  try {
+    table = projectTable();
+  } catch (error) {
+    return {
+      ok: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Missing project table setting.",
+    };
+  }
+
+  const supabase = await createClient();
+  const loaded = await supabase
+    .from(table)
+    .select(`${PROJECT_COLUMNS}, ${SHEET_COLUMNS}`)
+    .eq("id", id)
+    .maybeSingle();
+  const fallback = loaded.error
+    ? await supabase
+        .from(table)
+        .select(PROJECT_COLUMNS)
+        .eq("id", id)
+        .maybeSingle()
+    : null;
+  const data = loaded.error ? fallback?.data : loaded.data;
+  const error = loaded.error ? fallback?.error : null;
+
+  if (error) {
+    return { ok: false, message: `Could not load the project. ${error.message}` };
+  }
+
+  if (!data) {
+    return { ok: false, message: "Project not found." };
+  }
+
+  return { ok: true, project: toProject(data as ProjectRow) };
+}
+
 function toProject(row: ProjectRow): ShowcaseProject {
   return {
     id: row.id,
@@ -139,6 +221,12 @@ function toProject(row: ProjectRow): ShowcaseProject {
     category:
       row.category && isProjectCategory(row.category) ? row.category : "",
     tags: row.tags ?? [],
+    subtitle: row.subtitle ?? "",
+    features: parseProjectFeatures(row.features),
+    whyIt: row.why_it ?? "",
+    howWeHelp: row.how_we_help ?? "",
+    ctaText: row.cta_text ?? "",
+    footerText: row.footer_text ?? "",
     challenge: row.challenge,
     solution: row.solution,
     mainImageUrl: row.main_image_url,
@@ -153,6 +241,12 @@ function projectSearchText(row: ShowcaseProject) {
     row.name,
     row.category,
     row.tags.join(" "),
+    row.subtitle,
+    row.features.map((feature) => feature.label).join(" "),
+    row.whyIt,
+    row.howWeHelp,
+    row.ctaText,
+    row.footerText,
     row.challenge,
     row.solution,
   ]

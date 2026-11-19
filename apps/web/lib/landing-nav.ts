@@ -10,9 +10,9 @@ export const NAV_LINKS = [
 export const DESKTOP_NAV_LINKS = [
   { label: "HOME", hash: "#top", center: false },
   { label: "SERVICES/PROJECTS", hash: "#services", center: true },
+  { label: "SOLUTIONS", hash: "#solutions", center: true },
   { label: "WHY US", hash: "#why-us", center: true },
   { label: "FAQ", hash: "#faq", center: true },
-  { label: "CONTACT", hash: "#contact", center: true },
 ] as const;
 
 export type ServiceIcon =
@@ -27,18 +27,25 @@ export type ServiceIcon =
 
 export type ServiceGroup = {
   title: string;
-  accent: "pink" | "gradient" | "orange";
+  accent: "pink" | "service" | "gradient" | "orange";
   badge?: string;
   items: { label: string; tag?: string; desc: string; icon: ServiceIcon }[];
 };
 
-/** Desktop SERVICES dropdown. Items are display-only until they get links. */
+/** Desktop SERVICES dropdown. Every item scrolls to the project cards under the hero. */
+export const SERVICES_MENU_HASH = "#hero-cards";
 export const SERVICES_MENU: ServiceGroup[] = [
   {
-    title: "DigitalTools",
+    title: "Digital Tools",
     accent: "pink",
     items: [
       { label: "TeleFlies", desc: "Telegram marketing automation", icon: "send" },
+    ],
+  },
+  {
+    title: "Service",
+    accent: "service",
+    items: [
       { label: "SEO", desc: "SEO audits and keyword insights", icon: "search" },
     ],
   },

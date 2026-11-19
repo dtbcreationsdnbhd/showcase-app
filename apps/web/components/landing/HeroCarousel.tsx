@@ -278,6 +278,7 @@ export default function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                         width: "100%",
                         height: "100%",
                         objectFit: "cover",
+                        objectPosition: "center top",
                       }}
                     />
                   ) : (
@@ -288,7 +289,7 @@ export default function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                       draggable={false}
                       loading="eager"
                       sizes={`${CARD_W * 2}px`}
-                      style={{ objectFit: "cover" }}
+                      style={{ objectFit: "cover", objectPosition: "center top" }}
                     />
                   )
                 ) : (

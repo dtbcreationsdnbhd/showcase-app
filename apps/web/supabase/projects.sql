@@ -37,7 +37,7 @@ alter table public.staging_projects add column if not exists updated_at timestam
 alter table public.production_projects add column if not exists updated_at timestamptz not null default now();
 alter table public.staging_projects add column if not exists detail_image_urls text[];
 alter table public.production_projects add column if not exists detail_image_urls text[];
--- Top-level category: digital_tools | website_designs | platform_creation
+-- Top-level category: digital_tools | service | website_designs | platform_creation
 alter table public.staging_projects add column if not exists category text;
 alter table public.production_projects add column if not exists category text;
 update public.staging_projects
@@ -80,6 +80,20 @@ end $$;
 
 alter table public.staging_projects alter column detail_image_urls set not null;
 alter table public.production_projects alter column detail_image_urls set not null;
+
+-- Popup sheet. Re-running this file keeps existing rows; new columns start empty.
+alter table public.staging_projects add column if not exists subtitle text not null default '';
+alter table public.production_projects add column if not exists subtitle text not null default '';
+alter table public.staging_projects add column if not exists features jsonb not null default '[]'::jsonb;
+alter table public.production_projects add column if not exists features jsonb not null default '[]'::jsonb;
+alter table public.staging_projects add column if not exists why_it text not null default '';
+alter table public.production_projects add column if not exists why_it text not null default '';
+alter table public.staging_projects add column if not exists how_we_help text not null default '';
+alter table public.production_projects add column if not exists how_we_help text not null default '';
+alter table public.staging_projects add column if not exists cta_text text not null default '';
+alter table public.production_projects add column if not exists cta_text text not null default '';
+alter table public.staging_projects add column if not exists footer_text text not null default '';
+alter table public.production_projects add column if not exists footer_text text not null default '';
 
 create or replace function public.touch_project_updated_at()
 returns trigger

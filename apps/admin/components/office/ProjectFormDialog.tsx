@@ -1,6 +1,5 @@
 "use client";
 
-import Autocomplete from "@mui/material/Autocomplete";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -14,8 +13,14 @@ import { useEffect, useId, useRef, useState, useTransition, type DragEvent, type
 
 import { createShowcaseProject, updateShowcaseProject } from "@/app/(office)/projects/actions";
 import NoticeSnackbar, { type AuthNotice } from "@/components/NoticeSnackbar";
-import RichTextField from "@/components/office/RichTextField";
+import FeatureMark from "@/components/office/FeatureMark";
 import { PROJECT_CATEGORIES } from "@/lib/project-categories";
+import {
+  FEATURE_ICON_LABELS,
+  FEATURE_ICONS,
+  type FeatureIconName,
+  type ProjectFeature,
+} from "@/lib/project-sheet";
 import {
   MAX_UPLOAD_TOTAL_BYTES,
   PROJECT_MEDIA_ACCEPT,
@@ -26,6 +31,9 @@ import {
 } from "@/lib/project-media";
 import type { ShowcaseProject } from "@/lib/projects";
 import { cornerRadius } from "@/lib/ui";
+
+const MEDIA_SIZE_HINT =
+  "Recommended 1092 × 1800 px, portrait 91:150. The popup crops the photo to fill the frame, so keep the subject centered.";
 
 const fieldSx = {
   "& .MuiOutlinedInput-root": {
@@ -99,7 +107,7 @@ export default function ProjectFormDialog(props: ProjectFormDialogProps) {
         open={open}
         onClose={close}
         fullWidth
-        maxWidth="sm"
+        maxWidth="md"
         slotProps={{
           paper: {
             sx: {
@@ -151,17 +159,25 @@ function ProjectFormFields({
   onCancel: () => void;
   onNotice: (notice: AuthNotice) => void;
 }) {
-  const [tags, setTags] = useState(project?.tags ?? []);
-  const [tagInput, setTagInput] = useState("");
+  const [features, setFeatures] = useState<ProjectFeature[]>(
+    project?.features.length
+      ? project.features
+      : [{ label: "", icon: "search" }],
+  );
   const submitLabel = mode === "edit" ? "Save" : "Create";
 
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const pendingTag = tagInput.trim();
-    const nextTags =
-      pendingTag && !tags.includes(pendingTag) ? [...tags, pendingTag] : tags;
     const data = new FormData(event.currentTarget);
-    data.set("tags", nextTags.join(","));
+    data.set(
+      "features",
+      JSON.stringify(
+        features.map((feature) => ({
+          label: feature.label.trim(),
+          icon: feature.icon,
+        })),
+      ),
+    );
     if (project) data.set("id", project.id);
 
     const files = [...data.getAll("mainImage"), ...data.getAll("detailImages")].filter(
@@ -224,7 +240,18 @@ function ProjectFormFields({
             size="small"
             disabled={pending}
             defaultValue={project?.name ?? ""}
-            sx={fieldSx}
+            sx={{ ...fieldSx, gridColumn: "1 / -1" }}
+          />
+          <TextField
+            name="subtitle"
+            label="Subtitle"
+            required
+            fullWidth
+            size="small"
+            disabled={pending}
+            defaultValue={project?.subtitle ?? ""}
+            helperText="The line under the project name in the popup."
+            sx={{ ...fieldSx, gridColumn: "1 / -1" }}
           />
           <TextField
             name="category"
@@ -235,7 +262,7 @@ function ProjectFormFields({
             size="small"
             disabled={pending}
             defaultValue={project?.category ?? ""}
-            sx={fieldSx}
+            sx={{ ...fieldSx, gridColumn: "1 / -1" }}
           >
             <MenuItem value="" disabled>
               Select a category
@@ -246,32 +273,60 @@ function ProjectFormFields({
               </MenuItem>
             ))}
           </TextField>
-          <TagField
-            tags={tags}
-            inputValue={tagInput}
-            disabled={pending}
-            onTagsChange={setTags}
-            onInputChange={setTagInput}
-          />
         </Box>
-        <RichTextField
-          name="challenge"
-          label="Challenge"
-          required
+        <FeatureFields
+          features={features}
           disabled={pending}
-          defaultValue={project?.challenge ?? ""}
+          onChange={setFeatures}
         />
-        <RichTextField
-          name="solution"
-          label="Solution"
+        <TextField
+          name="whyIt"
+          label="Why You Need It"
           required
+          fullWidth
+          multiline
+          minRows={3}
           disabled={pending}
-          defaultValue={project?.solution ?? ""}
+          defaultValue={project?.whyIt ?? ""}
+          sx={fieldSx}
+        />
+        <TextField
+          name="howWeHelp"
+          label="How We Help"
+          required
+          fullWidth
+          multiline
+          minRows={3}
+          disabled={pending}
+          defaultValue={project?.howWeHelp ?? ""}
+          sx={fieldSx}
+        />
+        <TextField
+          name="ctaText"
+          label="Button text"
+          required
+          fullWidth
+          size="small"
+          disabled={pending}
+          defaultValue={project?.ctaText ?? ""}
+          helperText="The gold button. It still opens the contact form."
+          sx={fieldSx}
+        />
+        <TextField
+          name="footerText"
+          label="Line under the button"
+          required
+          fullWidth
+          size="small"
+          disabled={pending}
+          defaultValue={project?.footerText ?? ""}
+          sx={fieldSx}
         />
         <ImageField
           name="mainImage"
           keptName="keptMainImage"
           label="Main media (required)"
+          hint={MEDIA_SIZE_HINT}
           disabled={pending}
           existingUrls={project?.mainImageUrl ? [project.mainImageUrl] : []}
         />
@@ -279,6 +334,7 @@ function ProjectFormFields({
           name="detailImages"
           keptName="keptDetailImages"
           label="Detail media (optional)"
+          hint={MEDIA_SIZE_HINT}
           disabled={pending}
           multiple
           existingUrls={project?.detailImageUrls ?? []}
@@ -296,65 +352,94 @@ function ProjectFormFields({
   );
 }
 
-function TagField({
-  tags,
-  inputValue,
+function FeatureFields({
+  features,
   disabled,
-  onTagsChange,
-  onInputChange,
+  onChange,
 }: {
-  tags: string[];
-  inputValue: string;
+  features: ProjectFeature[];
   disabled: boolean;
-  onTagsChange: (tags: string[]) => void;
-  onInputChange: (value: string) => void;
+  onChange: (features: ProjectFeature[]) => void;
 }) {
-  function commit(raw: string) {
-    const parts = raw
-      .split(",")
-      .map((tag) => tag.trim())
-      .filter(Boolean);
-    if (parts.length === 0) return;
-    const next = [...tags];
-    for (const part of parts) {
-      if (!next.includes(part)) next.push(part);
-    }
-    onTagsChange(next);
-    onInputChange("");
+  function update(index: number, next: ProjectFeature) {
+    onChange(features.map((feature, item) => (item === index ? next : feature)));
   }
 
   return (
-    <Autocomplete
-      multiple
-      freeSolo
-      options={[] as string[]}
-      value={tags}
-      inputValue={inputValue}
-      disabled={disabled}
-      size="small"
-      onInputChange={(_, value, reason) => {
-        if (reason === "reset") return;
-        onInputChange(value);
-      }}
-      onChange={(_, value) => {
-        const next = value
-          .flatMap((item) => String(item).split(","))
-          .map((tag) => tag.trim())
-          .filter(Boolean);
-        onTagsChange([...new Set(next)]);
-        onInputChange("");
-      }}
-      onBlur={() => commit(inputValue)}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          name="tags"
-          label="Tags"
-          required={tags.length === 0}
-          sx={fieldSx}
-        />
-      )}
-    />
+    <Box>
+      <Typography variant="body2" sx={{ fontWeight: 600 }}>
+        Key features
+      </Typography>
+      <Typography variant="caption" color="text.secondary">
+        Up to 6. Each one needs a name and one of the popup icons.
+      </Typography>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 1.25, mt: 1.25 }}>
+        {features.map((feature, index) => (
+          <Box
+            key={index}
+            sx={{
+              display: "grid",
+              gridTemplateColumns: { xs: "1fr", sm: "1fr 200px auto" },
+              gap: 1,
+              alignItems: "center",
+            }}
+          >
+            <TextField
+              label={`Feature ${index + 1}`}
+              required
+              fullWidth
+              size="small"
+              disabled={disabled}
+              value={feature.label}
+              onChange={(event) =>
+                update(index, { ...feature, label: event.target.value })
+              }
+              sx={fieldSx}
+            />
+            <TextField
+              select
+              label="Icon"
+              required
+              fullWidth
+              size="small"
+              disabled={disabled}
+              value={feature.icon}
+              onChange={(event) =>
+                update(index, {
+                  ...feature,
+                  icon: event.target.value as FeatureIconName,
+                })
+              }
+              sx={fieldSx}
+            >
+              {FEATURE_ICONS.map((icon) => (
+                <MenuItem key={icon} value={icon}>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <FeatureMark name={icon} />
+                    {FEATURE_ICON_LABELS[icon]}
+                  </Box>
+                </MenuItem>
+              ))}
+            </TextField>
+            <Button
+              type="button"
+              disabled={disabled || features.length === 1}
+              onClick={() => onChange(features.filter((_, item) => item !== index))}
+            >
+              Remove
+            </Button>
+          </Box>
+        ))}
+      </Box>
+      <Button
+        type="button"
+        disabled={disabled || features.length >= 6}
+        onClick={() => onChange([...features, { label: "", icon: "search" }])}
+        sx={{ mt: 1 }}
+      >
+        Add feature
+      </Button>
+    </Box>
   );
 }
 
@@ -364,6 +449,7 @@ function ImageField({
   name,
   keptName,
   label,
+  hint,
   disabled,
   multiple = false,
   existingUrls = [],
@@ -371,6 +457,7 @@ function ImageField({
   name: string;
   keptName: string;
   label: string;
+  hint?: string;
   disabled: boolean;
   multiple?: boolean;
   existingUrls?: string[];
@@ -432,9 +519,14 @@ function ImageField({
       {kept.map((url) => (
         <input key={url} type="hidden" name={keptName} value={url} readOnly />
       ))}
-      <Typography variant="body2" sx={{ mb: 0.75, fontWeight: 600 }}>
+      <Typography variant="body2" sx={{ mb: hint ? 0.25 : 0.75, fontWeight: 600 }}>
         {label}
       </Typography>
+      {hint ? (
+        <Typography variant="caption" color="text.secondary" sx={{ display: "block", mb: 0.75 }}>
+          {hint}
+        </Typography>
+      ) : null}
       <Box
         component="label"
         htmlFor={inputId}

@@ -4,7 +4,11 @@ import { revalidatePath } from "next/cache";
 
 import { mediaFileError } from "@/lib/project-media";
 import { isProjectCategory, projectTable } from "@/lib/projects";
-import { plainTextFromHtml } from "@/lib/rich-text";
+import {
+  MAX_PROJECT_FEATURES,
+  isFeatureIcon,
+  type ProjectFeature,
+} from "@/lib/project-sheet";
 import { createClient } from "@/lib/supabase/server";
 
 const BUCKET = "project-images";
@@ -19,12 +23,7 @@ export async function createShowcaseProject(
 ): Promise<ActionResult> {
   const name = String(formData.get("name") ?? "").trim();
   const categoryRaw = String(formData.get("category") ?? "").trim();
-  const tags = String(formData.get("tags") ?? "")
-    .split(",")
-    .map((tag) => tag.trim())
-    .filter(Boolean);
-  const challenge = String(formData.get("challenge") ?? "").trim();
-  const solution = String(formData.get("solution") ?? "").trim();
+  const sheet = readSheet(formData);
   const mainImage = imageFile(formData.get("mainImage"));
   const detailImages = formData
     .getAll("detailImages")
@@ -36,14 +35,11 @@ export async function createShowcaseProject(
   }
   const category = categoryRaw;
 
-  if (
-    !name ||
-    tags.length === 0 ||
-    !plainTextFromHtml(challenge) ||
-    !plainTextFromHtml(solution)
-  ) {
+  if (!name) {
     return { ok: false, message: "Fill in every field." };
   }
+
+  if (!sheet.ok) return sheet;
 
   if (!mainImage) {
     return {
@@ -119,9 +115,15 @@ export async function createShowcaseProject(
     id,
     name,
     category,
-    tags,
-    challenge,
-    solution,
+    tags: [],
+    subtitle: sheet.subtitle,
+    features: sheet.features,
+    why_it: sheet.whyIt,
+    how_we_help: sheet.howWeHelp,
+    cta_text: sheet.ctaText,
+    footer_text: sheet.footerText,
+    challenge: "",
+    solution: "",
     main_image_url: mainUrl,
     detail_image_urls: detailUrls,
     updated_at: new Date().toISOString(),
@@ -142,12 +144,7 @@ export async function updateShowcaseProject(
   const id = String(formData.get("id") ?? "").trim();
   const name = String(formData.get("name") ?? "").trim();
   const categoryRaw = String(formData.get("category") ?? "").trim();
-  const tags = String(formData.get("tags") ?? "")
-    .split(",")
-    .map((tag) => tag.trim())
-    .filter(Boolean);
-  const challenge = String(formData.get("challenge") ?? "").trim();
-  const solution = String(formData.get("solution") ?? "").trim();
+  const sheet = readSheet(formData);
   const mainImage = imageFile(formData.get("mainImage"));
   const detailImages = formData
     .getAll("detailImages")
@@ -168,14 +165,11 @@ export async function updateShowcaseProject(
   }
   const category = categoryRaw;
 
-  if (
-    !name ||
-    tags.length === 0 ||
-    !plainTextFromHtml(challenge) ||
-    !plainTextFromHtml(solution)
-  ) {
+  if (!name) {
     return { ok: false, message: "Fill in every field." };
   }
+
+  if (!sheet.ok) return sheet;
 
   const mediaProblem = [mainImage, ...detailImages]
     .filter((file): file is File => file !== null)
@@ -298,9 +292,12 @@ export async function updateShowcaseProject(
     .update({
       name,
       category,
-      tags,
-      challenge,
-      solution,
+      subtitle: sheet.subtitle,
+      features: sheet.features,
+      why_it: sheet.whyIt,
+      how_we_help: sheet.howWeHelp,
+      cta_text: sheet.ctaText,
+      footer_text: sheet.footerText,
       main_image_url: mainUrl,
       detail_image_urls: detailUrls,
     })
@@ -379,6 +376,58 @@ export async function deleteShowcaseProject(id: string): Promise<ActionResult> {
 
   revalidatePath("/projects");
   return { ok: true };
+}
+
+function readSheet(formData: FormData):
+  | {
+      ok: true;
+      subtitle: string;
+      features: ProjectFeature[];
+      whyIt: string;
+      howWeHelp: string;
+      ctaText: string;
+      footerText: string;
+    }
+  | { ok: false; message: string } {
+  const subtitle = String(formData.get("subtitle") ?? "").trim();
+  const whyIt = String(formData.get("whyIt") ?? "").trim();
+  const howWeHelp = String(formData.get("howWeHelp") ?? "").trim();
+  const ctaText = String(formData.get("ctaText") ?? "").trim();
+  const footerText = String(formData.get("footerText") ?? "").trim();
+
+  if (!subtitle || !whyIt || !howWeHelp || !ctaText || !footerText) {
+    return { ok: false, message: "Fill in every field." };
+  }
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(String(formData.get("features") ?? ""));
+  } catch {
+    return { ok: false, message: "Add between 1 and 6 key features." };
+  }
+
+  if (
+    !Array.isArray(parsed) ||
+    parsed.length === 0 ||
+    parsed.length > MAX_PROJECT_FEATURES
+  ) {
+    return { ok: false, message: "Add between 1 and 6 key features." };
+  }
+
+  const features: ProjectFeature[] = [];
+  for (const item of parsed) {
+    if (!item || typeof item !== "object") {
+      return { ok: false, message: "Each key feature needs a name and an icon." };
+    }
+    const label = String((item as { label?: unknown }).label ?? "").trim();
+    const icon = (item as { icon?: unknown }).icon;
+    if (!label || !isFeatureIcon(icon)) {
+      return { ok: false, message: "Each key feature needs a name and an icon." };
+    }
+    features.push({ label, icon });
+  }
+
+  return { ok: true, subtitle, features, whyIt, howWeHelp, ctaText, footerText };
 }
 
 function imageFile(value: FormDataEntryValue | null) {

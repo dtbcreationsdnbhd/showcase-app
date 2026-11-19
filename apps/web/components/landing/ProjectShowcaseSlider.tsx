@@ -258,7 +258,7 @@ export default function ProjectShowcaseSlider({
               <ProjectCard
                 key={`${project.id}-${i}`}
                 title={project.name}
-                description={projectTagLine(project.tags)}
+                description={projectTagLine(project.features.map((feature) => feature.label))}
                 imageSrc={project.mainImageUrl}
                 cursorLabel="View Project"
                 onOpen={() => setSelectedId(project.id)}

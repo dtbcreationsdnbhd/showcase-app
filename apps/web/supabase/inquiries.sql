@@ -12,9 +12,13 @@ create table if not exists public.staging_inquiries (
   budget text,
   project_cycle text,
   full_name text not null,
-  contact text not null,
-  looking_to_build text not null,
-  project_details text
+  contact text,
+  looking_to_build text,
+  project_details text,
+  telegram text,
+  service text,
+  brand_name text,
+  region text
 );
 
 create table if not exists public.production_inquiries (
@@ -25,10 +29,30 @@ create table if not exists public.production_inquiries (
   budget text,
   project_cycle text,
   full_name text not null,
-  contact text not null,
-  looking_to_build text not null,
-  project_details text
+  contact text,
+  looking_to_build text,
+  project_details text,
+  telegram text,
+  service text,
+  brand_name text,
+  region text
 );
+
+-- Existing databases keep their rows. These statements add the desktop fields
+-- and let new web rows leave the old contact columns empty.
+alter table public.staging_inquiries add column if not exists telegram text;
+alter table public.staging_inquiries add column if not exists service text;
+alter table public.staging_inquiries add column if not exists brand_name text;
+alter table public.staging_inquiries add column if not exists region text;
+alter table public.staging_inquiries alter column contact drop not null;
+alter table public.staging_inquiries alter column looking_to_build drop not null;
+
+alter table public.production_inquiries add column if not exists telegram text;
+alter table public.production_inquiries add column if not exists service text;
+alter table public.production_inquiries add column if not exists brand_name text;
+alter table public.production_inquiries add column if not exists region text;
+alter table public.production_inquiries alter column contact drop not null;
+alter table public.production_inquiries alter column looking_to_build drop not null;
 
 alter table public.staging_inquiries enable row level security;
 alter table public.production_inquiries enable row level security;

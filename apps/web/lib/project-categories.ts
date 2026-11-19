@@ -5,6 +5,10 @@ export const PROJECT_CATEGORIES = [
     label: "Digital Tools",
   },
   {
+    value: "service",
+    label: "Service",
+  },
+  {
     value: "website_designs",
     label: "Website Designs",
   },

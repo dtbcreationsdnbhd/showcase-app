@@ -349,6 +349,42 @@ body {
   }
 }
 
+/* Why Choose rows hold only after they reach center, so the first row
+   rises with the title instead of being pulled up ahead of it. */
+@keyframes why-choose-hold {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, var(--hold-shift, 0px), 0);
+  }
+}
+
+@supports (animation-timeline: scroll()) {
+  .why-choose-hold {
+    animation: why-choose-hold linear forwards;
+    animation-timeline: scroll(root);
+  }
+}
+
+/* Project cards stay on screen for the extra hold page. The shift is in
+   stage px; the scaled stage turns it back into one viewport of scroll. */
+@keyframes hero-cards-hold {
+  from {
+    transform: translate3d(0, var(--card-nudge, 60px), 0);
+  }
+  to {
+    transform: translate3d(0, calc(var(--card-nudge, 60px) + var(--hold-shift, 0px)), 0);
+  }
+}
+
+@supports (animation-timeline: scroll()) {
+  .hero-cards-hold {
+    animation: hero-cards-hold linear forwards;
+    animation-timeline: scroll(root);
+  }
+}
+
 /* Stacked drop-shadows build the extrusion: text-shadow would bleed through
    the transparent, background-clipped fill. */
 .solutions-title-3d {

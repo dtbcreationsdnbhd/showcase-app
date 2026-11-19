@@ -6,11 +6,15 @@ export default function PillButton({
   children,
   href = "#",
   width,
+  height = 52,
+  fontSize = 18,
   arrowUpRight = false,
 }: {
   children: ReactNode;
   href?: string;
   width?: number;
+  height?: number;
+  fontSize?: number;
   arrowUpRight?: boolean;
 }) {
   return (
@@ -25,7 +29,7 @@ export default function PillButton({
         alignItems: "center",
         justifyContent: "center",
         width: width ?? "auto",
-        height: 52,
+        height,
         pl: "20px",
         pr: "6px",
         ...goldButtonSx,
@@ -51,7 +55,7 @@ export default function PillButton({
               'var(--font-barlow-semi-condensed), "Barlow Semi Condensed", sans-serif',
             fontStyle: "normal",
             fontWeight: 600,
-            fontSize: 18,
+            fontSize,
             lineHeight: "22px",
             color: GOLD_INK,
             whiteSpace: "nowrap",

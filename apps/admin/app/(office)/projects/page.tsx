@@ -80,7 +80,6 @@ export default async function ProjectsPage({
           {result.ok ? (
             <ProjectsTable
               rows={result.rows}
-              start={(result.page - 1) * result.pageSize + 1}
               emptyLabel={query ? "No matching projects." : "No projects yet."}
             />
           ) : (
