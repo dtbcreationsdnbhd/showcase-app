@@ -37,7 +37,7 @@ alter table public.staging_projects add column if not exists updated_at timestam
 alter table public.production_projects add column if not exists updated_at timestamptz not null default now();
 alter table public.staging_projects add column if not exists detail_image_urls text[];
 alter table public.production_projects add column if not exists detail_image_urls text[];
--- Top-level category: digital_tools | website_designs | platform_creation
+-- Top-level category: digital_tools | service | website_designs | platform_creation
 alter table public.staging_projects add column if not exists category text;
 alter table public.production_projects add column if not exists category text;
 update public.staging_projects

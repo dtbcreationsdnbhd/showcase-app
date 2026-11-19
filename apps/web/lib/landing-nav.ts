@@ -27,7 +27,7 @@ export type ServiceIcon =
 
 export type ServiceGroup = {
   title: string;
-  accent: "pink" | "gradient" | "orange";
+  accent: "pink" | "service" | "gradient" | "orange";
   badge?: string;
   items: { label: string; tag?: string; desc: string; icon: ServiceIcon }[];
 };
@@ -36,10 +36,16 @@ export type ServiceGroup = {
 export const SERVICES_MENU_HASH = "#hero-cards";
 export const SERVICES_MENU: ServiceGroup[] = [
   {
-    title: "DigitalTools",
+    title: "Digital Tools",
     accent: "pink",
     items: [
       { label: "TeleFlies", desc: "Telegram marketing automation", icon: "send" },
+    ],
+  },
+  {
+    title: "Service",
+    accent: "service",
+    items: [
       { label: "SEO", desc: "SEO audits and keyword insights", icon: "search" },
     ],
   },

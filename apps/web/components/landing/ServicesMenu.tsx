@@ -19,6 +19,7 @@ const barlow = {
 
 const ACCENT_BG: Record<ServiceGroup["accent"], string> = {
   pink: "rgba(255, 45, 120, 0.28)",
+  service: "rgba(120, 196, 255, 0.22)",
   gradient: "rgba(255, 196, 92, 0.2)",
   orange: "rgba(255, 138, 31, 0.26)",
 };
@@ -215,11 +216,11 @@ function ServicesPanel({
           maskImage: PANEL_MASK,
           WebkitMaskImage: PANEL_MASK,
           display: "grid",
-          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-          gap: "96px",
+          gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+          gap: "48px",
           pt: "56px",
           pb: `${64 + PANEL_FADE}px`,
-          px: `${(LANDING_DESIGN_WIDTH - 1680) / 2}px`,
+          px: "72px",
         }}
       >
         {SERVICES_MENU.map((group) => (
