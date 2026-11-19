@@ -1,5 +1,8 @@
-import type { ReactNode } from "react";
+"use client";
+
+import { useState, type ReactNode } from "react";
 import Box from "@mui/material/Box";
+import CenterHashLink from "@/components/landing/CenterHashLink";
 import {
   SERVICES_MENU,
   type ServiceGroup,
@@ -95,27 +98,48 @@ const PANEL_TOP_FADE = 44;
 const PANEL_MASK = `linear-gradient(180deg, transparent 0, #000 ${PANEL_TOP_FADE}px, #000 calc(100% - ${PANEL_FADE}px), transparent 100%)`;
 
 /** Hover/focus target: wraps the SERVICES link and owns the dropdown panel. */
-export default function ServicesMenu({ children }: { children: ReactNode }) {
+export default function ServicesMenu({
+  href,
+  children,
+}: {
+  href: string;
+  children: ReactNode;
+}) {
+  const [open, setOpen] = useState(false);
+  const [instant, setInstant] = useState(false);
+
   return (
     <Box
       className={SERVICES_MENU_CLASS}
+      onMouseEnter={() => {
+        setInstant(false);
+        setOpen(true);
+      }}
+      onMouseLeave={() => setOpen(false)}
+      onFocus={() => {
+        setInstant(false);
+        setOpen(true);
+      }}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+          setOpen(false);
+        }
+      }}
       sx={{
         display: "flex",
-        [`&:hover > .${PANEL_CLASS}, &:has(:focus-visible) > .${PANEL_CLASS}`]:
-          {
-            opacity: 1,
-            visibility: "visible",
-            transform: "translate(-50%, 0)",
-            pointerEvents: "auto",
-            transition: "opacity 0.2s ease, transform 0.2s ease, visibility 0s",
-          },
-        [`&:hover .${CARET_CLASS}, &:has(:focus-visible) .${CARET_CLASS}`]: {
-          transform: "rotate(180deg)",
-        },
+        [`& .${CARET_CLASS}`]: open ? { transform: "rotate(180deg)" } : {},
       }}
     >
       {children}
-      <ServicesPanel />
+      <ServicesPanel
+        href={href}
+        open={open}
+        instant={instant}
+        onNavigate={() => {
+          setInstant(true);
+          setOpen(false);
+        }}
+      />
     </Box>
   );
 }
@@ -153,22 +177,35 @@ export function ServicesCaret() {
  *  centred on it, so 1920 spans the whole stage. Its top padding bridges the
  *  gap under the link so the pointer can cross into it, and lands the panel
  *  flush with the header's bottom edge. */
-function ServicesPanel() {
+function ServicesPanel({
+  href,
+  open,
+  instant,
+  onNavigate,
+}: {
+  href: string;
+  open: boolean;
+  instant: boolean;
+  onNavigate: () => void;
+}) {
   return (
     <Box
       className={PANEL_CLASS}
+      onClick={onNavigate}
       sx={{
         position: "absolute",
         top: 78,
         left: "50%",
         width: LANDING_DESIGN_WIDTH,
         pt: "24px",
-        opacity: 0,
-        visibility: "hidden",
-        pointerEvents: "none",
-        transform: "translate(-50%, -8px)",
+        opacity: open ? 1 : 0,
+        visibility: open ? "visible" : "hidden",
+        pointerEvents: open ? "auto" : "none",
+        transform: open ? "translate(-50%, 0)" : "translate(-50%, -8px)",
         transition:
-          "opacity 0.2s ease 0.1s, transform 0.2s ease 0.1s, visibility 0s linear 0.3s",
+          open && !instant
+            ? "opacity 0.2s ease, transform 0.2s ease, visibility 0s"
+            : "none",
       }}
     >
       <Box
@@ -237,10 +274,10 @@ function ServicesPanel() {
             </Box>
 
             {group.items.map((item) => (
-              <Box
+              <CenterHashLink
                 key={item.label}
-                component="a"
-                href="/projects"
+                hash={href.slice(href.indexOf("#"))}
+                href={href}
                 sx={{
                   textDecoration: "none",
                   cursor: "pointer",
@@ -348,7 +385,7 @@ function ServicesPanel() {
                 >
                   {ICONS[item.icon]}
                 </Box>
-              </Box>
+              </CenterHashLink>
             ))}
           </Box>
         ))}

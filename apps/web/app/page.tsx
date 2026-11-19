@@ -3,6 +3,8 @@ import ContactForm from "@/components/landing/ContactForm";
 import Faq from "@/components/landing/Faq";
 import Footer from "@/components/landing/Footer";
 import Hero from "@/components/landing/Hero";
+import HeroCardsSection from "@/components/landing/HeroCardsSection";
+import HeroSharedBackdrop from "@/components/landing/HeroSharedBackdrop";
 import HowWeWork from "@/components/landing/HowWeWork";
 import Navbar from "@/components/landing/Navbar";
 import TargetedSolutions from "@/components/landing/TargetedSolutions";
@@ -65,8 +67,10 @@ export default async function Home() {
             transformOrigin: "top left",
           }}
         >
-          <Hero heroSrc={getLandingHeroDesktopSrc()} slides={heroSlides} />
+          <Hero heroSrc={getLandingHeroDesktopSrc()} />
+          <HeroCardsSection slides={heroSlides} />
           <TargetedSolutions />
+          <HeroSharedBackdrop src={getLandingHeroDesktopSrc()} />
           <HowWeWork />
           <Faq />
           <ContactForm waveSrc={null} />

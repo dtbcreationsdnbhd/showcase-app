@@ -45,16 +45,29 @@ export default function SolutionsPoster({ sectionId }: { sectionId: string }) {
       const vh = window.innerHeight;
       const posterScreenH =
         (SOLUTIONS_DESKTOP_HEIGHT / LANDING_DESIGN_WIDTH) * window.innerWidth;
-      const pinned = rect.top < vh && rect.bottom > 0;
+      const cardsBottom =
+        document.getElementById("hero-cards")?.getBoundingClientRect().bottom ?? 0;
+      const approaching = rect.top < vh && rect.bottom > 0;
+      // Fade the poster in across the handoff. It stays invisible while the
+      // project cards still fill the screen, then dissolves in as they leave.
+      const handoff = vh * 0.85;
+      const enter =
+        cardsBottom <= 0
+          ? 1
+          : Math.min(1, Math.max(0, (handoff - cardsBottom) / handoff));
+      const pinned = approaching && cardsBottom <= handoff;
       const leaveY =
-        pinned && rect.top <= 0 && rect.bottom < vh ? rect.bottom - vh : 0;
+        pinned && cardsBottom <= 0 && rect.top <= 0 && rect.bottom < vh
+          ? rect.bottom - vh
+          : 0;
       const fade = leaveY !== 0 ? Math.max(rect.bottom / vh, 0) : 1;
+      const opacity = fade * enter;
 
       layer.style.height = `${posterScreenH}px`;
       layer.style.transform = leaveY !== 0 ? `translateY(${leaveY}px)` : "none";
-      layer.style.opacity = fade.toFixed(3);
-      layer.style.visibility = pinned ? "visible" : "hidden";
-      img.style.visibility = pinned ? "hidden" : "visible";
+      layer.style.opacity = opacity.toFixed(3);
+      layer.style.visibility = pinned && opacity > 0.01 ? "visible" : "hidden";
+      img.style.visibility = pinned || (approaching && cardsBottom > 0) ? "hidden" : "visible";
     };
     const onScroll = () => {
       if (raf) return;

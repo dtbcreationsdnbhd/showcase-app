@@ -126,6 +126,11 @@ export const SOLUTIONS_DESKTOP_HEIGHT = (LANDING_DESIGN_WIDTH * 3240) / 5760;
  * Replaces the old title + four service-row scroll.
  */
 export const SOLUTIONS_VIEWPORT_PAGES = 1 + TITLE_HOLD_PAGES;
+/**
+ * Project cards after the hero. One screen to arrive, then the same extra
+ * viewport of scroll hold as a Why Choose row before the section leaves.
+ */
+export const HERO_CARDS_VIEWPORT_PAGES = 1 + WHY_US_HOLD_PAGES;
 /** @deprecated Solutions backdrop tail. The poster fades inside its own frame. */
 export const SOLUTIONS_TAIL_FADE_PAGES = 0.5;
 
@@ -149,5 +154,5 @@ export const LANDING_DESIGN_HEIGHT =
 export function landingFrameHeightCss(includeShowcase = true): string {
   const fixed = LANDING_HEIGHT_WITHOUT_SOLUTIONS + SOLUTIONS_RELEASE_HEIGHT;
   const showcase = includeShowcase ? ` + ${SHOWCASE_VIEWPORT_PAGES} * 100vh` : "";
-  return `calc(100vw * ${fixed} / ${LANDING_DESIGN_WIDTH} + ${SOLUTIONS_VIEWPORT_PAGES + WHY_US_VIEWPORT_PAGES + CONTACT_FORM_VIEWPORT_PAGES + FAQ_VIEWPORT_PAGES} * 100vh${showcase})`;
+  return `calc(100vw * ${fixed} / ${LANDING_DESIGN_WIDTH} + ${HERO_CARDS_VIEWPORT_PAGES + SOLUTIONS_VIEWPORT_PAGES + WHY_US_VIEWPORT_PAGES + CONTACT_FORM_VIEWPORT_PAGES + FAQ_VIEWPORT_PAGES} * 100vh${showcase})`;
 }

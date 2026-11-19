@@ -1,7 +1,6 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
-import HeroCarousel, { type HeroSlide } from "@/components/landing/HeroCarousel";
 import PillButton from "@/components/landing/PillButton";
 import { goldTextSx } from "@/lib/gold-theme";
 
@@ -19,10 +18,8 @@ const HERO_FADE_MASK =
 
 export default function Hero({
   heroSrc,
-  slides,
 }: {
   heroSrc: string | null;
-  slides: HeroSlide[];
 }) {
   return (
     <Box
@@ -36,6 +33,7 @@ export default function Hero({
     >
       <Box
         aria-hidden
+        data-hero-bg
         sx={{
           position: "relative",
           width: "100%",
@@ -69,13 +67,10 @@ export default function Hero({
       <Box
         sx={{
           position: "absolute",
-          top: 190,
-          left: 120,
-          right: 0,
+          inset: 0,
           display: "flex",
-          flexDirection: "row",
-          justifyContent: "flex-start",
-          alignItems: "flex-start",
+          alignItems: "center",
+          justifyContent: "center",
           zIndex: 10,
           pointerEvents: "none",
           "& a": { pointerEvents: "auto" },
@@ -84,34 +79,22 @@ export default function Hero({
         <Box
           sx={{
             display: "flex",
-            flexDirection: "row",
+            flexDirection: "column",
             alignItems: "center",
+            textAlign: "center",
             p: 0,
             gap: "48px",
-            width: "100%",
-            height: 760,
-          }}
-        >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-            p: 0,
-            gap: "56px",
-            width: 640,
-            flexShrink: 0,
-            overflow: "visible",
+            width: 980,
           }}
         >
           <Box
             sx={{
               display: "flex",
               flexDirection: "column",
-              alignItems: "flex-start",
+              alignItems: "center",
               p: 0,
               gap: "36px",
-              width: 640,
+              width: "100%",
               height: "auto",
             }}
           >
@@ -120,11 +103,9 @@ export default function Hero({
               sx={{
                 display: "flex",
                 flexDirection: "column",
-                alignItems: "flex-start",
+                alignItems: "center",
                 p: 0,
                 gap: "6px",
-                width: 700,
-                height: "auto",
                 m: 0,
                 overflow: "visible",
               }}
@@ -140,8 +121,8 @@ export default function Hero({
                     ...jakarta,
                     display: "block",
                     fontWeight: 800,
-                    fontSize: 66,
-                    lineHeight: "78px",
+                    fontSize: 88,
+                    lineHeight: "102px",
                     letterSpacing: "-0.02em",
                     color: "#FFFFFF",
                     whiteSpace: "nowrap",
@@ -169,11 +150,11 @@ export default function Hero({
             <Typography
               sx={{
                 ...barlow,
-                width: 700,
+                maxWidth: 920,
                 height: "auto",
                 fontStyle: "normal",
                 fontWeight: 500,
-                fontSize: 24,
+                fontSize: 21,
                 lineHeight: "160%",
                 letterSpacing: "0.02em",
                 color: "#E6D3D9",
@@ -189,20 +170,15 @@ export default function Hero({
           <Box
             sx={{
               display: "flex",
-              flexDirection: "row",
-              alignItems: "flex-start",
+              justifyContent: "center",
               p: 0,
-              gap: "24px",
-              height: 52,
+              height: 64,
             }}
           >
-            <PillButton width={244} href="#contact">
+            <PillButton width={320} height={64} fontSize={22} href="#contact">
               Get a Free Consultation
             </PillButton>
           </Box>
-        </Box>
-
-        <HeroCarousel slides={slides} />
         </Box>
       </Box>
     </Box>

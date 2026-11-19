@@ -4,7 +4,7 @@ import Image from "next/image";
 import CenterHashLink from "@/components/landing/CenterHashLink";
 import ServicesMenu, { ServicesCaret } from "@/components/landing/ServicesMenu";
 import { GOLD_INK, goldButtonSx } from "@/lib/gold-theme";
-import { DESKTOP_NAV_LINKS } from "@/lib/landing-nav";
+import { DESKTOP_NAV_LINKS, SERVICES_MENU_HASH } from "@/lib/landing-nav";
 
 const headerFont = {
   fontFamily:
@@ -196,7 +196,7 @@ export default function Navbar({
             );
             if (link.hash === "#services") {
               return (
-                <ServicesMenu key={link.label}>
+                <ServicesMenu key={link.label} href={withPrefix(SERVICES_MENU_HASH)}>
                   <Box
                     component="span"
                     role="button"

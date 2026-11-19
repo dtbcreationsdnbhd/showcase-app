@@ -32,7 +32,8 @@ export type ServiceGroup = {
   items: { label: string; tag?: string; desc: string; icon: ServiceIcon }[];
 };
 
-/** Desktop SERVICES dropdown. Items are display-only until they get links. */
+/** Desktop SERVICES dropdown. Every item scrolls to the project cards under the hero. */
+export const SERVICES_MENU_HASH = "#hero-cards";
 export const SERVICES_MENU: ServiceGroup[] = [
   {
     title: "DigitalTools",
