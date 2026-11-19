@@ -14,9 +14,6 @@ import { useEffect, useState } from "react";
 import { useInquiryPending } from "@/components/office/InquiryPending";
 
 import {
-  INQUIRY_BUDGETS,
-  INQUIRY_CYCLES,
-  INQUIRY_SERVICES,
   INQUIRY_SOURCES,
   inquiryPageHref,
   type InquiryQuery,
@@ -26,21 +23,6 @@ import { cornerRadius } from "@/lib/ui";
 const sourceOptions = INQUIRY_SOURCES.map((source) => ({
   value: source,
   label: source === "web" ? "Web" : "Mobile",
-}));
-
-const serviceOptions = INQUIRY_SERVICES.map((service) => ({
-  value: service,
-  label: service,
-}));
-
-const budgetOptions = INQUIRY_BUDGETS.map((budget) => ({
-  value: budget,
-  label: budget,
-}));
-
-const cycleOptions = INQUIRY_CYCLES.map((cycle) => ({
-  value: cycle,
-  label: cycle,
 }));
 
 const controlSx = {
@@ -83,23 +65,11 @@ export default function InquirySearch({
     return () => window.clearTimeout(timer);
   }, [filters, pageSize, replace, value]);
 
-  const filtering = Boolean(
-    value.trim() ||
-      filters.source ||
-      filters.service ||
-      filters.budget ||
-      filters.cycle,
-  );
+  const filtering = Boolean(value.trim() || filters.source);
 
   function resetFilters() {
     setValue("");
-    replace(
-      inquiryPageHref(
-        1,
-        { query: "", source: "", service: "", budget: "", cycle: "" },
-        pageSize,
-      ),
-    );
+    replace(inquiryPageHref(1, { query: "", source: "" }, pageSize));
   }
 
   function apply(next: Partial<InquiryQuery>) {
@@ -131,7 +101,7 @@ export default function InquirySearch({
         sx={{
           mt: 2.5,
           display: "grid",
-          gridTemplateColumns: { xs: "1fr", md: "2fr repeat(4, 1fr) auto" },
+          gridTemplateColumns: { xs: "1fr", md: "1fr 220px auto" },
           alignItems: "center",
           gap: 1.5,
         }}
@@ -166,24 +136,6 @@ export default function InquirySearch({
           value={filters.source}
           options={sourceOptions}
           onChange={(source) => apply({ source })}
-        />
-        <FilterSelect
-          label="Services"
-          value={filters.service}
-          options={serviceOptions}
-          onChange={(service) => apply({ service })}
-        />
-        <FilterSelect
-          label="Budget"
-          value={filters.budget}
-          options={budgetOptions}
-          onChange={(budget) => apply({ budget })}
-        />
-        <FilterSelect
-          label="Project cycle"
-          value={filters.cycle}
-          options={cycleOptions}
-          onChange={(cycle) => apply({ cycle })}
         />
         <IconButton
           type="button"

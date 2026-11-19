@@ -2,19 +2,13 @@ import { createClient } from "@/lib/supabase/server";
 
 import {
   INQUIRY_PAGE_SIZE,
-  isBudget,
-  isCycle,
   isPageSize,
-  isService,
   isSource,
   type InquiryQuery,
 } from "@/lib/inquiry-filters";
 
 export {
-  INQUIRY_BUDGETS,
-  INQUIRY_CYCLES,
   INQUIRY_PAGE_SIZE,
-  INQUIRY_SERVICES,
   INQUIRY_SOURCES,
   inquiryPageHref,
   isPageSize,
@@ -31,9 +25,13 @@ export type Inquiry = {
   budget: string | null;
   project_cycle: string | null;
   full_name: string;
-  contact: string;
-  looking_to_build: string;
+  contact: string | null;
+  looking_to_build: string | null;
   project_details: string | null;
+  telegram: string | null;
+  service: string | null;
+  brand_name: string | null;
+  region: string | null;
 };
 
 export type InquiryList =
@@ -83,7 +81,7 @@ export async function listInquiries({
   const { data, error } = await supabase
     .from(table)
     .select(
-      "id, created_at, source, services, budget, project_cycle, full_name, contact, looking_to_build, project_details",
+      "id, created_at, source, services, budget, project_cycle, full_name, contact, looking_to_build, project_details, telegram, service, brand_name, region",
     )
     .order("created_at", { ascending: false });
 
@@ -96,14 +94,8 @@ export async function listInquiries({
 
   const needle = filters.query.trim().toLowerCase();
   const source = isSource(filters.source) ? filters.source : "";
-  const service = isService(filters.service) ? filters.service : "";
-  const budget = isBudget(filters.budget) ? filters.budget : "";
-  const cycle = isCycle(filters.cycle) ? filters.cycle : "";
   const matched = ((data ?? []) as Inquiry[]).filter((row) => {
     if (source && row.source !== source) return false;
-    if (service && !row.services?.includes(service)) return false;
-    if (budget && row.budget !== budget) return false;
-    if (cycle && row.project_cycle !== cycle) return false;
     if (needle && !inquirySearchText(row).includes(needle)) return false;
     return true;
   });
@@ -125,11 +117,15 @@ function inquirySearchText(row: Inquiry) {
   return [
     row.source,
     row.full_name,
-    row.contact,
+    row.contact ?? "",
+    row.telegram ?? "",
+    row.service ?? "",
+    row.brand_name ?? "",
+    row.region ?? "",
     Array.isArray(row.services) ? row.services.join(" ") : "",
     row.budget ?? "",
     row.project_cycle ?? "",
-    row.looking_to_build,
+    row.looking_to_build ?? "",
     row.project_details ?? "",
   ]
     .join(" ")

@@ -11,10 +11,7 @@ import InquiriesTable from "@/components/office/InquiriesTable";
 import InquiryPagination from "@/components/office/InquiryPagination";
 import InquirySearch from "@/components/office/InquirySearch";
 import {
-  INQUIRY_BUDGETS,
-  INQUIRY_CYCLES,
   INQUIRY_PAGE_SIZE,
-  INQUIRY_SERVICES,
   INQUIRY_SOURCES,
   inquiryPageHref,
   isPageSize,
@@ -30,9 +27,6 @@ export default async function DashboardPage({
     q?: string;
     page?: string;
     source?: string;
-    service?: string;
-    budget?: string;
-    cycle?: string;
     size?: string;
     notice?: string;
   }>;
@@ -51,13 +45,7 @@ export default async function DashboardPage({
     redirect(inquiryPageHref(result.page, filters, result.pageSize));
   }
 
-  const filtering = Boolean(
-    filters.query ||
-      filters.source ||
-      filters.service ||
-      filters.budget ||
-      filters.cycle,
-  );
+  const filtering = Boolean(filters.query || filters.source);
 
   return (
     <InquiryPendingProvider>
@@ -101,21 +89,12 @@ export default async function DashboardPage({
 function filtersFromParams(params: {
   q?: string;
   source?: string;
-  service?: string;
-  budget?: string;
-  cycle?: string;
 }): InquiryQuery {
   const source = params.source ?? "";
-  const service = params.service ?? "";
-  const budget = params.budget ?? "";
-  const cycle = params.cycle ?? "";
 
   return {
     query: params.q?.trim() ?? "",
     source: INQUIRY_SOURCES.some((item) => item === source) ? source : "",
-    service: INQUIRY_SERVICES.some((item) => item === service) ? service : "",
-    budget: INQUIRY_BUDGETS.some((item) => item === budget) ? budget : "",
-    cycle: INQUIRY_CYCLES.some((item) => item === cycle) ? cycle : "",
   };
 }
 

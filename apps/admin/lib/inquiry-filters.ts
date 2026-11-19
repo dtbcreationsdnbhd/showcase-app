@@ -4,38 +4,9 @@ export const INQUIRY_PAGE_SIZE = INQUIRY_PAGE_SIZES[0];
 
 export const INQUIRY_SOURCES = ["web", "mobile"] as const;
 
-export const INQUIRY_SERVICES = [
-  "AI IP Management (Lifestyle)",
-  "AI IP Management (Script)",
-  "AI Music Video",
-  "AI Video 30s",
-  "AI Drama Series",
-  "Porn Site Setup",
-  "Movie / TV Site Setup",
-  "Other",
-] as const;
-
-export const INQUIRY_BUDGETS = [
-  "Under $1,000",
-  "$1,000 – $3,000",
-  "$3,000 – $5,000",
-  "$5,000+",
-  "Monthly retainer",
-] as const;
-
-export const INQUIRY_CYCLES = [
-  "2-3 Months",
-  "6-12 Months",
-  "Ongoing Work",
-  "Other",
-] as const;
-
 export type InquiryQuery = {
   query: string;
   source: string;
-  service: string;
-  budget: string;
-  cycle: string;
 };
 
 export function inquiryPageHref(
@@ -47,9 +18,6 @@ export function inquiryPageHref(
   const trimmed = filters.query.trim();
   if (trimmed) params.set("q", trimmed);
   if (isSource(filters.source)) params.set("source", filters.source);
-  if (isService(filters.service)) params.set("service", filters.service);
-  if (isBudget(filters.budget)) params.set("budget", filters.budget);
-  if (isCycle(filters.cycle)) params.set("cycle", filters.cycle);
   if (page > 1) params.set("page", String(page));
   if (isPageSize(pageSize) && pageSize !== INQUIRY_PAGE_SIZE) {
     params.set("size", String(pageSize));
@@ -68,16 +36,4 @@ export function isSource(
   value: string,
 ): value is (typeof INQUIRY_SOURCES)[number] {
   return INQUIRY_SOURCES.some((item) => item === value);
-}
-
-export function isService(value: string) {
-  return INQUIRY_SERVICES.some((item) => item === value);
-}
-
-export function isBudget(value: string) {
-  return INQUIRY_BUDGETS.some((item) => item === value);
-}
-
-export function isCycle(value: string) {
-  return INQUIRY_CYCLES.some((item) => item === value);
 }

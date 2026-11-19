@@ -75,6 +75,26 @@ export const FORM_REACH_TITLE = "Reach out to us";
 export const FORM_REACH_INTRO =
   "Fill up and submit the form below. We will respond to you within 12 hours.";
 
+export const FORM_CONVO_TITLE = "Start a Conversation";
+export const FORM_CONVO_INTRO =
+  "Tell us what you need. We'll help you explore the right solution.";
+export const FORM_CONVO_NAME = "Your Name";
+export const FORM_CONVO_NAME_PLACEHOLDER = "Enter your name";
+export const FORM_CONVO_TELEGRAM = "Telegram";
+export const FORM_CONVO_TELEGRAM_PLACEHOLDER = "Enter your Telegram username";
+export const FORM_CONVO_SERVICE = "What Service Are You Interested In?";
+export const FORM_CONVO_SERVICE_PLACEHOLDER = "Enter a service";
+export const FORM_CONVO_EXTRA = "Additional Details";
+export const FORM_CONVO_OPTIONAL = "(Optional)";
+export const FORM_CONVO_COMPANY = "Company / Brand Name";
+export const FORM_CONVO_COMPANY_PLACEHOLDER = "Your business or brand name";
+export const FORM_CONVO_MARKET = "Target Market / Region";
+export const FORM_CONVO_MARKET_PLACEHOLDER = "Enter your target market";
+export const FORM_CONVO_NEEDS = "Tell Us More About Your Needs";
+export const FORM_CONVO_NEEDS_PLACEHOLDER =
+  "Tell us about your business goals, ideas or questions...";
+export const FORM_CONVO_SUBMIT = "Let's Talk Business";
+
 export const FORM_FIELDS = [
   { label: "Full Name", required: true },
   { label: "Email or Telegram", required: true },
@@ -83,6 +103,28 @@ export const FORM_FIELDS = [
 ] as const;
 
 export const FORM_SUBMIT_LABEL = "Submit Inquiry";
+
+export const FORM_TALK_TITLE = "Let's Talk Business.";
+export const FORM_TALK_INTRO =
+  "Get the right digital solutions for your iGaming needs — from advertising to AI and automation.";
+export const FORM_TALK_POINTS = [
+  {
+    title: "Fast Response",
+    body: "We'll get back to you within 12 hours.",
+  },
+  {
+    title: "Expert Support",
+    body: "A dedicated team with iGaming experience.",
+  },
+  {
+    title: "Tailored Solutions",
+    body: "Built around your goals and business needs.",
+  },
+] as const;
+export const FORM_TALK_CONNECT = "Connect With Us Directly";
+export const FORM_TELEGRAM_LABEL = "Telegram";
+/** Opens Telegram until a specific handle is set. */
+export const FORM_TELEGRAM_URL = "https://t.me/";
 
 /** Desktop has room for the long version; the mobile frame does not. */
 export const PROCESS_TITLE = "Our Proven Delivery Process.";
