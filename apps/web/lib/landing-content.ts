@@ -4,7 +4,7 @@
  */
 export const COPYRIGHT_LINES = [
   "© Copyright 2026,",
-  "All Rights Reserved by Apex Digital Solutions",
+  "All Rights Reserved by VisionCraft",
 ] as const;
 
 export const COPYRIGHT_TEXT = COPYRIGHT_LINES.join(" ");
