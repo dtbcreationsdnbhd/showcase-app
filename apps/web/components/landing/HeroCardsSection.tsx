@@ -30,7 +30,7 @@ export default function HeroCardsSection({ slides }: { slides: HeroSlide[] }) {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          transform: "translateY(60px)",
+          transform: "translateY(10px)",
         }}
       >
         <Box sx={{ width: CARDS_VIEW_W, maxWidth: "100%", overflow: "hidden" }}>
