@@ -367,24 +367,6 @@ body {
   }
 }
 
-/* Project cards stay on screen for the extra hold page. The shift is in
-   stage px; the scaled stage turns it back into one viewport of scroll. */
-@keyframes hero-cards-hold {
-  from {
-    transform: translate3d(0, var(--card-nudge, 60px), 0);
-  }
-  to {
-    transform: translate3d(0, calc(var(--card-nudge, 60px) + var(--hold-shift, 0px)), 0);
-  }
-}
-
-@supports (animation-timeline: scroll()) {
-  .hero-cards-hold {
-    animation: hero-cards-hold linear forwards;
-    animation-timeline: scroll(root);
-  }
-}
-
 /* Stacked drop-shadows build the extrusion: text-shadow would bleed through
    the transparent, background-clipped fill. */
 .solutions-title-3d {

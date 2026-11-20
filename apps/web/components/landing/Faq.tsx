@@ -10,7 +10,6 @@ import {
   type FaqItem,
 } from "@/lib/landing-content";
 import FaqBackdrop from "@/components/landing/FaqBackdrop";
-import ScrollRevealPin from "@/components/landing/ScrollRevealPin";
 import {
   GLASS_SHADOW,
   GOLD_RIM,
@@ -18,8 +17,8 @@ import {
   goldTextSx,
 } from "@/lib/gold-theme";
 import {
+  FAQ_VIEWPORT_PAGES,
   STAGE_VIEWPORT_PAGE_HEIGHT_CSS,
-  TITLE_HOLD_PAGES,
   figmaPx,
 } from "@/lib/landing-layout";
 
@@ -159,12 +158,13 @@ export default function Faq() {
         width: "100%",
         bgcolor: "transparent",
         position: "relative",
+        isolation: "isolate",
         overflow: "visible",
+        height: `calc(${FAQ_VIEWPORT_PAGES} * ${STAGE_VIEWPORT_PAGE_HEIGHT_CSS})`,
       }}
     >
-      <FaqBackdrop targetId="faq" />
-      <ScrollRevealPin holdPages={TITLE_HOLD_PAGES} enterAt={0.12}>
-        <Box
+      <FaqBackdrop />
+      <Box
           sx={{
             boxSizing: "border-box",
             display: "flex",
@@ -412,7 +412,6 @@ export default function Faq() {
             </Box>
           </Box>
         </Box>
-      </ScrollRevealPin>
     </Box>
   );
 }

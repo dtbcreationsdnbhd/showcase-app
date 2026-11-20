@@ -17,7 +17,7 @@ export default function TargetedSolutions() {
         lineHeight: 0,
       }}
     >
-      <SolutionsPoster sectionId="solutions" />
+      <SolutionsPoster />
     </Box>
   );
 }
