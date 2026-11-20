@@ -7,6 +7,7 @@ import {
   LANDING_DESIGN_WIDTH,
   STAGE_VIEWPORT_PAGE_HEIGHT_CSS,
 } from "@/lib/landing-layout";
+import { listenWhileNear } from "@/lib/listen-while-near";
 import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
 
 // Entry values are measured frame-by-frame from the reference capture; see
@@ -62,6 +63,9 @@ export default function ScrollRevealPin({
     let raf = 0;
     let entered = false;
     let exiting = false;
+    let reducedApplied = false;
+    let lastPinTransform = "";
+    let lastVis = "";
 
     const park = () => {
       block.style.transition = "none";
@@ -97,14 +101,24 @@ export default function ScrollRevealPin({
       // the wrapper's bottom edge back out. The pin is exactly one viewport
       // page tall, so it never spills past the wrapper it belongs to.
       const pinTop = rect.top > 0 ? rect.top : Math.min(0, rect.bottom - vh);
-      pin.style.top = `${pinTop.toFixed(2)}px`;
-      pin.style.visibility =
-        rect.bottom > 0 && rect.top < vh ? "visible" : "hidden";
+      const pinTransform = `translate3d(0, ${pinTop.toFixed(2)}px, 0)`;
+      const vis = rect.bottom > 0 && rect.top < vh ? "visible" : "hidden";
+      if (pinTransform !== lastPinTransform) {
+        lastPinTransform = pinTransform;
+        pin.style.transform = pinTransform;
+      }
+      if (vis !== lastVis) {
+        lastVis = vis;
+        pin.style.visibility = vis;
+      }
 
       if (reducedMotion) {
-        block.style.transition = "none";
-        block.style.opacity = "1";
-        block.style.transform = "none";
+        if (!reducedApplied) {
+          reducedApplied = true;
+          block.style.transition = "none";
+          block.style.opacity = "1";
+          block.style.transform = "none";
+        }
         return;
       }
 
@@ -124,7 +138,17 @@ export default function ScrollRevealPin({
         enter();
       }
 
-      const track = Math.max(rect.height - vh, 1);
+      const slack = rect.height - vh;
+      // A one-screen section has no extra track. Treating that as an exit
+      // fades the panel out the moment it reaches the top.
+      if (slack <= 1) {
+        if (exiting) {
+          exiting = false;
+          settle();
+        }
+        return;
+      }
+      const track = slack;
       const used = Math.min(Math.max(-rect.top, 0), track);
       const exitStart = track * (1 - EXIT_TRACK_FRACTION);
       const progress =
@@ -153,11 +177,11 @@ export default function ScrollRevealPin({
     };
 
     update();
-    window.addEventListener("scroll", onScroll, { passive: true });
+    const stopNear = listenWhileNear([wrap], onScroll, "20% 0px 30% 0px");
     window.addEventListener("resize", onScroll);
     return () => {
       if (raf) cancelAnimationFrame(raf);
-      window.removeEventListener("scroll", onScroll);
+      stopNear();
       window.removeEventListener("resize", onScroll);
     };
   }, [reducedMotion, hydrated, enterAt]);
@@ -174,16 +198,23 @@ export default function ScrollRevealPin({
         bgcolor: background,
       }}
     >
-      {hydrated
-        ? createPortal(
+      {hydrated ? (
+        createPortal(
+          <div
+            ref={pinRef}
+            className="landing-desktop-pin"
+            style={{
+              position: "fixed",
+              left: 0,
+              top: 0,
+              zIndex,
+              visibility: "hidden",
+              pointerEvents: "none",
+              willChange: "transform",
+            }}
+          >
             <div
-              ref={pinRef}
-              className="landing-desktop-pin"
               style={{
-                position: "fixed",
-                left: 0,
-                top: 0,
-                zIndex,
                 width: LANDING_DESIGN_WIDTH,
                 height: STAGE_VIEWPORT_PAGE_HEIGHT_CSS,
                 transform: `scale(calc(100vw / ${LANDING_DESIGN_WIDTH}px))`,
@@ -193,7 +224,7 @@ export default function ScrollRevealPin({
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
-                visibility: "hidden",
+                pointerEvents: "auto",
               }}
             >
               <div
@@ -208,10 +239,11 @@ export default function ScrollRevealPin({
               >
                 {children}
               </div>
-            </div>,
-            document.body,
-          )
-        : null}
+            </div>
+          </div>,
+          document.body,
+        )
+      ) : null}
     </Box>
   );
 }

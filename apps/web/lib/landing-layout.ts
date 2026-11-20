@@ -73,8 +73,8 @@ export function showcaseSectionHeight(projectCount: number) {
   const rows = Math.max(1, Math.ceil(projectCount / SHOWCASE_COLUMNS));
   return SHOWCASE_HEIGHT + (rows - 1) * (SHOWCASE_CARD_H + SHOWCASE_CARD_GAP);
 }
-/** FAQ: one viewport page for the pinned panel plus its hold. */
-export const FAQ_VIEWPORT_PAGES = 1 + TITLE_HOLD_PAGES;
+/** FAQ fills one viewport and scrolls away with the section. */
+export const FAQ_VIEWPORT_PAGES = 1;
 /** @deprecated FAQ no longer reserves empty scroll for a soft exit. */
 export const FAQ_TAIL_FADE_PAGES = 0;
 /** Contact CTA: one viewport page for the pinned title plus its hold. */
@@ -116,21 +116,17 @@ export const WHY_US_DESKTOP_HEIGHT = (LANDING_DESIGN_WIDTH * 2400) / 3840 * 0.88
 /**
  * Why Choose: three scrolling copy rows. Each row is one viewport, then holds
  * still in the middle for another viewport so it takes extra scrolling to leave.
+ * The tail keeps the picture full-screen until the last row's pause ends.
  */
 export const WHY_US_HOLD_PAGES = 1;
-export const WHY_US_VIEWPORT_PAGES = 3 * (1 + WHY_US_HOLD_PAGES);
+export const WHY_US_TAIL_PAGES = 0.5;
+export const WHY_US_VIEWPORT_PAGES = 3 * (1 + WHY_US_HOLD_PAGES) + WHY_US_TAIL_PAGES;
 /** Desktop Solutions poster, 5760×3240 (16:9), drawn across the full 1920 stage. */
 export const SOLUTIONS_DESKTOP_HEIGHT = (LANDING_DESIGN_WIDTH * 3240) / 5760;
-/**
- * Solutions poster: one page to settle, then the same hold as Why Choose.
- * Replaces the old title + four service-row scroll.
- */
-export const SOLUTIONS_VIEWPORT_PAGES = 1 + TITLE_HOLD_PAGES;
-/**
- * Project cards after the hero. One screen to arrive, then the same extra
- * viewport of scroll hold as a Why Choose row before the section leaves.
- */
-export const HERO_CARDS_VIEWPORT_PAGES = 1 + WHY_US_HOLD_PAGES;
+/** Solutions poster fills one viewport. The extra hold is off while reviewing the page. */
+export const SOLUTIONS_VIEWPORT_PAGES = 1;
+/** Project cards fill one viewport and scroll away with the section. */
+export const HERO_CARDS_VIEWPORT_PAGES = 1;
 /** @deprecated Solutions backdrop tail. The poster fades inside its own frame. */
 export const SOLUTIONS_TAIL_FADE_PAGES = 0.5;
 

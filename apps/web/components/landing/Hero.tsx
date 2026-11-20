@@ -58,8 +58,7 @@ export default function Hero({
           sx={{
             position: "absolute",
             inset: 0,
-            background:
-              "linear-gradient(90deg, rgba(30, 4, 16, 0.85) 0%, rgba(30, 4, 16, 0.55) 35%, rgba(30, 4, 16, 0) 60%)",
+            background: "rgba(30, 4, 16, 0.55)",
           }}
         />
       </Box>

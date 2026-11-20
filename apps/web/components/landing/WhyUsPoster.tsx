@@ -8,8 +8,10 @@ import { GOLD_FILL, GOLD_INK, goldTextSx } from "@/lib/gold-theme";
 import {
   LANDING_DESIGN_WIDTH,
   WHY_US_HOLD_PAGES,
+  WHY_US_TAIL_PAGES,
   STAGE_VIEWPORT_PAGE_HEIGHT_CSS,
 } from "@/lib/landing-layout";
+import { listenWhileNear } from "@/lib/listen-while-near";
 
 const subscribeNoop = () => () => {};
 const getHydrated = () => true;
@@ -18,11 +20,6 @@ const getServerSnapshot = () => false;
 const barlow = {
   fontFamily: 'var(--font-barlow-semi-condensed), "Barlow Semi Condensed", sans-serif',
 } as const;
-
-const BG_SRC = "/landing/bg-1.png";
-/** Soft bottom so the next section peeks through while leaving. */
-const EXIT_MASK =
-  "linear-gradient(180deg, #000 0%, #000 88%, rgba(0, 0, 0, 0.55) 95%, transparent 100%)";
 
 const STATS = [
   ["30+", "Professionals"],
@@ -253,68 +250,88 @@ function WhyChooseRow({ row }: { row: (typeof ROWS)[number] }) {
 }
 
 /**
- * Background and the left title stay pinned. The right rows sit in the
- * section track and scroll past, the same way the old Solutions copy did.
+ * The first screen enters with the background: title and first row sit in
+ * that viewport, then hold. Later rows still pass over the pinned picture.
  */
 export default function WhyUsPoster({ sectionId }: { sectionId: string }) {
   const slotRef = useRef<HTMLDivElement>(null);
   const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
   const copyRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const bgRef = useRef<HTMLDivElement>(null);
+  const firstBandRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const hydrated = useSyncExternalStore(subscribeNoop, getHydrated, getServerSnapshot);
 
   useEffect(() => {
     const slot = slotRef.current;
-    const bg = bgRef.current;
     const title = titleRef.current;
     const section = document.getElementById(sectionId);
-    if (!slot || !bg || !title || !section) return;
+    if (!slot || !title || !section) return;
 
     let raf = 0;
+    let slotRest = 0;
+    let slotH = 0;
+    let lastBest = -1;
+    let lastTitleTransform = "";
+    let lastTitleVis = "";
+    let lastSlotVis = "";
+    const measureSlot = () => {
+      const track = section.getBoundingClientRect();
+      const slotRect = slot.getBoundingClientRect();
+      slotRest = slotRect.top - track.top;
+      slotH = slotRect.height;
+    };
     const update = () => {
       raf = 0;
       const track = section.getBoundingClientRect();
-      const slotRect = slot.getBoundingClientRect();
       const vh = window.innerHeight;
       const onScreen = track.top < vh && track.bottom > 0;
-      const bgOn = track.top < vh * 1.25 && track.bottom > 0;
-      const rest = slotRect.top - track.top;
-      const startTop = track.top + rest;
+      const startTop = track.top + slotRest;
       const holdView = vh * WHY_US_HOLD_PAGES;
-      const endTop = track.bottom + holdView - rest - slotRect.height;
+      // Title now sits in the first viewport instead of the middle of the
+      // two-screen group. The tail is only there so the picture stays up, so
+      // the title still lets go with the last row.
+      const entryLift = (vh * (1 + WHY_US_HOLD_PAGES) - vh) / 2;
+      const endTop =
+        track.bottom + holdView - slotRest - slotH - entryLift - vh * WHY_US_TAIL_PAGES;
       const nav = 102 * (window.innerWidth / LANDING_DESIGN_WIDTH);
-      const parkTop = nav + (vh - nav - slotRect.height) / 2;
-      const releaseBottom = parkTop + rest + slotRect.height - holdView;
-      const leaveY =
-        onScreen && track.top <= 0 && track.bottom < releaseBottom
-          ? track.bottom - releaseBottom
-          : 0;
-
-      bg.style.visibility = bgOn ? "visible" : "hidden";
-      bg.style.transform = leaveY !== 0 ? `translateY(${leaveY}px)` : "none";
-
+      const parkTop = nav + (vh - nav - slotH) / 2;
       const top = Math.max(startTop, Math.min(parkTop, endTop));
-      title.style.top = `${top}px`;
-      title.style.visibility = onScreen ? "visible" : "hidden";
-      slot.style.visibility = onScreen ? "hidden" : "visible";
+      const titleTransform = `translate3d(0, ${top.toFixed(2)}px, 0)`;
+      const titleVis = onScreen ? "visible" : "hidden";
+      const slotVis = onScreen ? "hidden" : "visible";
 
-      const anchor = top + slotRect.height / 2;
+      if (titleTransform !== lastTitleTransform) {
+        lastTitleTransform = titleTransform;
+        title.style.transform = titleTransform;
+      }
+      if (titleVis !== lastTitleVis) {
+        lastTitleVis = titleVis;
+        title.style.visibility = titleVis;
+      }
+      if (slotVis !== lastSlotVis) {
+        lastSlotVis = slotVis;
+        slot.style.visibility = slotVis;
+      }
+
+      const anchor = top + slotH / 2;
+      const rowSpan = track.height / ROWS.length;
       let best = 0;
       let bestDist = Infinity;
-      rowRefs.current.forEach((row, index) => {
-        if (!row) return;
-        const rect = row.getBoundingClientRect();
-        const dist = Math.abs(rect.top + rect.height / 2 - anchor);
+      for (let index = 0; index < ROWS.length; index += 1) {
+        const center = track.top + (index + 0.5) * rowSpan;
+        const dist = Math.abs(center - anchor);
         if (dist < bestDist) {
           bestDist = dist;
           best = index;
         }
-      });
-      rowRefs.current.forEach((row, index) => {
-        if (!row) return;
-        row.style.opacity = index === best ? "1" : "0.38";
-      });
+      }
+      if (best !== lastBest) {
+        lastBest = best;
+        rowRefs.current.forEach((row, index) => {
+          if (!row) return;
+          row.style.opacity = index === best ? "1" : "0.38";
+        });
+      }
     };
     const placeHolds = () => {
       if (!CSS.supports("animation-timeline: scroll()")) return;
@@ -328,7 +345,10 @@ export default function WhyUsPoster({ sectionId }: { sectionId: string }) {
       rowRefs.current.forEach((row, index) => {
         const copy = copyRefs.current[index];
         if (!row || !copy) return;
-        const rect = row.getBoundingClientRect();
+        // The first row is centered in the opening viewport, so its hold
+        // starts when that band reaches the middle, together with the title.
+        const band = index === 0 ? firstBandRef.current : null;
+        const rect = (band ?? row).getBoundingClientRect();
         const start = rect.top + window.scrollY + rect.height / 2 - target;
         copy.style.setProperty("animation-range", `${start}px ${start + holdView}px`);
         copy.style.setProperty("--hold-shift", `${holdView / scale}px`);
@@ -339,17 +359,19 @@ export default function WhyUsPoster({ sectionId }: { sectionId: string }) {
       raf = requestAnimationFrame(update);
     };
     const onResize = () => {
+      measureSlot();
       placeHolds();
       onScroll();
     };
 
+    measureSlot();
     placeHolds();
     update();
-    window.addEventListener("scroll", onScroll, { passive: true });
+    const stopNear = listenWhileNear([section], onScroll, "40% 0px 50% 0px");
     window.addEventListener("resize", onResize);
     return () => {
       if (raf) cancelAnimationFrame(raf);
-      window.removeEventListener("scroll", onScroll);
+      stopNear();
       window.removeEventListener("resize", onResize);
     };
   }, [sectionId, hydrated]);
@@ -372,7 +394,7 @@ export default function WhyUsPoster({ sectionId }: { sectionId: string }) {
             sx={{
               position: "absolute",
               left: 0,
-              top: `calc((${GROUP_H} - ${LEFT_H}px) / 2)`,
+              top: `calc((${STAGE_VIEWPORT_PAGE_HEIGHT_CSS} - ${LEFT_H}px) / 2)`,
               display: "flex",
               alignItems: "center",
               width: 620,
@@ -391,20 +413,33 @@ export default function WhyUsPoster({ sectionId }: { sectionId: string }) {
               }}
               sx={{
                 display: "flex",
-                alignItems: "center",
+                alignItems: index === 0 ? "flex-start" : "center",
                 height: GROUP_H,
                 opacity: index === 0 ? 1 : 0.38,
-                transition: "opacity 500ms cubic-bezier(0.22, 1, 0.36, 1)",
               }}
             >
               <Box
-                ref={(el) => {
-                  copyRefs.current[index] = el instanceof HTMLDivElement ? el : null;
-                }}
-                className="why-choose-hold"
-                sx={{ width: "100%", willChange: "transform" }}
+                ref={index === 0 ? firstBandRef : undefined}
+                sx={
+                  index === 0
+                    ? {
+                        display: "flex",
+                        alignItems: "center",
+                        width: "100%",
+                        height: STAGE_VIEWPORT_PAGE_HEIGHT_CSS,
+                      }
+                    : { display: "contents" }
+                }
               >
-                <WhyChooseRow row={row} />
+                <Box
+                  ref={(el) => {
+                    copyRefs.current[index] = el instanceof HTMLDivElement ? el : null;
+                  }}
+                  className="why-choose-hold"
+                  sx={{ width: "100%", willChange: "transform" }}
+                >
+                  <WhyChooseRow row={row} />
+                </Box>
               </Box>
             </Box>
           ))}
@@ -412,68 +447,34 @@ export default function WhyUsPoster({ sectionId }: { sectionId: string }) {
       </Box>
       {hydrated
         ? createPortal(
-            <>
-              <Box
-                ref={bgRef}
-                className="landing-desktop-pin"
-                style={{
-                  position: "fixed",
-                  inset: 0,
-                  zIndex: -2,
-                  visibility: "hidden",
-                  pointerEvents: "none",
-                }}
-              >
-                <Box
-                  component="img"
-                  src={BG_SRC}
-                  alt=""
-                  sx={{
-                    position: "absolute",
-                    inset: 0,
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    objectPosition: "center bottom",
-                    maskImage: EXIT_MASK,
-                    WebkitMaskImage: EXIT_MASK,
-                  }}
-                />
-                <Box
-                  aria-hidden
-                  sx={{
-                    position: "absolute",
-                    inset: 0,
-                    background:
-                      "linear-gradient(90deg, rgba(8, 2, 14, 0.78) 0%, rgba(8, 2, 14, 0.62) 36%, rgba(8, 2, 14, 0.5) 68%, rgba(8, 2, 14, 0.42) 100%)",
-                    maskImage: EXIT_MASK,
-                    WebkitMaskImage: EXIT_MASK,
-                  }}
-                />
-              </Box>
-              <Box
+            <Box
                 ref={titleRef}
                 className="landing-desktop-pin"
                 style={{
                   position: "fixed",
                   left: 0,
                   top: 0,
-                  width: LANDING_DESIGN_WIDTH,
-                  height: LEFT_H,
-                  paddingLeft: 170,
-                  boxSizing: "border-box",
-                  display: "flex",
-                  alignItems: "center",
-                  transform: PIN_SCALE,
-                  transformOrigin: "top left",
                   zIndex: 5,
                   pointerEvents: "none",
                   visibility: "hidden",
+                  willChange: "transform",
                 }}
               >
-                <WhyChooseCopy />
-              </Box>
-            </>,
+                <Box
+                  style={{
+                    width: LANDING_DESIGN_WIDTH,
+                    height: LEFT_H,
+                    paddingLeft: 170,
+                    boxSizing: "border-box",
+                    display: "flex",
+                    alignItems: "center",
+                    transform: PIN_SCALE,
+                    transformOrigin: "top left",
+                  }}
+                >
+                  <WhyChooseCopy />
+                </Box>
+              </Box>,
             document.body,
           )
         : null}

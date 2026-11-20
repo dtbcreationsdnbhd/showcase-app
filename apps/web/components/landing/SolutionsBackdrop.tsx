@@ -13,7 +13,7 @@ const getHydrated = () => true;
 const getServerSnapshot = () => false;
 
 const BACKDROP =
-  'linear-gradient(rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.58)), url("/landing/solutions-bg.png") center / cover no-repeat';
+  'linear-gradient(rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.58)), url("/landing/solutions-bg.webp") center / cover no-repeat';
 const TAIL_FADE_PCT = (SOLUTIONS_TAIL_FADE_PAGES / (1 + SOLUTIONS_TAIL_FADE_PAGES)) * 100;
 const TAIL_FADE_START = 100 - TAIL_FADE_PCT;
 // Same curve as the Hero's bottom fade, so both section exits read alike.

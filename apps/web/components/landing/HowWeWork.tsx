@@ -12,6 +12,7 @@ export default function HowWeWork() {
       id="why-us"
       sx={{
         position: "relative",
+        isolation: "isolate",
         width: "100%",
         height: `calc(${WHY_US_VIEWPORT_PAGES} * ${STAGE_VIEWPORT_PAGE_HEIGHT_CSS})`,
         lineHeight: 0,
