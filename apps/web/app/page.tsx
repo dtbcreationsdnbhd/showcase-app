@@ -8,6 +8,7 @@ import HeroSharedBackdrop from "@/components/landing/HeroSharedBackdrop";
 import HowWeWork from "@/components/landing/HowWeWork";
 import Navbar from "@/components/landing/Navbar";
 import TargetedSolutions from "@/components/landing/TargetedSolutions";
+import ViewportFrame from "@/components/landing/ViewportFrame";
 import MobileLanding from "@/components/mobile/MobileLanding";
 import {
   getLandingHeroDesktopSrc,
@@ -18,7 +19,6 @@ import {
   LANDING_DESIGN_WIDTH,
   landingFrameHeightCss,
 } from "@/lib/landing-layout";
-import { DESKTOP_ONLY, MOBILE_ONLY } from "@/lib/landing-layout-mobile";
 import { listProjects, projectToHeroSlide } from "@/lib/projects";
 
 export default async function Home() {
@@ -28,64 +28,64 @@ export default async function Home() {
   const heroSlides = projects.map(projectToHeroSlide);
 
   return (
-    <Box component="main">
-      <Box
-        className="landing-frame"
-        style={{
-          height: landingFrameHeightCss(false),
-        }}
-        sx={{
-          [MOBILE_ONLY]: { display: "none" },
-        }}
-      >
-        <Box
-          sx={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            zIndex: 80,
-            pointerEvents: "none",
-          }}
-        >
+    <ViewportFrame
+      desktop={
+        <Box component="main">
           <Box
-            sx={{
-              width: LANDING_DESIGN_WIDTH,
-              transform: `scale(calc(100vw / ${LANDING_DESIGN_WIDTH}px))`,
-              transformOrigin: "top left",
-              pointerEvents: "auto",
+            className="landing-frame"
+            style={{
+              height: landingFrameHeightCss(false),
             }}
           >
-            <Navbar logoSrc={logoSrc} />
+            <Box
+              sx={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: "100%",
+                zIndex: 80,
+                pointerEvents: "none",
+              }}
+            >
+              <Box
+                sx={{
+                  width: LANDING_DESIGN_WIDTH,
+                  transform: `scale(calc(100vw / ${LANDING_DESIGN_WIDTH}px))`,
+                  transformOrigin: "top left",
+                  pointerEvents: "auto",
+                }}
+              >
+                <Navbar logoSrc={logoSrc} />
+              </Box>
+            </Box>
+
+            <Box
+              className="landing-stage"
+              style={{
+                transform: `scale(calc(100vw / ${LANDING_DESIGN_WIDTH}px))`,
+                transformOrigin: "top left",
+              }}
+            >
+              <Hero heroSrc={getLandingHeroDesktopSrc()} />
+              <HeroCardsSection slides={heroSlides} />
+              <TargetedSolutions />
+              <HeroSharedBackdrop src={getLandingHeroDesktopSrc()} />
+              <HowWeWork />
+              <Faq />
+              <ContactForm waveSrc={null} />
+              <Footer />
+            </Box>
           </Box>
         </Box>
-
-        <Box
-          className="landing-stage"
-          style={{
-            transform: `scale(calc(100vw / ${LANDING_DESIGN_WIDTH}px))`,
-            transformOrigin: "top left",
-          }}
-        >
-          <Hero heroSrc={getLandingHeroDesktopSrc()} />
-          <HeroCardsSection slides={heroSlides} />
-          <TargetedSolutions />
-          <HeroSharedBackdrop src={getLandingHeroDesktopSrc()} />
-          <HowWeWork />
-          <Faq />
-          <ContactForm waveSrc={null} />
-          <Footer />
-        </Box>
-      </Box>
-
-      <Box sx={{ [DESKTOP_ONLY]: { display: "none" } }}>
+      }
+      mobile={
         <MobileLanding
           heroSrc={heroSrc}
           projects={projects}
           logoSrc={logoSrc}
           heroSlides={heroSlides}
         />
-      </Box>
-    </Box>
+      }
+    />
   );
 }

@@ -12,7 +12,7 @@ const subscribeNoop = () => () => {};
 const getHydrated = () => true;
 const getServerSnapshot = () => false;
 
-const SRC = "/landing/solutions-bg.png";
+const SRC = "/landing/solutions-bg.webp";
 /** Thin bottom edge so the next poster can peek through without eating the slogan. */
 const EXIT_MASK =
   "linear-gradient(180deg, #000 0%, #000 97%, transparent 100%)";

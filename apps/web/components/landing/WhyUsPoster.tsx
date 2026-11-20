@@ -19,7 +19,7 @@ const barlow = {
   fontFamily: 'var(--font-barlow-semi-condensed), "Barlow Semi Condensed", sans-serif',
 } as const;
 
-const BG_SRC = "/landing/bg-1.png";
+const BG_SRC = "/landing/bg-1.webp";
 /** Soft bottom so the next section peeks through while leaving. */
 const EXIT_MASK =
   "linear-gradient(180deg, #000 0%, #000 88%, rgba(0, 0, 0, 0.55) 95%, transparent 100%)";

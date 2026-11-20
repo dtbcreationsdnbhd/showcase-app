@@ -13,7 +13,9 @@ import {
 import { flushSync } from "react-dom";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Image from "next/image";
+import CarouselSlideMedia, {
+  carouselVideoRole,
+} from "@/components/landing/CarouselSlideMedia";
 
 export type HeroSlide = {
   key: string;
@@ -231,6 +233,7 @@ export default function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
         {track.map((s, j) => {
           const isActive = j === pos;
           const isClone = j < n || j >= 2 * n;
+          const media = carouselVideoRole(j, pos, n);
           return (
             <Box
               key={`${s.key}-${j}`}
@@ -261,48 +264,14 @@ export default function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
               }}
             >
               <Box sx={{ position: "relative", height: IMAGE_H, flexShrink: 0 }}>
-                {s.src ? (
-                  s.isVideo ? (
-                    <Box
-                      component="video"
-                      src={s.src}
-                      muted
-                      autoPlay
-                      loop
-                      playsInline
-                      preload="auto"
-                      draggable={false}
-                      sx={{
-                        position: "absolute",
-                        inset: 0,
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                        objectPosition: "center top",
-                      }}
-                    />
-                  ) : (
-                    <Image
-                      src={s.src}
-                      alt={s.title}
-                      fill
-                      draggable={false}
-                      loading="eager"
-                      sizes={`${CARD_W * 2}px`}
-                      style={{ objectFit: "cover", objectPosition: "center top" }}
-                    />
-                  )
-                ) : (
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      inset: 0,
-                      background:
-                        "linear-gradient(135deg, #4A0F2A 0%, #7A1A2E 100%)",
-                    }}
-                  />
-                )}
-
+                <CarouselSlideMedia
+                  src={s.src}
+                  alt={s.title}
+                  isVideo={s.isVideo}
+                  active={media.active}
+                  preview={media.preview}
+                  sizes={`${CARD_W * 2}px`}
+                />
               </Box>
 
               <Box

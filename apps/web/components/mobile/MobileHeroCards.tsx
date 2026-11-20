@@ -12,7 +12,9 @@ import {
 import { flushSync } from "react-dom";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Image from "next/image";
+import CarouselSlideMedia, {
+  carouselVideoRole,
+} from "@/components/landing/CarouselSlideMedia";
 import type { HeroSlide } from "@/components/landing/HeroCarousel";
 import { MOBILE_DESIGN_WIDTH } from "@/lib/landing-layout-mobile";
 import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
@@ -219,6 +221,7 @@ export default function MobileHeroCards({
         {track.map((slide, j) => {
           const isActive = j === pos;
           const isClone = j < n || j >= 2 * n;
+          const media = carouselVideoRole(j, pos, n);
           return (
             <Box
               key={`${slide.key}-${j}`}
@@ -266,43 +269,14 @@ export default function MobileHeroCards({
               <Box
                 sx={{ position: "relative", width: CARD_W, height: IMAGE_H }}
               >
-                {slide.src ? (
-                  slide.isVideo ? (
-                    <Box
-                      component="video"
-                      src={slide.src}
-                      muted
-                      autoPlay
-                      loop
-                      playsInline
-                      preload="auto"
-                      draggable={false}
-                      sx={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                        display: "block",
-                        pointerEvents: "none",
-                      }}
-                    />
-                  ) : (
-                    <Image
-                      src={slide.src}
-                      alt=""
-                      width={CARD_W * 2}
-                      height={IMAGE_H * 2}
-                      sizes="50vw"
-                      draggable={false}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                        display: "block",
-                        pointerEvents: "none",
-                      }}
-                    />
-                  )
-                ) : null}
+                <CarouselSlideMedia
+                  src={slide.src}
+                  alt=""
+                  isVideo={slide.isVideo}
+                  active={media.active}
+                  preview={media.preview}
+                  sizes="50vw"
+                />
               </Box>
               <Box
                 sx={{
