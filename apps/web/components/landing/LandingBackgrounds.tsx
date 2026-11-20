@@ -14,7 +14,7 @@ const SHADE = "rgba(30, 4, 16, 0.55)";
 const SOLUTIONS_SHADE =
   "radial-gradient(ellipse 80% 74% at center, rgba(30, 4, 16, 0) 0%, rgba(30, 4, 16, 0) 58%, rgba(30, 4, 16, 0.55) 100%)";
 /** Short crossfade where two pictures meet. The rest of each picture stays solid. */
-const BLEND = 50;
+const BLEND = 20;
 
 type Band = {
   startId: string;
