@@ -207,7 +207,11 @@ export default async function Navbar({
             );
             if (link.hash === "#services") {
               return (
-                <ServicesMenu key={link.hash} href={withPrefix(SERVICES_MENU_HASH)}>
+                <ServicesMenu
+                  key={link.hash}
+                  locale={locale}
+                  href={withPrefix(SERVICES_MENU_HASH)}
+                >
                   <Box
                     component="span"
                     role="button"

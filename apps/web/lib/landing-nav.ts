@@ -25,54 +25,123 @@ export type ServiceIcon =
   | "screen"
   | "adult";
 
+type Localized = { en: string; zh?: string };
+
 export type ServiceGroup = {
-  title: string;
+  id: string;
+  title: Localized;
   accent: "pink" | "service" | "gradient" | "orange";
-  badge?: string;
-  items: { label: string; tag?: string; desc: string; icon: ServiceIcon }[];
+  badge?: Localized;
+  items: {
+    id: string;
+    label: Localized;
+    tag?: Localized;
+    desc: Localized;
+    icon: ServiceIcon;
+  }[];
 };
 
-/** Desktop SERVICES dropdown. Every item scrolls to the project cards under the hero. */
+/** Desktop SERVICES dropdown. Every item scrolls to the project cards under the hero.*/
 export const SERVICES_MENU_HASH = "#hero-cards";
 export const SERVICES_MENU: ServiceGroup[] = [
   {
-    title: "Digital Tools",
+    id: "digital-tools",
+    title: { en: "Digital Tools", zh: "数字化工具" },
     accent: "pink",
     items: [
-      { label: "TeleFlies", desc: "Telegram marketing automation", icon: "send" },
+      {
+        id: "teleflies",
+        label: { en: "TeleFlies" },
+        desc: {
+          en: "Telegram marketing automation",
+          zh: "营销自动化",
+        },
+        icon: "send",
+      },
     ],
   },
   {
-    title: "Service",
+    id: "service",
+    title: { en: "Service", zh: "服务" },
     accent: "service",
     items: [
-      { label: "SEO", desc: "SEO audits and keyword insights", icon: "search" },
+      {
+        id: "seo",
+        label: { en: "SEO", zh: "搜索引擎优化" },
+        desc: {
+          en: "SEO audits and keyword insights",
+          zh: "网站分析与关键词洞察",
+        },
+        icon: "search",
+      },
     ],
   },
   {
-    title: "Website Designs",
+    id: "website-designs",
+    title: { en: "Website Designs", zh: "网站设计" },
     accent: "gradient",
     items: [
-      { label: "AI Video", desc: "Brand videos generated with AI", icon: "video" },
-      { label: "AI IP Video", desc: "Bring your characters and IP to life", icon: "character" },
-      { label: "AI Drama", desc: "AI-produced short drama series", icon: "drama" },
-      { label: "AI MV", desc: "Music videos powered by AI", icon: "music" },
+      {
+        id: "ai-video",
+        label: { en: "AI Video", zh: "视频制作" },
+        desc: {
+          en: "Brand videos generated with AI",
+          zh: "运用 AI 技术制作品牌宣传视频",
+        },
+        icon: "video",
+      },
+      {
+        id: "ai-ip-video",
+        label: { en: "AI IP Video", zh: "形象视频" },
+        desc: {
+          en: "Bring your characters and IP to life",
+          zh: "让您的品牌角色与原创 IP 生动呈现",
+        },
+        icon: "character",
+      },
+      {
+        id: "ai-drama",
+        label: { en: "AI Drama", zh: "短剧制作" },
+        desc: {
+          en: "AI-produced short drama series",
+          zh: "运用 AI 技术制作系列短剧",
+        },
+        icon: "drama",
+      },
+      {
+        id: "ai-mv",
+        label: { en: "AI MV", zh: "音乐视频制作" },
+        desc: {
+          en: "Music videos powered by AI",
+          zh: "运用 AI 技术制作音乐视频",
+        },
+        icon: "music",
+      },
     ],
   },
   {
-    title: "Platform Creation",
+    id: "platform-creation",
+    title: { en: "Platform Creation", zh: "平台搭建" },
     accent: "orange",
-    badge: "with Ads Dashboard",
+    badge: { en: "with Ads Dashboard", zh: "配备广告数据管理后台" },
     items: [
       {
-        label: "Movie Site",
-        tag: "Niuniutv",
-        desc: "Streaming platform with ad monetization",
+        id: "movie-site",
+        label: { en: "Movie Site", zh: "影视平台" },
+        tag: { en: "Niuniutv", zh: "Niuniutv" },
+        desc: {
+          en: "Streaming platform with ad monetization",
+          zh: "支持广告变现的在线影视播放平台",
+        },
         icon: "screen",
       },
       {
-        label: "Porn Site",
-        desc: "Adult content platform with ad monetization",
+        id: "porn-site",
+        label: { en: "Porn Site", zh: "成人平台" },
+        desc: {
+          en: "Adult content platform with ad monetization",
+          zh: "支持广告变现的成人平台",
+        },
         icon: "adult",
       },
     ],
