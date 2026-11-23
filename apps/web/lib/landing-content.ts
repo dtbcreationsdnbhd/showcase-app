@@ -9,6 +9,11 @@ export const COPYRIGHT_LINES = [
 
 export const COPYRIGHT_TEXT = COPYRIGHT_LINES.join(" ");
 
+export function copyrightText(locale: "en" | "zh") {
+  if (locale === "zh") return "© 2026 VisionCraft 版权所有";
+  return COPYRIGHT_TEXT;
+}
+
 export const SOLUTIONS_TITLE_WORDS = ["Targeted", "Solutions"] as const;
 export const SOLUTIONS_SUBTITLE = "for your business growth.";
 
