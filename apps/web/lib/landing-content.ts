@@ -313,6 +313,96 @@ export type FaqGroup = {
   items: readonly FaqItem[];
 };
 
+const FAQ_GROUPS_ZH: readonly FaqGroup[] = [
+  {
+    title: "综合",
+    items: [
+      {
+        question: "VisionCraft 提供哪些服务？",
+        answer:
+          "VisionCraft 提供数字广告投放、AI 创意内容制作、营销自动化、SEO 搜索引擎优化及广告平台搭建等服务。我们致力于帮助企业提升品牌曝光、简化营销流程，并发掘更多业务增长机会。",
+      },
+      {
+        question: "哪些企业适合使用 VisionCraft 的解决方案？",
+        answer:
+          "我们的服务适用于希望提升数字营销表现的企业、品牌商、广告主及平台运营商。我们尤其专注于娱乐及 iGaming 行业，同时也为其他行业提供数字营销与创意解决方案。",
+      },
+      {
+        question: "VisionCraft 可以根据我的业务需求提供定制化方案吗？",
+        answer:
+          "可以。我们了解不同企业拥有不同的营销目标与业务需求，因此会根据您的项目要求，推荐合适的广告渠道、创意制作服务及数字化工具。",
+      },
+      {
+        question: "VisionCraft 的服务收费是多少？",
+        answer:
+          "服务价格会根据所选择的项目、服务范围、广告投放位置及具体需求而有所不同。欢迎联系我们的团队，说明您的需求并获取专属报价。",
+      },
+      {
+        question: "如何开始与 VisionCraft 合作？",
+        answer:
+          "您可以通过网站联系表单、Telegram 与我们联系。只需简单介绍您的业务目标及感兴趣的服务，我们的团队便会协助您了解合适的解决方案与后续合作流程。",
+      },
+    ],
+  },
+  {
+    title: "广告投放",
+    items: [
+      {
+        question: "VisionCraft 如何帮助我的品牌提升曝光度？",
+        answer:
+          "我们提供影视、流媒体及成人娱乐网站等不同渠道的广告投放机会，帮助品牌触达相关受众、扩大广告覆盖范围，并探索更多营销推广渠道。",
+      },
+      {
+        question: "我可以查看广告投放的表现数据吗？",
+        answer:
+          "可以。对于支持数据追踪的广告位，我们提供可获取的流量、观看及用户互动数据，帮助您了解广告曝光情况，并为后续营销决策提供参考。",
+      },
+    ],
+  },
+  {
+    title: "AI 创意",
+    items: [
+      {
+        question: "VisionCraft 提供哪些 AI 创意制作服务？",
+        answer:
+          "我们提供 AI 宣传视频、品牌角色视频、AI 短剧、音乐视频及音频制作等服务，帮助企业打造更具吸引力的营销内容、传达品牌信息，并增强品牌辨识度。",
+      },
+    ],
+  },
+  {
+    title: "TeleFlies 与 SEO",
+    items: [
+      {
+        question: "TeleFlies 如何帮助企业管理 Telegram 营销？",
+        answer:
+          "TeleFlies 通过专属机器人、自动回复、定时群发及联系人管理，帮助企业简化 Telegram 日常运营。同时，平台提供可获取的互动数据，协助企业更有效地管理营销活动与受众互动。",
+      },
+      {
+        question: "VisionCraft 的 SEO 服务如何帮助提升网站流量？",
+        answer:
+          "我们通过关键词研究、网站页面优化、内容创作及外链建设，帮助企业提升 Google 搜索曝光度，吸引更多相关自然流量。结合定制化策略、专业顾问咨询及每周数据报告，协助企业实现长期搜索增长，并逐步降低对付费广告的依赖。",
+      },
+    ],
+  },
+];
+
+export function faqCopy(locale: "en" | "zh") {
+  if (locale === "zh") {
+    return {
+      title: "FAQ",
+      subtitle: "VISIONCRAFT · 常见问题",
+      topicsLabel: "常见问题分类",
+      groups: FAQ_GROUPS_ZH,
+    };
+  }
+  return {
+    title: FAQ_TITLE,
+    subtitle: FAQ_SUBTITLE,
+    topicsLabel: "FAQ topics",
+    groups: FAQ_GROUPS,
+  };
+}
+
 export const FAQ_GROUPS: readonly FaqGroup[] = [
   {
     title: "General",

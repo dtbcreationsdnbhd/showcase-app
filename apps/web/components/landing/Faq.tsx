@@ -3,12 +3,9 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { useId, useState } from "react";
-import {
-  FAQ_GROUPS,
-  FAQ_SUBTITLE,
-  FAQ_TITLE,
-  type FaqItem,
-} from "@/lib/landing-content";
+import { usePathname } from "next/navigation";
+import { faqCopy, type FaqItem } from "@/lib/landing-content";
+import { CJK_FONT, type Locale } from "@/lib/locale";
 import FaqBackdrop from "@/components/landing/FaqBackdrop";
 import {
   GLASS_SHADOW,
@@ -37,9 +34,11 @@ const PAD_TOP = figmaPx(80);
 const PAD_BOTTOM = figmaPx(40);
 
 /** Running 01–10 numbering across every group. */
-const GROUP_OFFSETS = FAQ_GROUPS.map((_, g) =>
-  FAQ_GROUPS.slice(0, g).reduce((sum, group) => sum + group.items.length, 0),
-);
+function groupOffsets(groups: readonly { items: readonly unknown[] }[]) {
+  return groups.map((_, g) =>
+    groups.slice(0, g).reduce((sum, group) => sum + group.items.length, 0),
+  );
+}
 
 function PlusIcon({ open }: { open: boolean }) {
   return (
@@ -67,9 +66,9 @@ function PlusIcon({ open }: { open: boolean }) {
   );
 }
 
-function Answer({ item }: { item: FaqItem }) {
+function Answer({ item, face }: { item: FaqItem; face: { fontFamily: string } }) {
   const textSx = {
-    ...barlow,
+    ...face,
     m: 0,
     fontWeight: 500,
     fontSize: figmaPx(17),
@@ -140,9 +139,14 @@ function Answer({ item }: { item: FaqItem }) {
 
 export default function Faq() {
   const baseId = useId();
+  const pathname = usePathname();
+  const locale: Locale = pathname === "/zh" || pathname.startsWith("/zh/") ? "zh" : "en";
+  const copy = faqCopy(locale);
+  const face = locale === "zh" ? { fontFamily: CJK_FONT } : barlow;
+  const offsets = groupOffsets(copy.groups);
   const [group, setGroup] = useState(0);
   const [open, setOpen] = useState<number | null>(0);
-  const items = FAQ_GROUPS[group].items;
+  const items = copy.groups[group].items;
 
   const selectGroup = (index: number) => {
     setGroup(index);
@@ -197,7 +201,7 @@ export default function Faq() {
                 component="h2"
                 className="solutions-title-3d"
                 sx={{
-                  ...barlow,
+                  ...face,
                   m: 0,
                   fontWeight: 600,
                   fontSize: figmaPx(48),
@@ -211,11 +215,11 @@ export default function Faq() {
                   alignSelf: "flex-start",
                 }}
               >
-                {FAQ_TITLE}
+                {copy.title}
               </Typography>
               <Typography
                 sx={{
-                  ...barlow,
+                  ...face,
                   mt: `${figmaPx(14)}px`,
                   mb: `${figmaPx(32)}px`,
                   fontWeight: 500,
@@ -224,20 +228,20 @@ export default function Faq() {
                   color: "rgba(255, 255, 255, 0.72)",
                 }}
               >
-                {FAQ_SUBTITLE}
+                {copy.subtitle}
               </Typography>
 
               <Box
                 role="tablist"
                 aria-orientation="vertical"
-                aria-label="FAQ topics"
+                aria-label={copy.topicsLabel}
                 sx={{
                   display: "flex",
                   flexDirection: "column",
                   gap: `${figmaPx(6)}px`,
                 }}
               >
-                {FAQ_GROUPS.map((g, index) => {
+                {copy.groups.map((g, index) => {
                   const active = index === group;
                   return (
                     <Box
@@ -250,7 +254,7 @@ export default function Faq() {
                       aria-controls={`${baseId}-panel`}
                       onClick={() => selectGroup(index)}
                       sx={{
-                        ...barlow,
+                        ...face,
                         position: "relative",
                         textAlign: "left",
                         py: `${figmaPx(12)}px`,
@@ -315,7 +319,7 @@ export default function Faq() {
                 const isOpen = open === index;
                 const answerId = `${baseId}-answer-${group}-${index}`;
                 const number = String(
-                  GROUP_OFFSETS[group] + index + 1,
+                  offsets[group] + index + 1,
                 ).padStart(2, "0");
                 return (
                   <Box
@@ -347,7 +351,7 @@ export default function Faq() {
                       aria-controls={answerId}
                       onClick={() => setOpen(isOpen ? null : index)}
                       sx={{
-                        ...barlow,
+                        ...face,
                         display: "flex",
                         alignItems: "center",
                         gap: `${figmaPx(12)}px`,
@@ -403,7 +407,7 @@ export default function Faq() {
                       }}
                     >
                       <Box sx={{ overflow: "hidden", minHeight: 0 }}>
-                        <Answer item={item} />
+                        <Answer item={item} face={face} />
                       </Box>
                     </Box>
                   </Box>
