@@ -170,6 +170,10 @@ export function navLabel(locale: Locale, hash: string): string {
 export const CJK_FONT =
   '"Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif';
 
+export function viewProjectLabel(locale: Locale): string {
+  return locale === "zh" ? "查看项目" : "View Project";
+}
+
 export function stripLocale(pathname: string): string {
   if (pathname === "/zh") return "/";
   if (pathname.startsWith("/zh/")) return pathname.slice(3) || "/";

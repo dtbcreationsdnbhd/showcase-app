@@ -3,6 +3,7 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import ProjectCard from "@/components/landing/ProjectCard";
 import ProjectDetailPopup from "@/components/landing/ProjectDetailPopup";
 import {
@@ -16,6 +17,7 @@ import {
   GOLD_INK,
   goldTextSx,
 } from "@/lib/gold-theme";
+import { CJK_FONT, viewProjectLabel } from "@/lib/locale";
 import { projectTagLine, type ShowcaseProject } from "@/lib/projects";
 
 const barlow = {
@@ -112,6 +114,10 @@ export default function ProjectShowcaseSlider({
   projects: readonly ShowcaseProject[];
   title: string;
 }) {
+  const pathname = usePathname();
+  const cursorLabel = viewProjectLabel(
+    pathname === "/zh" || pathname.startsWith("/zh/") ? "zh" : "en",
+  );
   const count = projects.length;
   const slides = count > SHOWCASE_COLUMNS;
   // Clone the first row onto the end so the loop can wrap without a gap.
@@ -192,7 +198,7 @@ export default function ProjectShowcaseSlider({
         <Typography
           component="h2"
           sx={{
-            ...barlow,
+            ...(/[\u3400-\u9fff]/.test(title) ? { fontFamily: CJK_FONT } : barlow),
             m: 0,
             fontWeight: 600,
             fontSize: figmaPx(48),
@@ -260,7 +266,7 @@ export default function ProjectShowcaseSlider({
                 title={project.name}
                 description={projectTagLine(project.features.map((feature) => feature.label))}
                 imageSrc={project.mainImageUrl}
-                cursorLabel="View Project"
+                cursorLabel={cursorLabel}
                 onOpen={() => setSelectedId(project.id)}
                 eager
               />

@@ -15,6 +15,7 @@ import {
   glassPanelSx,
   goldButtonSx,
 } from "@/lib/gold-theme";
+import { useLocaleLoading } from "@/components/landing/LocaleLoading";
 import { submitInquiry } from "@/lib/inquiries";
 import {
   CONTACT_FORM_HEIGHT_CSS,
@@ -87,7 +88,7 @@ const TALK_ICONS = [
 type FormCopy = ReturnType<typeof formCopy>;
 type Face = { fontFamily: string };
 
-function TalkPanel({ copy, face }: { copy: FormCopy; face: Face }) {
+function TalkPanel({ copy, face, locale }: { copy: FormCopy; face: Face; locale: Locale }) {
   return (
     <Box
       sx={{
@@ -143,7 +144,7 @@ function TalkPanel({ copy, face }: { copy: FormCopy; face: Face }) {
               ...face,
               m: 0,
               fontWeight: 500,
-              fontSize: figmaPx(14),
+              fontSize: locale === "zh" ? figmaPx(12) : figmaPx(14),
               lineHeight: "150%",
               color: "rgba(255, 214, 150, 0.88)",
             }}
@@ -186,7 +187,7 @@ function TalkPanel({ copy, face }: { copy: FormCopy; face: Face }) {
                   m: 0,
                   mt: `${figmaPx(2)}px`,
                   fontWeight: 500,
-                  fontSize: figmaPx(13),
+                  fontSize: locale === "zh" ? figmaPx(11) : figmaPx(13),
                   lineHeight: "150%",
                   color: "rgba(255, 255, 255, 0.72)",
                 }}
@@ -299,13 +300,15 @@ function FieldLabel({
   children,
   required,
   face,
+  fontSize = fieldLabelSx.fontSize,
 }: {
   htmlFor?: string;
   children: ReactNode;
   required?: boolean;
   face: Face;
+  fontSize?: number;
 }) {
-  const labelSx = { ...fieldLabelSx, ...face };
+  const labelSx = { ...fieldLabelSx, ...face, fontSize };
   return (
     <Box
       component="label"
@@ -358,12 +361,19 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
   const locale: Locale = pathname === "/zh" || pathname.startsWith("/zh/") ? "zh" : "en";
   const copy = formCopy(locale);
   const face: Face = locale === "zh" ? { fontFamily: CJK_FONT } : barlow;
+  const controlSx = {
+    ...fieldControlSx,
+    ...face,
+    fontSize: locale === "zh" ? figmaPx(12) : fieldControlSx.fontSize,
+  };
+  const labelFontSize = locale === "zh" ? figmaPx(12) : fieldLabelSx.fontSize;
   const [fullName, setFullName] = useState("");
   const [contact, setContact] = useState("");
   const [service, setService] = useState("");
   const [company, setCompany] = useState("");
   const [market, setMarket] = useState("");
   const [projectDetails, setProjectDetails] = useState("");
+  const { begin: beginLoading, end: endLoading } = useLocaleLoading();
   const [submitting, setSubmitting] = useState(false);
   const [notice, setNotice] = useState<InquiryNotice | null>(null);
 
@@ -378,21 +388,27 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
       return;
     }
     setSubmitting(true);
-    const result = await submitInquiry({
-      source: "web",
-      services: [],
-      budget: null,
-      projectCycle: null,
-      fullName,
-      contact: "",
-      lookingToBuild: "",
-      projectDetails,
-      telegram: contact,
-      service,
-      brandName: company,
-      region: market,
-    });
-    setSubmitting(false);
+    beginLoading();
+    let result: Awaited<ReturnType<typeof submitInquiry>>;
+    try {
+      result = await submitInquiry({
+        source: "web",
+        services: [],
+        budget: null,
+        projectCycle: null,
+        fullName,
+        contact: "",
+        lookingToBuild: "",
+        projectDetails,
+        telegram: contact,
+        service,
+        brandName: company,
+        region: market,
+      });
+    } finally {
+      setSubmitting(false);
+      endLoading();
+    }
     if (!result.ok) {
       setNotice({ id: Date.now(), message: result.message, tone: "error" });
       return;
@@ -464,7 +480,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
         }}
       >
         <FormCard width={TALK_W}>
-          <TalkPanel copy={copy} face={face} />
+          <TalkPanel copy={copy} face={face} locale={locale} />
         </FormCard>
 
         <FormCard>
@@ -500,7 +516,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
                     m: 0,
                     mt: `${figmaPx(2)}px`,
                     fontWeight: 500,
-                    fontSize: figmaPx(13),
+                    fontSize: locale === "zh" ? figmaPx(11) : figmaPx(13),
                     lineHeight: "145%",
                     color: "rgba(255, 255, 255, 0.55)",
                   }}
@@ -522,7 +538,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
 
             <Box sx={{ display: "flex", alignItems: "flex-start", gap: `${figmaPx(12)}px` }}>
               <Box sx={{ display: "flex", flex: 1, flexDirection: "column", gap: `${figmaPx(4)}px`, minWidth: 0 }}>
-                <FieldLabel htmlFor="contact-name" required face={face}>
+                <FieldLabel htmlFor="contact-name" required face={face} fontSize={labelFontSize}>
                   {copy.name}
                 </FieldLabel>
                 <Box
@@ -531,12 +547,12 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
                   value={fullName}
                   placeholder={copy.namePlaceholder}
                   onChange={(event) => setFullName(event.target.value)}
-                  sx={{ ...fieldControlSx, ...face }}
+                  sx={controlSx}
                 />
               </Box>
 
               <Box sx={{ display: "flex", flex: 1, flexDirection: "column", gap: `${figmaPx(4)}px`, minWidth: 0 }}>
-                <FieldLabel htmlFor="contact-telegram" required face={face}>
+                <FieldLabel htmlFor="contact-telegram" required face={face} fontSize={labelFontSize}>
                   {copy.contact}
                 </FieldLabel>
                 <Box
@@ -545,13 +561,13 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
                   value={contact}
                   placeholder={copy.contactPlaceholder}
                   onChange={(event) => setContact(event.target.value)}
-                  sx={{ ...fieldControlSx, ...face }}
+                  sx={controlSx}
                 />
               </Box>
             </Box>
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: `${figmaPx(4)}px` }}>
-              <FieldLabel htmlFor="contact-service" required face={face}>
+              <FieldLabel htmlFor="contact-service" required face={face} fontSize={labelFontSize}>
                 {copy.service}
               </FieldLabel>
               <Box
@@ -560,11 +576,11 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
                 value={service}
                 placeholder={copy.servicePlaceholder}
                 onChange={(event) => setService(event.target.value)}
-                sx={{ ...fieldControlSx, ...face }}
+                sx={controlSx}
               />
             </Box>
 
-            <Typography sx={{ ...fieldLabelSx, ...face, color: "#FFC46B", mt: `${figmaPx(2)}px` }}>
+            <Typography sx={{ ...fieldLabelSx, ...face, fontSize: labelFontSize, color: "#FFC46B", mt: `${figmaPx(2)}px` }}>
               {copy.extra}{" "}
               <Box component="span" sx={{ color: "rgba(255, 196, 107, 0.72)", fontWeight: 500 }}>
                 {copy.optional}
@@ -573,31 +589,31 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
 
             <Box sx={{ display: "flex", alignItems: "flex-start", gap: `${figmaPx(12)}px` }}>
               <Box sx={{ display: "flex", flex: 1, flexDirection: "column", gap: `${figmaPx(4)}px`, minWidth: 0 }}>
-                <FieldLabel htmlFor="contact-company" face={face}>{copy.company}</FieldLabel>
+                <FieldLabel htmlFor="contact-company" face={face} fontSize={labelFontSize}>{copy.company}</FieldLabel>
                 <Box
                   component="input"
                   id="contact-company"
                   value={company}
                   placeholder={copy.companyPlaceholder}
                   onChange={(event) => setCompany(event.target.value)}
-                  sx={{ ...fieldControlSx, ...face }}
+                  sx={controlSx}
                 />
               </Box>
               <Box sx={{ display: "flex", flex: 1, flexDirection: "column", gap: `${figmaPx(4)}px`, minWidth: 0 }}>
-                <FieldLabel htmlFor="contact-market" face={face}>{copy.market}</FieldLabel>
+                <FieldLabel htmlFor="contact-market" face={face} fontSize={labelFontSize}>{copy.market}</FieldLabel>
                 <Box
                   component="input"
                   id="contact-market"
                   value={market}
                   placeholder={copy.marketPlaceholder}
                   onChange={(event) => setMarket(event.target.value)}
-                  sx={{ ...fieldControlSx, ...face }}
+                  sx={controlSx}
                 />
               </Box>
             </Box>
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: `${figmaPx(4)}px` }}>
-              <FieldLabel htmlFor="contact-needs" face={face}>{copy.needs}</FieldLabel>
+              <FieldLabel htmlFor="contact-needs" face={face} fontSize={labelFontSize}>{copy.needs}</FieldLabel>
               <Box
                 component="textarea"
                 id="contact-needs"
@@ -605,8 +621,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
                 placeholder={copy.needsPlaceholder}
                 onChange={(event) => setProjectDetails(event.target.value)}
                 sx={{
-                  ...fieldControlSx,
-                  ...face,
+                  ...controlSx,
                   height: figmaPx(52),
                   py: `${figmaPx(8)}px`,
                   borderRadius: `${figmaPx(14)}px`,

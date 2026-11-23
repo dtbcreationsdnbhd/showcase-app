@@ -25,6 +25,37 @@ const barlow = {
 
 const ROW_ICONS = ["layers", "spark", "target"] as const;
 
+/** Chinese glyphs are wider than the condensed English face, so the same
+ *  pixel sizes overflow the columns. English keeps the original sizes. */
+function whyType(locale: Locale) {
+  if (locale === "zh") {
+    return {
+      eyebrow: 32,
+      title: 80,
+      partner: 20,
+      promise: 15,
+      stat: 48,
+      statLabel: 14,
+      rowTitle: 40,
+      kicker: 24,
+      body: 18,
+      tag: 15,
+    };
+  }
+  return {
+    eyebrow: 32,
+    title: 68,
+    partner: 26,
+    promise: 18,
+    stat: 40,
+    statLabel: 16,
+    rowTitle: 42,
+    kicker: 26,
+    body: 24,
+    tag: 18,
+  };
+}
+
 type WhyRow = ReturnType<typeof whyCopy>["rows"][number] & {
   icon: (typeof ROW_ICONS)[number];
 };
@@ -80,6 +111,7 @@ const PIN_SCALE = `scale(calc(100vw / ${LANDING_DESIGN_WIDTH}px))`;
 function WhyChooseCopy({ locale }: { locale: Locale }) {
   const copy = whyCopy(locale);
   const face = locale === "zh" ? { fontFamily: CJK_FONT } : barlow;
+  const type = whyType(locale);
   return (
     <Box sx={{ width: 620, color: "#fff", ...face }}>
       <Typography
@@ -87,7 +119,7 @@ function WhyChooseCopy({ locale }: { locale: Locale }) {
         sx={{
           m: 0,
           fontWeight: 700,
-          fontSize: 32,
+          fontSize: type.eyebrow,
           letterSpacing: locale === "zh" ? "0.08em" : "0.16em",
           lineHeight: 1.1,
           color: "rgba(255, 220, 160, 0.86)",
@@ -102,7 +134,7 @@ function WhyChooseCopy({ locale }: { locale: Locale }) {
           m: 0,
           mt: "8px",
           fontWeight: 700,
-          fontSize: 68,
+          fontSize: type.title,
           lineHeight: 0.95,
           letterSpacing: "-0.02em",
           backgroundImage: goldTextSx.backgroundImage,
@@ -121,7 +153,7 @@ function WhyChooseCopy({ locale }: { locale: Locale }) {
           m: 0,
           mt: "22px",
           maxWidth: 560,
-          fontSize: 26,
+          fontSize: type.partner,
           lineHeight: 1.35,
           fontWeight: 600,
           color: "#fff",
@@ -134,7 +166,7 @@ function WhyChooseCopy({ locale }: { locale: Locale }) {
         sx={{
           m: 0,
           mt: "10px",
-          fontSize: 18,
+          fontSize: type.promise,
           lineHeight: 1.4,
           letterSpacing: "0.04em",
           color: "rgba(255, 220, 160, 0.78)",
@@ -150,7 +182,7 @@ function WhyChooseCopy({ locale }: { locale: Locale }) {
               className="solutions-title-3d"
               sx={{
                 m: 0,
-                fontSize: 40,
+                fontSize: type.stat,
                 fontWeight: 700,
                 lineHeight: 1,
                 backgroundImage: goldTextSx.backgroundImage,
@@ -167,7 +199,7 @@ function WhyChooseCopy({ locale }: { locale: Locale }) {
               sx={{
                 m: 0,
                 mt: "6px",
-                fontSize: 16,
+                fontSize: type.statLabel,
                 lineHeight: 1.3,
                 whiteSpace: "nowrap",
                 color: "rgba(255,255,255,0.72)",
@@ -185,6 +217,7 @@ function WhyChooseCopy({ locale }: { locale: Locale }) {
 
 function WhyChooseRow({ row, locale }: { row: WhyRow; locale: Locale }) {
   const face = locale === "zh" ? { fontFamily: CJK_FONT } : barlow;
+  const type = whyType(locale);
   return (
     <Box sx={{ display: "flex", alignItems: "flex-start", gap: "22px", color: "#fff", ...face }}>
       <Box
@@ -203,13 +236,13 @@ function WhyChooseRow({ row, locale }: { row: WhyRow; locale: Locale }) {
         <RowIcon name={row.icon} />
       </Box>
       <Box sx={{ minWidth: 0 }}>
-        <Typography sx={{ m: 0, fontSize: 42, fontWeight: 700, lineHeight: 1.12, ...face }}>
+        <Typography sx={{ m: 0, fontSize: type.rowTitle, fontWeight: 700, lineHeight: 1.12, ...face }}>
           {row.title}
         </Typography>
-        <Typography sx={{ m: 0, mt: "8px", fontSize: 26, fontWeight: 600, lineHeight: 1.25, color: "#F6C15A", ...face }}>
+        <Typography sx={{ m: 0, mt: "8px", fontSize: type.kicker, fontWeight: 600, lineHeight: 1.25, color: "#F6C15A", ...face }}>
           {row.kicker}
         </Typography>
-        <Typography sx={{ m: 0, mt: "14px", fontSize: 24, lineHeight: 1.4, color: "rgba(255,255,255,0.9)", ...face }}>
+        <Typography sx={{ m: 0, mt: "14px", fontSize: type.body, lineHeight: 1.45, color: "rgba(255,255,255,0.9)", ...face }}>
           {row.body}
         </Typography>
         <Box sx={{ display: "flex", flexWrap: "wrap", gap: "10px", mt: "16px" }}>
@@ -222,7 +255,7 @@ function WhyChooseRow({ row, locale }: { row: WhyRow; locale: Locale }) {
                 borderRadius: "999px",
                 background: GOLD_FILL,
                 boxShadow: "0 0 0 1px #FFE7A3, 0 4px 14px rgba(255, 168, 56, 0.45)",
-                fontSize: 18,
+                fontSize: type.tag,
                 fontWeight: 700,
                 lineHeight: 1.3,
                 color: GOLD_INK,

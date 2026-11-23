@@ -50,6 +50,9 @@ export default async function Navbar({
   const copy = chromeCopy(locale);
   const headerFont =
     locale === "zh" ? { ...latinHeaderFont, fontFamily: CJK_FONT } : latinHeaderFont;
+  const navFontSize = locale === "zh" ? 17 : 21;
+  const navLineHeight = locale === "zh" ? "22px" : "26px";
+  const ctaFontSize = 18;
   const withPrefix = (hash: string) => `${prefix}${hash}`;
 
   return (
@@ -193,8 +196,8 @@ export default async function Navbar({
                 component="span"
                 sx={{
                   ...headerFont,
-                  fontSize: 21,
-                  lineHeight: "26px",
+                  fontSize: navFontSize,
+                  lineHeight: navLineHeight,
                   textTransform: "uppercase",
                   color: "rgba(255, 255, 255, 0.92)",
                   textShadow: "0 1px 10px rgba(60, 0, 24, 0.55)",
@@ -301,7 +304,7 @@ export default async function Navbar({
                   height: 22,
                   flexShrink: 0,
                   textAlign: "center",
-                  fontSize: 18,
+                  fontSize: ctaFontSize,
                   lineHeight: "22px",
                   fontWeight: 600,
                   color: GOLD_INK,
@@ -330,7 +333,12 @@ export default async function Navbar({
           </Box>
           </Box>
           <Box sx={{ ml: "40px", mr: "-40px" }}>
-            <LanguageSwitch locale={locale} pathname={pathname} />
+            <LanguageSwitch
+              locale={locale}
+              pathname={pathname}
+              fontFamily={headerFont.fontFamily}
+              fontSize={locale === "zh" ? navFontSize : 16}
+            />
           </Box>
         </Box>
       </Box>

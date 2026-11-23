@@ -66,12 +66,20 @@ function PlusIcon({ open }: { open: boolean }) {
   );
 }
 
-function Answer({ item, face }: { item: FaqItem; face: { fontFamily: string } }) {
+function Answer({
+  item,
+  face,
+  fontSize,
+}: {
+  item: FaqItem;
+  face: { fontFamily: string };
+  fontSize: number;
+}) {
   const textSx = {
     ...face,
     m: 0,
     fontWeight: 500,
-    fontSize: figmaPx(17),
+    fontSize,
     lineHeight: "160%",
     letterSpacing: "0.01em",
     color: "rgba(255, 255, 255, 0.92)",
@@ -266,7 +274,7 @@ export default function Faq() {
                           : "transparent",
                         color: active ? "#FFE08A" : "rgba(255, 255, 255, 0.6)",
                         fontWeight: 600,
-                        fontSize: figmaPx(17),
+                        fontSize: locale === "zh" ? figmaPx(14) : figmaPx(17),
                         lineHeight: "130%",
                         cursor: "pointer",
                         appearance: "none",
@@ -384,7 +392,7 @@ export default function Faq() {
                         sx={{
                           flex: 1,
                           fontWeight: 600,
-                          fontSize: figmaPx(19),
+                          fontSize: locale === "zh" ? figmaPx(16) : figmaPx(19),
                           lineHeight: "135%",
                           color: "#FFD866",
                         }}
@@ -407,7 +415,11 @@ export default function Faq() {
                       }}
                     >
                       <Box sx={{ overflow: "hidden", minHeight: 0 }}>
-                        <Answer item={item} face={face} />
+                        <Answer
+                          item={item}
+                          face={face}
+                          fontSize={locale === "zh" ? figmaPx(13) : figmaPx(17)}
+                        />
                       </Box>
                     </Box>
                   </Box>

@@ -2,13 +2,14 @@
 
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type MouseEvent } from "react";
 import { usePathname } from "next/navigation";
 import { createPortal } from "react-dom";
 import ShowcaseMedia from "@/components/landing/ShowcaseMedia";
+import { useLocaleLoading } from "@/components/landing/LocaleLoading";
 import { GOLD_INK, GOLD_SOLID, GOLD_TEXT, GOLD_TEXT_GLOW, goldButtonSx } from "@/lib/gold-theme";
 import { figmaPx } from "@/lib/landing-layout";
-import { CJK_FONT, sheetCopy, type Locale } from "@/lib/locale";
+import { CJK_FONT, homeHashPrefix, sheetCopy, type Locale } from "@/lib/locale";
 import type { FeatureIconName } from "@/lib/project-sheet";
 import {
   projectGalleryMedia,
@@ -512,8 +513,14 @@ export default function ProjectDetailPopup({
   closable?: boolean;
 }) {
   const pathname = usePathname();
+  const { begin: beginLoading } = useLocaleLoading();
   const locale: Locale = pathname === "/zh" || pathname.startsWith("/zh/") ? "zh" : "en";
+  const contactHref = `${homeHashPrefix(pathname)}#contact`;
   const labels = sheetCopy(locale);
+  const copyFace = locale === "zh" ? { fontFamily: CJK_FONT } : null;
+  const subtitleSize = locale === "zh" ? figmaPx(16) : figmaPx(20);
+  const answerSize = locale === "zh" ? figmaPx(13) : figmaPx(16);
+  const footerSize = locale === "zh" ? figmaPx(13) : figmaPx(16);
   const detail = project;
   const hasSheet =
     Boolean(detail.subtitle || detail.whyIt || detail.howWeHelp || detail.ctaText || detail.footerText) ||
@@ -806,7 +813,7 @@ export default function ProjectDetailPopup({
               <SheetLabel locale={locale}>{labels.productName}</SheetLabel>
               <GoldTitle id="project-detail-title">{sheet.name}</GoldTitle>
               {sheet.subtitle ? (
-                <Typography sx={{ ...bodySx, color: "rgba(255,255,255,0.88)" }}>
+                <Typography sx={{ ...bodySx, ...copyFace, fontSize: subtitleSize, color: "rgba(255,255,255,0.88)" }}>
                   {sheet.subtitle}
                 </Typography>
               ) : null}
@@ -861,14 +868,14 @@ export default function ProjectDetailPopup({
             {sheet.whyIt ? (
             <Box sx={{ display: "flex", flexDirection: "column", gap: `${figmaPx(6)}px`, width: "100%" }}>
               <SheetLabel locale={locale}>{labels.whyYouNeedIt}</SheetLabel>
-              <Typography sx={{ ...bodySx, fontSize: figmaPx(16) }}>{sheet.whyIt}</Typography>
+              <Typography sx={{ ...bodySx, ...copyFace, fontSize: answerSize }}>{sheet.whyIt}</Typography>
             </Box>
             ) : null}
 
             {sheet.howWeHelp ? (
             <Box sx={{ display: "flex", flexDirection: "column", gap: `${figmaPx(6)}px`, width: "100%" }}>
               <SheetLabel locale={locale}>{labels.howWeHelp}</SheetLabel>
-              <Typography sx={{ ...bodySx, fontSize: figmaPx(16) }}>{sheet.howWeHelp}</Typography>
+              <Typography sx={{ ...bodySx, ...copyFace, fontSize: answerSize }}>{sheet.howWeHelp}</Typography>
             </Box>
             ) : null}
 
@@ -886,8 +893,29 @@ export default function ProjectDetailPopup({
               {sheet.ctaText ? (
               <Box
                 component="a"
-                href="/#contact"
-                onClick={onClose}
+                href={contactHref}
+                onClick={(event: MouseEvent<HTMLAnchorElement>) => {
+                  if (
+                    event.metaKey ||
+                    event.ctrlKey ||
+                    event.shiftKey ||
+                    event.altKey ||
+                    event.button !== 0
+                  ) {
+                    return;
+                  }
+                  if (homeHashPrefix(pathname) === "") {
+                    onClose();
+                    return;
+                  }
+                  event.preventDefault();
+                  beginLoading();
+                  requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                      window.location.assign(contactHref);
+                    });
+                  });
+                }}
                 className="hover-grow"
                 sx={{
                   display: "inline-flex",
@@ -916,11 +944,12 @@ export default function ProjectDetailPopup({
               <Typography
                 sx={{
                   ...barlow,
+                  ...copyFace,
                   m: 0,
                   width: "100%",
                   textAlign: "center",
                   fontWeight: 500,
-                  fontSize: figmaPx(16),
+                  fontSize: footerSize,
                   letterSpacing: "0.02em",
                   color: "rgba(255, 220, 160, 0.78)",
                 }}

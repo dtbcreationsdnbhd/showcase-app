@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Barlow_Semi_Condensed, Plus_Jakarta_Sans } from "next/font/google";
+import LocaleLoadingProvider from "@/components/landing/LocaleLoading";
 import SiteCursor from "@/components/landing/SiteCursor";
 import ThemeRegistry from "@/components/ThemeRegistry";
 import { getLocale } from "@/lib/get-locale";
@@ -41,7 +42,9 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         />
       ) : null}
       <body className={`${plusJakarta.className} min-h-full flex flex-col`}>
-        <ThemeRegistry>{children}</ThemeRegistry>
+        <ThemeRegistry>
+          <LocaleLoadingProvider>{children}</LocaleLoadingProvider>
+        </ThemeRegistry>
         <SiteCursor />
       </body>
     </html>

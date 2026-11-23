@@ -27,6 +27,10 @@ export const SOLUTIONS_INTRO_TEXT = SOLUTIONS_INTRO_SENTENCES.join(" ");
 
 export const SHOWCASE_TITLE = "Project Showcase";
 
+export function showcaseTitle(locale: "en" | "zh") {
+  return locale === "zh" ? "服务与项目" : SHOWCASE_TITLE;
+}
+
 /** Desktop keeps the title on one nowrap line; mobile stacks the two halves. */
 export const CTA_TITLE_LINES = [
   "Ready to Scale?",

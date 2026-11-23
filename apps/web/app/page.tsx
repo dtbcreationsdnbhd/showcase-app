@@ -72,7 +72,6 @@ export default async function Home() {
               <HeroCardsSection slides={heroSlides} />
               <TargetedSolutions />
               <LandingBackgrounds
-                heroSrc={getLandingHeroDesktopSrc()}
                 solutionsSrc={
                   locale === "zh"
                     ? "/landing/solutions-bg-cn.png"

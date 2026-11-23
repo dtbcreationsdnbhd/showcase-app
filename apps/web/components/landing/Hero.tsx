@@ -156,7 +156,7 @@ export default async function Hero({
                 height: "auto",
                 fontStyle: "normal",
                 fontWeight: 500,
-                fontSize: 21,
+                fontSize: locale === "zh" ? 17 : 21,
                 lineHeight: "160%",
                 letterSpacing: "0.02em",
                 color: "#E6D3D9",

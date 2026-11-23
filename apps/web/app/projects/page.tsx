@@ -5,7 +5,8 @@ import ProjectShowcaseGallery from "@/components/landing/ProjectShowcaseGallery"
 import MobileProjectsPage from "@/components/mobile/MobileProjectsPage";
 import { goldTextSx } from "@/lib/gold-theme";
 import { getLandingLogoSrc } from "@/lib/landing-assets";
-import { SHOWCASE_TITLE } from "@/lib/landing-content";
+import { showcaseTitle } from "@/lib/landing-content";
+import { CJK_FONT } from "@/lib/locale";
 import {
   LANDING_DESIGN_WIDTH,
   PROJECTS_PAGE_COLUMNS,
@@ -27,7 +28,9 @@ const TITLE_GAP = figmaPx(28);
 const PAD_BOTTOM = figmaPx(100);
 
 export default async function ProjectsPage() {
-  const projects = localizeProjects(await listProjects(), await getLocale());
+  const locale = await getLocale();
+  const projects = localizeProjects(await listProjects(), locale);
+  const title = showcaseTitle(locale);
   const logoSrc = getLandingLogoSrc();
   const stageHeight =
     NAV_HEIGHT +
@@ -96,19 +99,26 @@ export default async function ProjectsPage() {
           >
             <Typography
               component="h1"
+              className="solutions-title-3d"
               sx={{
                 fontFamily:
-                  'var(--font-barlow-semi-condensed), "Barlow Semi Condensed", sans-serif',
+                  locale === "zh"
+                    ? CJK_FONT
+                    : 'var(--font-barlow-semi-condensed), "Barlow Semi Condensed", sans-serif',
                 m: 0,
                 fontWeight: 600,
                 fontSize: figmaPx(48),
                 lineHeight: `${TITLE_HEIGHT}px`,
                 letterSpacing: "-0.02em",
-                ...goldTextSx,
+                backgroundImage: goldTextSx.backgroundImage,
+                backgroundClip: "text",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                color: "transparent",
                 whiteSpace: "nowrap",
               }}
             >
-              {SHOWCASE_TITLE}
+              {title}
             </Typography>
 
             {projects.length > 0 ? (

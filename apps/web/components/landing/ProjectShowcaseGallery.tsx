@@ -2,9 +2,11 @@
 
 import Box from "@mui/material/Box";
 import { useCallback, useState } from "react";
+import { usePathname } from "next/navigation";
 import ProjectCard from "@/components/landing/ProjectCard";
 import ProjectDetailPopup from "@/components/landing/ProjectDetailPopup";
 import { SHOWCASE_COLUMNS, figmaPx } from "@/lib/landing-layout";
+import { viewProjectLabel } from "@/lib/locale";
 import { projectTagLine, type ShowcaseProject } from "@/lib/projects";
 
 const CARD_W = figmaPx(276);
@@ -18,6 +20,10 @@ export default function ProjectShowcaseGallery({
   projects: readonly ShowcaseProject[];
   columns?: number;
 }) {
+  const pathname = usePathname();
+  const cursorLabel = viewProjectLabel(
+    pathname === "/zh" || pathname.startsWith("/zh/") ? "zh" : "en",
+  );
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const close = useCallback(() => setSelectedId(null), []);
   const selected = projects.find((project) => project.id === selectedId) ?? null;
@@ -49,7 +55,7 @@ export default function ProjectShowcaseGallery({
             title={project.name}
             description={projectTagLine(project.features.map((feature) => feature.label))}
             imageSrc={project.mainImageUrl}
-            cursorLabel="View Project"
+            cursorLabel={cursorLabel}
             onOpen={() => setSelectedId(project.id)}
           />
         ))}

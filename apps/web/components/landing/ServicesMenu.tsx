@@ -196,6 +196,10 @@ function ServicesPanel({
   onNavigate: () => void;
 }) {
   const textFont = locale === "zh" ? { fontFamily: CJK_FONT } : barlow;
+  const type =
+    locale === "zh"
+      ? { pill: 16, pillLine: "20px", badge: 12, badgeLine: "16px", title: 18, titleLine: "24px", tag: 12, tagLine: "16px", desc: 13, descLine: "18px" }
+      : { pill: 20, pillLine: "24px", badge: 14, badgeLine: "18px", title: 22, titleLine: "28px", tag: 13, tagLine: "18px", desc: 16, descLine: "22px" };
   return (
     <Box
       className={PANEL_CLASS}
@@ -246,8 +250,8 @@ function ServicesPanel({
                 sx={{
                   ...textFont,
                   fontWeight: 600,
-                  fontSize: 20,
-                  lineHeight: "24px",
+                  fontSize: type.pill,
+                  lineHeight: type.pillLine,
                   letterSpacing: "0.02em",
                   color: "#FFE08A",
                   px: "18px",
@@ -267,8 +271,8 @@ function ServicesPanel({
                   sx={{
                     ...textFont,
                     fontWeight: 500,
-                    fontSize: 14,
-                    lineHeight: "18px",
+                    fontSize: type.badge,
+                    lineHeight: type.badgeLine,
                     color: "rgba(255, 255, 255, 0.7)",
                     px: "10px",
                     py: "4px",
@@ -317,8 +321,8 @@ function ServicesPanel({
                       alignItems: "center",
                       gap: "10px",
                       fontWeight: 600,
-                      fontSize: 22,
-                      lineHeight: "28px",
+                      fontSize: type.title,
+                      lineHeight: type.titleLine,
                       color: "rgba(255, 255, 255, 0.88)",
                       transition: "color 0.15s ease",
                     }}
@@ -347,8 +351,8 @@ function ServicesPanel({
                         component="span"
                         sx={{
                           fontWeight: 500,
-                          fontSize: 13,
-                          lineHeight: "18px",
+                          fontSize: type.tag,
+                          lineHeight: type.tagLine,
                           px: "8px",
                           py: "2px",
                           borderRadius: "9999px",
@@ -365,8 +369,8 @@ function ServicesPanel({
                       ...textFont,
                       mt: "4px",
                       fontWeight: 400,
-                      fontSize: 16,
-                      lineHeight: "22px",
+                      fontSize: type.desc,
+                      lineHeight: type.descLine,
                       color: "rgba(255, 255, 255, 0.72)",
                     }}
                   >
