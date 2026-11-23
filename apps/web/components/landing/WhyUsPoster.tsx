@@ -3,6 +3,7 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { useEffect, useRef, useSyncExternalStore } from "react";
+import { usePathname } from "next/navigation";
 import { createPortal } from "react-dom";
 import { GOLD_FILL, GOLD_INK, goldTextSx } from "@/lib/gold-theme";
 import {
@@ -12,6 +13,7 @@ import {
   STAGE_VIEWPORT_PAGE_HEIGHT_CSS,
 } from "@/lib/landing-layout";
 import { listenWhileNear } from "@/lib/listen-while-near";
+import { CJK_FONT, whyCopy, type Locale } from "@/lib/locale";
 
 const subscribeNoop = () => () => {};
 const getHydrated = () => true;
@@ -21,37 +23,20 @@ const barlow = {
   fontFamily: 'var(--font-barlow-semi-condensed), "Barlow Semi Condensed", sans-serif',
 } as const;
 
-const STATS = [
-  ["30+", "Professionals"],
-  ["100+", "Projects Delivered"],
-  ["6+", "Years of Industry Experience"],
-] as const;
+const ROW_ICONS = ["layers", "spark", "target"] as const;
 
-const ROWS = [
-  {
-    title: "All-in-One Solutions",
-    kicker: "One Partner. Multiple Growth Opportunities.",
-    body: "From digital advertising and content production to AI tools, automation, and SEO, we provide integrated solutions that work together to grow your business.",
-    tags: ["Advertising & Content", "Tools & Automation"],
-    icon: "layers" as const,
-  },
-  {
-    title: "AI-Powered Efficiency",
-    kicker: "Work Smarter. Create Faster. Grow Further.",
-    body: "Leverage AI to create high-quality content, automate daily operations, and optimize your marketing performance for scalable growth.",
-    tags: ["AI Content Creation", "Workflow Automation"],
-    icon: "spark" as const,
-  },
-  {
-    title: "Industry-Focused Expertise",
-    kicker: "Solutions Built Around Your Industry.",
-    body: "With deep understanding of entertainment and iGaming, we deliver targeted marketing, user engagement, and operational solutions that drive real results.",
-    tags: ["iGaming & Entertainment", "Market Insights & Growth Strategy"],
-    icon: "target" as const,
-  },
-];
+type WhyRow = ReturnType<typeof whyCopy>["rows"][number] & {
+  icon: (typeof ROW_ICONS)[number];
+};
 
-function RowIcon({ name }: { name: (typeof ROWS)[number]["icon"] }) {
+function rowsFor(locale: Locale): WhyRow[] {
+  return whyCopy(locale).rows.map((row, index) => ({
+    ...row,
+    icon: ROW_ICONS[index],
+  }));
+}
+
+function RowIcon({ name }: { name: WhyRow["icon"] }) {
   const common = {
     fill: "none",
     stroke: "currentColor",
@@ -92,22 +77,24 @@ const GROUP_H = `calc(${ROW_PAGES} * ${STAGE_VIEWPORT_PAGE_HEIGHT_CSS})`;
 const LEFT_H = 540;
 const PIN_SCALE = `scale(calc(100vw / ${LANDING_DESIGN_WIDTH}px))`;
 
-function WhyChooseCopy() {
+function WhyChooseCopy({ locale }: { locale: Locale }) {
+  const copy = whyCopy(locale);
+  const face = locale === "zh" ? { fontFamily: CJK_FONT } : barlow;
   return (
-    <Box sx={{ width: 620, color: "#fff", ...barlow }}>
+    <Box sx={{ width: 620, color: "#fff", ...face }}>
       <Typography
         component="h2"
         sx={{
           m: 0,
           fontWeight: 700,
           fontSize: 32,
-          letterSpacing: "0.16em",
+          letterSpacing: locale === "zh" ? "0.08em" : "0.16em",
           lineHeight: 1.1,
           color: "rgba(255, 220, 160, 0.86)",
-          ...barlow,
+          ...face,
         }}
       >
-        WHY CHOOSE
+        {copy.eyebrow}
       </Typography>
       <Typography
         component="p"
@@ -123,11 +110,11 @@ function WhyChooseCopy() {
           WebkitBackgroundClip: "text",
           WebkitTextFillColor: "transparent",
           color: "transparent",
-          ...barlow,
+          ...face,
         }}
         className="solutions-title-3d"
       >
-        VISIONCRAFT?
+        {copy.title}
       </Typography>
       <Typography
         sx={{
@@ -138,10 +125,10 @@ function WhyChooseCopy() {
           lineHeight: 1.35,
           fontWeight: 600,
           color: "#fff",
-          ...barlow,
+          ...face,
         }}
       >
-        Your Partner in Digital Advertising, AI & Business Growth.
+        {copy.partner}
       </Typography>
       <Typography
         sx={{
@@ -151,13 +138,13 @@ function WhyChooseCopy() {
           lineHeight: 1.4,
           letterSpacing: "0.04em",
           color: "rgba(255, 220, 160, 0.78)",
-          ...barlow,
+          ...face,
         }}
       >
-        Smart Solutions. Creative Thinking. Real Opportunities.
+        {copy.promise}
       </Typography>
       <Box sx={{ display: "flex", gap: "28px", mt: "28px" }}>
-        {STATS.map(([value, label]) => (
+        {copy.stats.map(([value, label]) => (
           <Box key={label}>
             <Typography
               className="solutions-title-3d"
@@ -171,7 +158,7 @@ function WhyChooseCopy() {
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 color: "transparent",
-                ...barlow,
+                ...face,
               }}
             >
               {value}
@@ -184,7 +171,7 @@ function WhyChooseCopy() {
                 lineHeight: 1.3,
                 whiteSpace: "nowrap",
                 color: "rgba(255,255,255,0.72)",
-                ...barlow,
+                ...face,
               }}
             >
               {label}
@@ -196,9 +183,10 @@ function WhyChooseCopy() {
   );
 }
 
-function WhyChooseRow({ row }: { row: (typeof ROWS)[number] }) {
+function WhyChooseRow({ row, locale }: { row: WhyRow; locale: Locale }) {
+  const face = locale === "zh" ? { fontFamily: CJK_FONT } : barlow;
   return (
-    <Box sx={{ display: "flex", alignItems: "flex-start", gap: "22px", color: "#fff", ...barlow }}>
+    <Box sx={{ display: "flex", alignItems: "flex-start", gap: "22px", color: "#fff", ...face }}>
       <Box
         sx={{
           display: "grid",
@@ -215,13 +203,13 @@ function WhyChooseRow({ row }: { row: (typeof ROWS)[number] }) {
         <RowIcon name={row.icon} />
       </Box>
       <Box sx={{ minWidth: 0 }}>
-        <Typography sx={{ m: 0, fontSize: 42, fontWeight: 700, lineHeight: 1.12, ...barlow }}>
+        <Typography sx={{ m: 0, fontSize: 42, fontWeight: 700, lineHeight: 1.12, ...face }}>
           {row.title}
         </Typography>
-        <Typography sx={{ m: 0, mt: "8px", fontSize: 26, fontWeight: 600, lineHeight: 1.25, color: "#F6C15A", ...barlow }}>
+        <Typography sx={{ m: 0, mt: "8px", fontSize: 26, fontWeight: 600, lineHeight: 1.25, color: "#F6C15A", ...face }}>
           {row.kicker}
         </Typography>
-        <Typography sx={{ m: 0, mt: "14px", fontSize: 24, lineHeight: 1.4, color: "rgba(255,255,255,0.9)", ...barlow }}>
+        <Typography sx={{ m: 0, mt: "14px", fontSize: 24, lineHeight: 1.4, color: "rgba(255,255,255,0.9)", ...face }}>
           {row.body}
         </Typography>
         <Box sx={{ display: "flex", flexWrap: "wrap", gap: "10px", mt: "16px" }}>
@@ -254,6 +242,9 @@ function WhyChooseRow({ row }: { row: (typeof ROWS)[number] }) {
  * that viewport, then hold. Later rows still pass over the pinned picture.
  */
 export default function WhyUsPoster({ sectionId }: { sectionId: string }) {
+  const pathname = usePathname();
+  const locale: Locale = pathname === "/zh" || pathname.startsWith("/zh/") ? "zh" : "en";
+  const rows = rowsFor(locale);
   const slotRef = useRef<HTMLDivElement>(null);
   const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
   const copyRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -314,10 +305,10 @@ export default function WhyUsPoster({ sectionId }: { sectionId: string }) {
       }
 
       const anchor = top + slotH / 2;
-      const rowSpan = track.height / ROWS.length;
+      const rowSpan = track.height / rows.length;
       let best = 0;
       let bestDist = Infinity;
-      for (let index = 0; index < ROWS.length; index += 1) {
+      for (let index = 0; index < rows.length; index += 1) {
         const center = track.top + (index + 0.5) * rowSpan;
         const dist = Math.abs(center - anchor);
         if (dist < bestDist) {
@@ -374,7 +365,7 @@ export default function WhyUsPoster({ sectionId }: { sectionId: string }) {
       stopNear();
       window.removeEventListener("resize", onResize);
     };
-  }, [sectionId, hydrated]);
+  }, [sectionId, hydrated, rows.length]);
 
   return (
     <>
@@ -401,11 +392,11 @@ export default function WhyUsPoster({ sectionId }: { sectionId: string }) {
               height: LEFT_H,
             }}
           >
-            <WhyChooseCopy />
+            <WhyChooseCopy locale={locale} />
           </Box>
         </Box>
         <Box sx={{ width: 900, flexShrink: 0 }}>
-          {ROWS.map((row, index) => (
+          {rows.map((row, index) => (
             <Box
               key={row.title}
               ref={(el) => {
@@ -438,7 +429,7 @@ export default function WhyUsPoster({ sectionId }: { sectionId: string }) {
                   className="why-choose-hold"
                   sx={{ width: "100%", willChange: "transform" }}
                 >
-                  <WhyChooseRow row={row} />
+                  <WhyChooseRow row={row} locale={locale} />
                 </Box>
               </Box>
             </Box>
@@ -472,7 +463,7 @@ export default function WhyUsPoster({ sectionId }: { sectionId: string }) {
                     transformOrigin: "top left",
                   }}
                 >
-                  <WhyChooseCopy />
+                  <WhyChooseCopy locale={locale} />
                 </Box>
               </Box>,
             document.body,
