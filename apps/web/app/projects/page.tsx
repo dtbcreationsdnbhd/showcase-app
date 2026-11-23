@@ -12,7 +12,11 @@ import {
   figmaPx,
   projectsGridHeight,
 } from "@/lib/landing-layout";
-import { DESKTOP_ONLY, MOBILE_ONLY } from "@/lib/landing-layout-mobile";
+import {
+  DESKTOP_ONLY,
+  FORCE_DESKTOP_STAGE,
+  MOBILE_ONLY,
+} from "@/lib/landing-layout-mobile";
 import { listProjects } from "@/lib/projects";
 
 const NAV_HEIGHT = 102;
@@ -47,7 +51,7 @@ export default async function ProjectsPage() {
           backgroundRepeat: "no-repeat",
           backgroundAttachment: "fixed",
         }}
-        sx={{ [MOBILE_ONLY]: { display: "none" } }}
+        sx={FORCE_DESKTOP_STAGE ? undefined : { [MOBILE_ONLY]: { display: "none" } }}
       >
         <Box
           sx={{
@@ -67,7 +71,7 @@ export default async function ProjectsPage() {
               pointerEvents: "auto",
             }}
           >
-            <Navbar logoSrc={logoSrc} hrefPrefix="/" />
+            <Navbar logoSrc={logoSrc} />
           </Box>
         </Box>
 
@@ -116,9 +120,11 @@ export default async function ProjectsPage() {
         </Box>
       </Box>
 
-      <Box sx={{ [DESKTOP_ONLY]: { display: "none" } }}>
-        <MobileProjectsPage projects={projects} logoSrc={logoSrc} />
-      </Box>
+      {FORCE_DESKTOP_STAGE ? null : (
+        <Box sx={{ [DESKTOP_ONLY]: { display: "none" } }}>
+          <MobileProjectsPage projects={projects} logoSrc={logoSrc} />
+        </Box>
+      )}
     </Box>
   );
 }

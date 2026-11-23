@@ -4,6 +4,12 @@ export const MOBILE_DESIGN_HEIGHT = 956;
 
 /** Below this the mobile tree renders; at or above it the 1920 desktop stage does. */
 export const MOBILE_BREAKPOINT = 768;
+
+/**
+ * Phone widths use the desktop stage until the mobile tree has its own
+ * language switch. Flip this off to restore the mobile pages.
+ */
+export const FORCE_DESKTOP_STAGE = true;
 export const MOBILE_ONLY = `@media (max-width: ${MOBILE_BREAKPOINT - 1}px)`;
 export const DESKTOP_ONLY = `@media (min-width: ${MOBILE_BREAKPOINT}px)`;
 

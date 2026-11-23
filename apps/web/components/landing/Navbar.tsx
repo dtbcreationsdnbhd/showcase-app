@@ -2,11 +2,14 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import CenterHashLink from "@/components/landing/CenterHashLink";
+import LanguageSwitch from "@/components/landing/LanguageSwitch";
 import ServicesMenu, { ServicesCaret } from "@/components/landing/ServicesMenu";
+import { getLocale, getRequestPathname } from "@/lib/get-locale";
 import { GOLD_INK, goldButtonSx } from "@/lib/gold-theme";
 import { DESKTOP_NAV_LINKS, SERVICES_MENU_HASH } from "@/lib/landing-nav";
+import { CJK_FONT, chromeCopy, homeHashPrefix, navLabel } from "@/lib/locale";
 
-const headerFont = {
+const latinHeaderFont = {
   fontFamily:
     'var(--font-barlow-semi-condensed), "Barlow Semi Condensed", sans-serif',
   fontStyle: "normal",
@@ -33,14 +36,21 @@ function ArrowRightIcon() {
   );
 }
 
-export default function Navbar({
+export default async function Navbar({
   logoSrc,
-  hrefPrefix = "",
+  hrefPrefix,
 }: {
   logoSrc: string | null;
+  /** Overrides the home-page prefix. Omitted pages follow the current locale path. */
   hrefPrefix?: string;
 }) {
-  const withPrefix = (hash: string) => `${hrefPrefix}${hash}`;
+  const locale = await getLocale();
+  const pathname = await getRequestPathname();
+  const prefix = hrefPrefix ?? homeHashPrefix(pathname);
+  const copy = chromeCopy(locale);
+  const headerFont =
+    locale === "zh" ? { ...latinHeaderFont, fontFamily: CJK_FONT } : latinHeaderFont;
+  const withPrefix = (hash: string) => `${prefix}${hash}`;
 
   return (
     <Box
@@ -57,7 +67,7 @@ export default function Navbar({
         p: 0,
         gap: "10px",
         overflow: "visible",
-        ...headerFont,
+        ...(locale === "zh" ? headerFont : latinHeaderFont),
       }}
     >
       <Box
@@ -164,6 +174,7 @@ export default function Navbar({
         >
           {DESKTOP_NAV_LINKS.map((link) => {
             const href = withPrefix(link.hash);
+            const labelText = navLabel(locale, link.hash);
             const linkSx = {
               display: "flex",
               flexDirection: "row",
@@ -191,12 +202,12 @@ export default function Navbar({
                   transition: "color 0.15s ease",
                 }}
               >
-                {link.label}
+                {labelText}
               </Typography>
             );
             if (link.hash === "#services") {
               return (
-                <ServicesMenu key={link.label} href={withPrefix(SERVICES_MENU_HASH)}>
+                <ServicesMenu key={link.hash} href={withPrefix(SERVICES_MENU_HASH)}>
                   <Box
                     component="span"
                     role="button"
@@ -214,7 +225,7 @@ export default function Navbar({
             if (link.center) {
               return (
                 <CenterHashLink
-                  key={link.label}
+                  key={link.hash}
                   hash={link.hash}
                   href={href}
                   className="hover-grow-lg"
@@ -226,7 +237,7 @@ export default function Navbar({
             }
             return (
               <Box
-                key={link.label}
+                key={link.hash}
                 component="a"
                 href={href}
                 className="hover-grow-lg"
@@ -239,50 +250,62 @@ export default function Navbar({
         </Box>
 
         <Box
-          component="a"
-          href={withPrefix("#contact")}
-          className="hover-grow"
           sx={{
-            boxSizing: "border-box",
-            position: "relative",
             display: "flex",
+            flexDirection: "row",
             alignItems: "center",
-            justifyContent: "center",
-            width: 190,
-            height: 52,
-            ...goldButtonSx,
-            borderRadius: "9999px",
-            textDecoration: "none",
-            cursor: "pointer",
+            gap: "12px",
             flexShrink: 0,
           }}
         >
           <Box
+            component="a"
+            href={withPrefix("#contact")}
+            className="hover-grow"
             sx={{
+              boxSizing: "border-box",
+              position: "relative",
               display: "flex",
-              flexDirection: "row",
               alignItems: "center",
-              p: 0,
-              gap: "20px",
-              width: 150,
-              height: 40,
+              justifyContent: "center",
+              width: 190,
+              height: 52,
+              px: 0,
+              ...goldButtonSx,
+              borderRadius: "9999px",
+              textDecoration: "none",
+              cursor: "pointer",
+              flexShrink: 0,
             }}
           >
-            <Typography
-              component="span"
+            <Box
               sx={{
-                ...headerFont,
-                width: 104,
-                height: 22,
-                fontSize: 18,
-                lineHeight: "22px",
-                fontWeight: 600,
-                color: GOLD_INK,
-                whiteSpace: "nowrap",
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                p: 0,
+                gap: "20px",
+                width: 150,
+                height: 40,
               }}
             >
-              Start a Project
-            </Typography>
+              <Typography
+                component="span"
+                sx={{
+                  ...headerFont,
+                  width: 104,
+                  height: 22,
+                  flexShrink: 0,
+                  textAlign: "center",
+                  fontSize: 18,
+                  lineHeight: "22px",
+                  fontWeight: 600,
+                  color: GOLD_INK,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {copy.startProject}
+              </Typography>
             <Box
               sx={{
                 display: "flex",
@@ -292,6 +315,7 @@ export default function Navbar({
                 p: "12px",
                 width: 40,
                 height: 40,
+                flexShrink: 0,
                 boxSizing: "border-box",
                 background: GOLD_INK,
                 borderRadius: "99px",
@@ -300,6 +324,10 @@ export default function Navbar({
             >
               <ArrowRightIcon />
             </Box>
+          </Box>
+          </Box>
+          <Box sx={{ ml: "40px", mr: "-40px" }}>
+            <LanguageSwitch locale={locale} pathname={pathname} />
           </Box>
         </Box>
       </Box>
