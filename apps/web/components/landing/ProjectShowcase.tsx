@@ -6,7 +6,7 @@ import { showcaseTitle } from "@/lib/landing-content";
 import { getLocale } from "@/lib/get-locale";
 import type { ShowcaseProject } from "@/lib/projects";
 
-export default function ProjectShowcase({
+export default async function ProjectShowcase({
   projects,
 }: {
   projects: readonly ShowcaseProject[];
