@@ -2,7 +2,9 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import PillButton from "@/components/landing/PillButton";
+import { getLocale } from "@/lib/get-locale";
 import { goldTextSx } from "@/lib/gold-theme";
+import { CJK_FONT, heroCopy } from "@/lib/locale";
 
 const barlow = {
   fontFamily:
@@ -16,11 +18,15 @@ const jakarta = {
 const HERO_FADE_MASK =
   "linear-gradient(180deg, #000 0%, #000 50%, rgba(0, 0, 0, 0.55) 76%, transparent 100%)";
 
-export default function Hero({
+export default async function Hero({
   heroSrc,
 }: {
   heroSrc: string | null;
 }) {
+  const locale = await getLocale();
+  const copy = heroCopy(locale);
+  const titleFont = locale === "zh" ? { fontFamily: CJK_FONT } : jakarta;
+  const bodyFont = locale === "zh" ? { fontFamily: CJK_FONT } : barlow;
   return (
     <Box
       component="section"
@@ -109,20 +115,17 @@ export default function Hero({
                 overflow: "visible",
               }}
             >
-              {[
-                ["Crafting ", "Vision", ","],
-                ["Empowering ", "Creation", ""],
-              ].map(([before, accent, after]) => (
+              {copy.lines.map(({ before, accent, after }) => (
                 <Typography
                   key={accent}
                   component="span"
                   sx={{
-                    ...jakarta,
+                    ...titleFont,
                     display: "block",
                     fontWeight: 800,
                     fontSize: 88,
                     lineHeight: "102px",
-                    letterSpacing: "-0.02em",
+                    letterSpacing: locale === "zh" ? "0.02em" : "-0.02em",
                     color: "#FFFFFF",
                     whiteSpace: "nowrap",
                   }}
@@ -148,7 +151,7 @@ export default function Hero({
 
             <Typography
               sx={{
-                ...barlow,
+                ...bodyFont,
                 maxWidth: 920,
                 height: "auto",
                 fontStyle: "normal",
@@ -160,9 +163,7 @@ export default function Hero({
                 textShadow: "0 2px 12px rgba(0, 0, 0, 0.8)",
               }}
             >
-              Empower your business with next-gen AI-powered tools, video
-              creation, and design assets. From creative content to automated
-              workflows, we craft your vision for commercial success.
+              {copy.body}
             </Typography>
           </Box>
 
@@ -174,8 +175,14 @@ export default function Hero({
               height: 64,
             }}
           >
-            <PillButton width={320} height={64} fontSize={22} href="#contact">
-              Get a Free Consultation
+            <PillButton
+              width={320}
+              height={64}
+              fontSize={22}
+              href="#contact"
+              fontFamily={locale === "zh" ? CJK_FONT : undefined}
+            >
+              {copy.cta}
             </PillButton>
           </Box>
         </Box>

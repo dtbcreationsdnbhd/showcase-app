@@ -8,6 +8,7 @@ export default function PillButton({
   width,
   height = 52,
   fontSize = 18,
+  fontFamily,
   arrowUpRight = false,
 }: {
   children: ReactNode;
@@ -15,6 +16,7 @@ export default function PillButton({
   width?: number;
   height?: number;
   fontSize?: number;
+  fontFamily?: string;
   arrowUpRight?: boolean;
 }) {
   return (
@@ -52,6 +54,7 @@ export default function PillButton({
           component="span"
           sx={{
             fontFamily:
+              fontFamily ??
               'var(--font-barlow-semi-condensed), "Barlow Semi Condensed", sans-serif',
             fontStyle: "normal",
             fontWeight: 600,

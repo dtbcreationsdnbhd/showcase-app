@@ -50,6 +50,29 @@ export function chromeCopy(locale: Locale) {
   return NAV[locale];
 }
 
+const HERO = {
+  en: {
+    lines: [
+      { before: "Crafting ", accent: "Vision", after: "," },
+      { before: "Empowering ", accent: "Creation", after: "" },
+    ],
+    body: "Empower your business with next-gen AI-powered tools, video creation, and design assets. From creative content to automated workflows, we craft your vision for commercial success.",
+    cta: "Get a Free Consultation",
+  },
+  zh: {
+    lines: [
+      { before: "以创意构筑", accent: "远景", after: "，" },
+      { before: "以科技创造", accent: "未来", after: "。" },
+    ],
+    body: "借助新一代 AI 智能工具、视频制作与创意设计解决方案，为您的业务注入全新动力。从创意内容制作到自动化运营，我们致力于将您的商业愿景转化为实际成果，助力品牌提升竞争力，实现业务增长。",
+    cta: "立即咨询",
+  },
+} as const;
+
+export function heroCopy(locale: Locale) {
+  return HERO[locale];
+}
+
 export function navLabel(locale: Locale, hash: string): string {
   const key = HASH_KEY[hash];
   return key ? NAV[locale][key] : hash;
