@@ -34,14 +34,20 @@ export type ProjectTable = (typeof PROJECT_TABLES)[number];
 export type ShowcaseProject = {
   id: string;
   name: string;
+  nameZh: string;
   category: ProjectCategory | "";
   tags: string[];
   subtitle: string;
+  subtitleZh: string;
   features: ProjectFeature[];
   whyIt: string;
+  whyItZh: string;
   howWeHelp: string;
+  howWeHelpZh: string;
   ctaText: string;
+  ctaTextZh: string;
   footerText: string;
+  footerTextZh: string;
   challenge: string;
   solution: string;
   mainImageUrl: string;
@@ -63,14 +69,20 @@ export type ProjectList =
 type ProjectRow = {
   id: string;
   name: string;
+  name_zh?: string | null;
   category: string | null;
   tags: string[] | null;
   subtitle?: string | null;
+  subtitle_zh?: string | null;
   features?: unknown;
   why_it?: string | null;
+  why_it_zh?: string | null;
   how_we_help?: string | null;
+  how_we_help_zh?: string | null;
   cta_text?: string | null;
+  cta_text_zh?: string | null;
   footer_text?: string | null;
+  footer_text_zh?: string | null;
   challenge: string;
   solution: string;
   main_image_url: string;
@@ -84,6 +96,9 @@ const PROJECT_COLUMNS =
 
 const SHEET_COLUMNS =
   "subtitle, features, why_it, how_we_help, cta_text, footer_text";
+
+const ZH_COLUMNS =
+  "name_zh, subtitle_zh, why_it_zh, how_we_help_zh, cta_text_zh, footer_text_zh";
 
 export function projectTable(): ProjectTable {
   const name = process.env.NEXT_PUBLIC_PROJECT_TABLE;
@@ -121,17 +136,31 @@ export async function listProjects({
   const supabase = await createClient();
   const listed = await supabase
     .from(table)
-    .select(`${PROJECT_COLUMNS}, ${SHEET_COLUMNS}`)
+    .select(`${PROJECT_COLUMNS}, ${SHEET_COLUMNS}, ${ZH_COLUMNS}`)
     .order("created_at", { ascending: false });
+  const withoutZh = listed.error
+    ? await supabase
+        .from(table)
+        .select(`${PROJECT_COLUMNS}, ${SHEET_COLUMNS}`)
+        .order("created_at", { ascending: false })
+    : null;
   const fallback =
-    listed.error
+    listed.error && withoutZh?.error
       ? await supabase
           .from(table)
           .select(PROJECT_COLUMNS)
           .order("created_at", { ascending: false })
       : null;
-  const data = listed.error ? fallback?.data : listed.data;
-  const error = listed.error ? fallback?.error : null;
+  const data = listed.error
+    ? withoutZh?.error
+      ? fallback?.data
+      : withoutZh?.data
+    : listed.data;
+  const error = listed.error
+    ? withoutZh?.error
+      ? fallback?.error
+      : null
+    : null;
 
   if (error) {
     return {
@@ -190,18 +219,30 @@ export async function getProject(
   const supabase = await createClient();
   const loaded = await supabase
     .from(table)
-    .select(`${PROJECT_COLUMNS}, ${SHEET_COLUMNS}`)
+    .select(`${PROJECT_COLUMNS}, ${SHEET_COLUMNS}, ${ZH_COLUMNS}`)
     .eq("id", id)
     .maybeSingle();
-  const fallback = loaded.error
+  const withoutZh = loaded.error
     ? await supabase
         .from(table)
-        .select(PROJECT_COLUMNS)
+        .select(`${PROJECT_COLUMNS}, ${SHEET_COLUMNS}`)
         .eq("id", id)
         .maybeSingle()
     : null;
-  const data = loaded.error ? fallback?.data : loaded.data;
-  const error = loaded.error ? fallback?.error : null;
+  const fallback =
+    loaded.error && withoutZh?.error
+      ? await supabase.from(table).select(PROJECT_COLUMNS).eq("id", id).maybeSingle()
+      : null;
+  const data = loaded.error
+    ? withoutZh?.error
+      ? fallback?.data
+      : withoutZh?.data
+    : loaded.data;
+  const error = loaded.error
+    ? withoutZh?.error
+      ? fallback?.error
+      : null
+    : null;
 
   if (error) {
     return { ok: false, message: `Could not load the project. ${error.message}` };
@@ -218,15 +259,21 @@ function toProject(row: ProjectRow): ShowcaseProject {
   return {
     id: row.id,
     name: row.name,
+    nameZh: row.name_zh ?? "",
     category:
       row.category && isProjectCategory(row.category) ? row.category : "",
     tags: row.tags ?? [],
     subtitle: row.subtitle ?? "",
+    subtitleZh: row.subtitle_zh ?? "",
     features: parseProjectFeatures(row.features),
     whyIt: row.why_it ?? "",
+    whyItZh: row.why_it_zh ?? "",
     howWeHelp: row.how_we_help ?? "",
+    howWeHelpZh: row.how_we_help_zh ?? "",
     ctaText: row.cta_text ?? "",
+    ctaTextZh: row.cta_text_zh ?? "",
     footerText: row.footer_text ?? "",
+    footerTextZh: row.footer_text_zh ?? "",
     challenge: row.challenge,
     solution: row.solution,
     mainImageUrl: row.main_image_url,
@@ -239,14 +286,20 @@ function toProject(row: ProjectRow): ShowcaseProject {
 function projectSearchText(row: ShowcaseProject) {
   return [
     row.name,
+    row.nameZh,
     row.category,
     row.tags.join(" "),
     row.subtitle,
-    row.features.map((feature) => feature.label).join(" "),
+    row.subtitleZh,
+    row.features.map((feature) => `${feature.label} ${feature.labelZh ?? ""}`).join(" "),
     row.whyIt,
+    row.whyItZh,
     row.howWeHelp,
+    row.howWeHelpZh,
     row.ctaText,
+    row.ctaTextZh,
     row.footerText,
+    row.footerTextZh,
     row.challenge,
     row.solution,
   ]

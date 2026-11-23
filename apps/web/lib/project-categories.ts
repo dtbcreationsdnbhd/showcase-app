@@ -33,8 +33,15 @@ export function isProjectCategory(value: string): value is ProjectCategory {
   return CATEGORY_VALUES.has(value);
 }
 
-export function projectCategoryLabel(value: string): string {
-  return (
-    PROJECT_CATEGORIES.find((item) => item.value === value)?.label ?? value
-  );
+const CATEGORY_ZH: Record<ProjectCategory, string> = {
+  digital_tools: "数字化工具",
+  service: "服务",
+  website_designs: "网站设计",
+  platform_creation: "平台搭建",
+};
+
+export function projectCategoryLabel(value: string, locale: "en" | "zh" = "en"): string {
+  const item = PROJECT_CATEGORIES.find((entry) => entry.value === value);
+  if (!item) return value;
+  return locale === "zh" ? CATEGORY_ZH[item.value] : item.label;
 }

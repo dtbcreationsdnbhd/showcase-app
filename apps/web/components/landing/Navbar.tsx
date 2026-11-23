@@ -323,7 +323,6 @@ export default async function Navbar({
                 boxSizing: "border-box",
                 background: GOLD_INK,
                 borderRadius: "99px",
-                flexShrink: 0,
               }}
             >
               <ArrowRightIcon />

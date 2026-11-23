@@ -17,7 +17,8 @@ import {
   FORCE_DESKTOP_STAGE,
   MOBILE_ONLY,
 } from "@/lib/landing-layout-mobile";
-import { listProjects } from "@/lib/projects";
+import { getLocale } from "@/lib/get-locale";
+import { listProjects, localizeProjects } from "@/lib/projects";
 
 const NAV_HEIGHT = 102;
 const PAD_TOP = figmaPx(12);
@@ -26,7 +27,7 @@ const TITLE_GAP = figmaPx(28);
 const PAD_BOTTOM = figmaPx(100);
 
 export default async function ProjectsPage() {
-  const projects = await listProjects();
+  const projects = localizeProjects(await listProjects(), await getLocale());
   const logoSrc = getLandingLogoSrc();
   const stageHeight =
     NAV_HEIGHT +

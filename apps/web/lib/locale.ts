@@ -73,6 +73,25 @@ export function heroCopy(locale: Locale) {
   return HERO[locale];
 }
 
+const SHEET = {
+  en: {
+    productName: "Product Name",
+    keyFeatures: "Key Features",
+    whyYouNeedIt: "Why You Need It",
+    howWeHelp: "How We Help",
+  },
+  zh: {
+    productName: "产品名称",
+    keyFeatures: "核心功能",
+    whyYouNeedIt: "为什么您需要它",
+    howWeHelp: "我们如何帮助您",
+  },
+} as const;
+
+export function sheetCopy(locale: Locale) {
+  return SHEET[locale];
+}
+
 export function navLabel(locale: Locale, hash: string): string {
   const key = HASH_KEY[hash];
   return key ? NAV[locale][key] : hash;

@@ -2,7 +2,8 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
 import WebsitePreview from "@/components/landing/WebsitePreview";
-import { listProjects } from "@/lib/projects";
+import { getLocale } from "@/lib/get-locale";
+import { listProjects, localizeProjects } from "@/lib/projects";
 
 export default async function ProjectPreviewPage({
   params,
@@ -10,7 +11,7 @@ export default async function ProjectPreviewPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const projects = await listProjects();
+  const projects = localizeProjects(await listProjects(), await getLocale());
   const project = projects.find((item) => item.id === id) ?? null;
 
   if (!project) {

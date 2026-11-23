@@ -95,6 +95,20 @@ alter table public.production_projects add column if not exists cta_text text no
 alter table public.staging_projects add column if not exists footer_text text not null default '';
 alter table public.production_projects add column if not exists footer_text text not null default '';
 
+-- Optional Chinese copy. Empty means the website shows the English field.
+alter table public.staging_projects add column if not exists name_zh text not null default '';
+alter table public.production_projects add column if not exists name_zh text not null default '';
+alter table public.staging_projects add column if not exists subtitle_zh text not null default '';
+alter table public.production_projects add column if not exists subtitle_zh text not null default '';
+alter table public.staging_projects add column if not exists why_it_zh text not null default '';
+alter table public.production_projects add column if not exists why_it_zh text not null default '';
+alter table public.staging_projects add column if not exists how_we_help_zh text not null default '';
+alter table public.production_projects add column if not exists how_we_help_zh text not null default '';
+alter table public.staging_projects add column if not exists cta_text_zh text not null default '';
+alter table public.production_projects add column if not exists cta_text_zh text not null default '';
+alter table public.staging_projects add column if not exists footer_text_zh text not null default '';
+alter table public.production_projects add column if not exists footer_text_zh text not null default '';
+
 create or replace function public.touch_project_updated_at()
 returns trigger
 language plpgsql

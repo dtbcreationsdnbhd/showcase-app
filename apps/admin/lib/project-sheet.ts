@@ -31,6 +31,8 @@ export type FeatureIconName = (typeof FEATURE_ICONS)[number];
 export type ProjectFeature = {
   label: string;
   icon: FeatureIconName;
+  /** Optional Chinese label. Empty means the site shows `label`. */
+  labelZh?: string;
 };
 
 export const MAX_PROJECT_FEATURES = 6;
@@ -76,10 +78,15 @@ export function parseProjectFeatures(value: unknown): ProjectFeature[] {
   const features: ProjectFeature[] = [];
   for (const item of value) {
     if (!item || typeof item !== "object") continue;
-    const record = item as { label?: unknown; icon?: unknown };
+    const record = item as { label?: unknown; labelZh?: unknown; icon?: unknown };
     const label = String(record.label ?? "").trim();
+    const labelZh = String(record.labelZh ?? "").trim();
     if (!label || !isFeatureIcon(record.icon)) continue;
-    features.push({ label, icon: record.icon });
+    features.push({
+      label,
+      icon: record.icon,
+      ...(labelZh ? { labelZh } : {}),
+    });
     if (features.length === MAX_PROJECT_FEATURES) break;
   }
 

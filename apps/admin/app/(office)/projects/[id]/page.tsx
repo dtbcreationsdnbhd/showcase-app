@@ -6,13 +6,12 @@ import type { ReactNode } from "react";
 
 import ContentFrame from "@/components/office/ContentFrame";
 import EditProjectButton from "@/components/office/EditProjectButton";
+import ProjectPreview from "@/components/office/ProjectPreview";
 import FeatureMark from "@/components/office/FeatureMark";
 import { projectCategoryLabel } from "@/lib/project-categories";
 import { isVideoUrl } from "@/lib/project-media";
 import { FEATURE_ICON_LABELS } from "@/lib/project-sheet";
 import { formatProjectDate, getProject, type ShowcaseProject } from "@/lib/projects";
-
-const WEB_ORIGIN = process.env.NEXT_PUBLIC_WEB_URL ?? "http://localhost:3000";
 
 export default async function ProjectDetailPage({
   params,
@@ -50,9 +49,16 @@ export default async function ProjectDetailPage({
             </Link>
             <Box sx={{ minWidth: 0 }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 1.25 }}>
-                <Typography variant="h5" sx={{ fontWeight: 600, letterSpacing: "-0.01em" }}>
-                  {project?.name ?? "Project"}
-                </Typography>
+                <Box sx={{ minWidth: 0 }}>
+                  <Typography variant="h5" sx={{ fontWeight: 600, letterSpacing: "-0.01em" }}>
+                    {project?.name ?? "Project"}
+                  </Typography>
+                  {project?.nameZh ? (
+                    <Typography sx={{ fontSize: 14, lineHeight: 1.4, color: "text.secondary" }}>
+                      {project.nameZh}
+                    </Typography>
+                  ) : null}
+                </Box>
                 {project ? (
                   <Box
                     component="span"
@@ -83,6 +89,11 @@ export default async function ProjectDetailPage({
                   }}
                 >
                   {project.subtitle || "No subtitle"}
+                  {project.subtitleZh ? (
+                    <Box component="span" sx={{ display: "block" }}>
+                      {project.subtitleZh}
+                    </Box>
+                  ) : null}
                 </Typography>
               ) : null}
             </Box>
@@ -178,6 +189,11 @@ function ProjectSheet({ project }: { project: ShowcaseProject }) {
                   <Box sx={{ minWidth: 0 }}>
                     <Typography sx={{ fontSize: 14, fontWeight: 600, lineHeight: 1.3 }}>
                       {feature.label}
+                      {feature.labelZh ? (
+                        <Box component="span" sx={{ display: "block", fontWeight: 500, color: "text.secondary" }}>
+                          {feature.labelZh}
+                        </Box>
+                      ) : null}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
                       {FEATURE_ICON_LABELS[feature.icon]}
@@ -199,10 +215,12 @@ function ProjectSheet({ project }: { project: ShowcaseProject }) {
           <Panel>
             <Eyebrow>Why you need it</Eyebrow>
             <Body>{project.whyIt}</Body>
+            <ZhLine>{project.whyItZh}</ZhLine>
           </Panel>
           <Panel>
             <Eyebrow>How we help</Eyebrow>
             <Body>{project.howWeHelp}</Body>
+            <ZhLine>{project.howWeHelpZh}</ZhLine>
           </Panel>
         </Box>
 
@@ -216,34 +234,17 @@ function ProjectSheet({ project }: { project: ShowcaseProject }) {
           <Panel>
             <Eyebrow>Button text</Eyebrow>
             <Body>{project.ctaText}</Body>
+            <ZhLine>{project.ctaTextZh}</ZhLine>
           </Panel>
           <Panel>
             <Eyebrow>Line under the button</Eyebrow>
             <Body>{project.footerText}</Body>
+            <ZhLine>{project.footerTextZh}</ZhLine>
           </Panel>
         </Box>
       </Box>
 
-      <Box>
-        <Eyebrow>Preview</Eyebrow>
-        <Box
-          sx={{
-            width: "100%",
-            aspectRatio: "16 / 10",
-            overflow: "hidden",
-            borderRadius: "8px",
-            border: "1px solid #E6E1F2",
-            bgcolor: "#2A0818",
-          }}
-        >
-          <Box
-            component="iframe"
-            title={`${project.name} on the website`}
-            src={`${WEB_ORIGIN}/preview/${project.id}`}
-            sx={{ display: "block", width: "100%", height: "100%", border: 0 }}
-          />
-        </Box>
-      </Box>
+      <ProjectPreview id={project.id} name={project.name} />
     </Box>
   );
 }
@@ -317,6 +318,15 @@ function Eyebrow({ children }: { children: string }) {
         color: "#7B61FF",
       }}
     >
+      {children}
+    </Typography>
+  );
+}
+
+function ZhLine({ children }: { children: string }) {
+  if (!children) return null;
+  return (
+    <Typography sx={{ mt: 0.75, fontSize: 13, lineHeight: 1.6, color: "text.secondary", whiteSpace: "pre-wrap" }}>
       {children}
     </Typography>
   );

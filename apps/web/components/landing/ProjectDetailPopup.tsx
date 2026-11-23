@@ -3,10 +3,12 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { createPortal } from "react-dom";
 import ShowcaseMedia from "@/components/landing/ShowcaseMedia";
 import { GOLD_INK, GOLD_SOLID, GOLD_TEXT, GOLD_TEXT_GLOW, goldButtonSx } from "@/lib/gold-theme";
 import { figmaPx } from "@/lib/landing-layout";
+import { CJK_FONT, sheetCopy, type Locale } from "@/lib/locale";
 import type { FeatureIconName } from "@/lib/project-sheet";
 import {
   projectGalleryMedia,
@@ -246,7 +248,7 @@ function GoldTitle({ id, children }: { id: string; children: string }) {
   );
 }
 
-function SheetLabel({ children }: { children: string }) {
+function SheetLabel({ children, locale }: { children: string; locale: Locale }) {
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: `${figmaPx(8)}px` }}>
       <Box
@@ -260,11 +262,11 @@ function SheetLabel({ children }: { children: string }) {
       />
       <Typography
         sx={{
-          ...barlow,
+          ...(locale === "zh" ? { fontFamily: CJK_FONT } : barlow),
           m: 0,
           fontWeight: 600,
           fontSize: figmaPx(22),
-          letterSpacing: "0.04em",
+          letterSpacing: locale === "zh" ? "0.02em" : "0.04em",
           color: POPUP_GOLD,
           textShadow:
             "0 1px 0 rgba(255, 236, 190, 0.85), 0 2px 0 #C4841A",
@@ -509,6 +511,9 @@ export default function ProjectDetailPopup({
   onClose: () => void;
   closable?: boolean;
 }) {
+  const pathname = usePathname();
+  const locale: Locale = pathname === "/zh" || pathname.startsWith("/zh/") ? "zh" : "en";
+  const labels = sheetCopy(locale);
   const detail = project;
   const hasSheet =
     Boolean(detail.subtitle || detail.whyIt || detail.howWeHelp || detail.ctaText || detail.footerText) ||
@@ -798,7 +803,7 @@ export default function ProjectDetailPopup({
             }}
           >
             <Box sx={{ display: "flex", flexDirection: "column", gap: `${figmaPx(4)}px`, width: "100%" }}>
-              <SheetLabel>Product Name</SheetLabel>
+              <SheetLabel locale={locale}>{labels.productName}</SheetLabel>
               <GoldTitle id="project-detail-title">{sheet.name}</GoldTitle>
               {sheet.subtitle ? (
                 <Typography sx={{ ...bodySx, color: "rgba(255,255,255,0.88)" }}>
@@ -809,7 +814,7 @@ export default function ProjectDetailPopup({
 
             {sheet.features.length > 0 ? (
             <Box sx={{ display: "flex", flexDirection: "column", gap: `${figmaPx(8)}px`, width: "100%" }}>
-              <SheetLabel>Key Features</SheetLabel>
+              <SheetLabel locale={locale}>{labels.keyFeatures}</SheetLabel>
               <Box
                 sx={{
                   display: "grid",
@@ -855,14 +860,14 @@ export default function ProjectDetailPopup({
 
             {sheet.whyIt ? (
             <Box sx={{ display: "flex", flexDirection: "column", gap: `${figmaPx(6)}px`, width: "100%" }}>
-              <SheetLabel>Why You Need It</SheetLabel>
+              <SheetLabel locale={locale}>{labels.whyYouNeedIt}</SheetLabel>
               <Typography sx={{ ...bodySx, fontSize: figmaPx(16) }}>{sheet.whyIt}</Typography>
             </Box>
             ) : null}
 
             {sheet.howWeHelp ? (
             <Box sx={{ display: "flex", flexDirection: "column", gap: `${figmaPx(6)}px`, width: "100%" }}>
-              <SheetLabel>How We Help</SheetLabel>
+              <SheetLabel locale={locale}>{labels.howWeHelp}</SheetLabel>
               <Typography sx={{ ...bodySx, fontSize: figmaPx(16) }}>{sheet.howWeHelp}</Typography>
             </Box>
             ) : null}

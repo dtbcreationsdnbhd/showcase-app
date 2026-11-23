@@ -19,13 +19,15 @@ import {
   LANDING_DESIGN_WIDTH,
   landingFrameHeightCss,
 } from "@/lib/landing-layout";
-import { listProjects, projectToHeroSlide } from "@/lib/projects";
+import { getLocale } from "@/lib/get-locale";
+import { listProjects, localizeProjects, projectToHeroSlide } from "@/lib/projects";
 
 export default async function Home() {
-  const projects = await listProjects();
+  const locale = await getLocale();
+  const projects = localizeProjects(await listProjects(), locale);
   const logoSrc = getLandingLogoSrc();
   const heroSrc = getLandingHeroSrc();
-  const heroSlides = projects.map(projectToHeroSlide);
+  const heroSlides = projects.map((project) => projectToHeroSlide(project, locale));
 
   return (
     <ViewportFrame

@@ -111,7 +111,7 @@ export async function createShowcaseProject(
     (path) => supabase.storage.from(BUCKET).getPublicUrl(path).data.publicUrl,
   );
 
-  const { error } = await supabase.from(table).insert({
+  const row = {
     id,
     name,
     category,
@@ -127,11 +127,12 @@ export async function createShowcaseProject(
     main_image_url: mainUrl,
     detail_image_urls: detailUrls,
     updated_at: new Date().toISOString(),
-  });
+  };
+  const saved = await writeProject(supabase, table, "insert", row, sheet);
 
-  if (error) {
+  if (!saved.ok) {
     await supabase.storage.from(BUCKET).remove(uploaded);
-    return { ok: false, message: saveError(error.message) };
+    return saved;
   }
 
   revalidatePath("/projects");
@@ -287,9 +288,11 @@ export async function updateShowcaseProject(
   );
   const detailUrls = [...keptDetailUrls, ...uploadedDetailUrls];
 
-  const { data: updated, error } = await supabase
-    .from(table)
-    .update({
+  const saved = await writeProject(
+    supabase,
+    table,
+    "update",
+    {
       name,
       category,
       subtitle: sheet.subtitle,
@@ -300,18 +303,14 @@ export async function updateShowcaseProject(
       footer_text: sheet.footerText,
       main_image_url: mainUrl,
       detail_image_urls: detailUrls,
-    })
-    .eq("id", id)
-    .select("id");
+    },
+    sheet,
+    id,
+  );
 
-  if (error || !updated || updated.length === 0) {
+  if (!saved.ok) {
     await supabase.storage.from(BUCKET).remove(uploaded);
-    return {
-      ok: false,
-      message: error
-        ? saveError(error.message)
-        : "Could not save the project. Run the showcase SQL in the Supabase SQL Editor first.",
-    };
+    return saved;
   }
 
   const dropped = [
@@ -378,22 +377,101 @@ export async function deleteShowcaseProject(id: string): Promise<ActionResult> {
   return { ok: true };
 }
 
-function readSheet(formData: FormData):
-  | {
-      ok: true;
-      subtitle: string;
-      features: ProjectFeature[];
-      whyIt: string;
-      howWeHelp: string;
-      ctaText: string;
-      footerText: string;
+type ProjectSheet = {
+  subtitle: string;
+  features: ProjectFeature[];
+  whyIt: string;
+  howWeHelp: string;
+  ctaText: string;
+  footerText: string;
+  nameZh: string;
+  subtitleZh: string;
+  whyItZh: string;
+  howWeHelpZh: string;
+  ctaTextZh: string;
+  footerTextZh: string;
+};
+
+function zhColumns(sheet: ProjectSheet) {
+  return {
+    name_zh: sheet.nameZh,
+    subtitle_zh: sheet.subtitleZh,
+    why_it_zh: sheet.whyItZh,
+    how_we_help_zh: sheet.howWeHelpZh,
+    cta_text_zh: sheet.ctaTextZh,
+    footer_text_zh: sheet.footerTextZh,
+  };
+}
+
+const ZH_COLUMNS_MISSING =
+  "Chinese fields need the new project columns. Run apps/web/supabase/projects.sql in the Supabase SQL Editor, then save again.";
+
+function sheetHasZhColumns(sheet: ProjectSheet) {
+  return Object.values(zhColumns(sheet)).some((value) => value.length > 0);
+}
+
+function missingZhColumn(message: string) {
+  return message.includes("name_zh") || message.includes("schema cache");
+}
+
+type OfficeClient = Awaited<ReturnType<typeof createClient>>;
+
+async function writeProject(
+  supabase: OfficeClient,
+  table: ReturnType<typeof projectTable>,
+  mode: "insert" | "update",
+  row: Record<string, unknown>,
+  sheet: ProjectSheet,
+  id?: string,
+): Promise<ActionResult> {
+  const withZh = { ...row, ...zhColumns(sheet) };
+  const wrote =
+    mode === "insert"
+      ? await supabase.from(table).insert(withZh)
+      : await supabase.from(table).update(withZh).eq("id", id ?? "").select("id");
+
+  if (!wrote.error && (mode === "insert" || (wrote.data?.length ?? 0) > 0)) {
+    return { ok: true };
+  }
+
+  if (wrote.error && missingZhColumn(wrote.error.message)) {
+    if (sheetHasZhColumns(sheet)) return { ok: false, message: ZH_COLUMNS_MISSING };
+    const plain =
+      mode === "insert"
+        ? await supabase.from(table).insert(row)
+        : await supabase.from(table).update(row).eq("id", id ?? "").select("id");
+    if (!plain.error && (mode === "insert" || (plain.data?.length ?? 0) > 0)) {
+      return { ok: true };
     }
+    return {
+      ok: false,
+      message: plain.error
+        ? saveError(plain.error.message)
+        : "Could not save the project. Run the showcase SQL in the Supabase SQL Editor first.",
+    };
+  }
+
+  if (wrote.error) return { ok: false, message: saveError(wrote.error.message) };
+  return {
+    ok: false,
+    message: "Could not save the project. Run the showcase SQL in the Supabase SQL Editor first.",
+  };
+}
+
+function readSheet(formData: FormData):
+  | ({ ok: true } & ProjectSheet)
   | { ok: false; message: string } {
   const subtitle = String(formData.get("subtitle") ?? "").trim();
   const whyIt = String(formData.get("whyIt") ?? "").trim();
   const howWeHelp = String(formData.get("howWeHelp") ?? "").trim();
   const ctaText = String(formData.get("ctaText") ?? "").trim();
   const footerText = String(formData.get("footerText") ?? "").trim();
+  const nameZh = String(formData.get("nameZh") ?? "").trim();
+  const subtitleZh = String(formData.get("subtitleZh") ?? "").trim();
+  const whyItZh = String(formData.get("whyItZh") ?? "").trim();
+  const howWeHelpZh = String(formData.get("howWeHelpZh") ?? "").trim();
+  const ctaTextZh = String(formData.get("ctaTextZh") ?? "").trim();
+  const footerTextZh = String(formData.get("footerTextZh") ?? "").trim();
 
   if (!subtitle || !whyIt || !howWeHelp || !ctaText || !footerText) {
     return { ok: false, message: "Fill in every field." };
@@ -420,14 +498,29 @@ function readSheet(formData: FormData):
       return { ok: false, message: "Each key feature needs a name and an icon." };
     }
     const label = String((item as { label?: unknown }).label ?? "").trim();
+    const labelZh = String((item as { labelZh?: unknown }).labelZh ?? "").trim();
     const icon = (item as { icon?: unknown }).icon;
     if (!label || !isFeatureIcon(icon)) {
       return { ok: false, message: "Each key feature needs a name and an icon." };
     }
-    features.push({ label, icon });
+    features.push(labelZh ? { label, labelZh, icon } : { label, icon });
   }
 
-  return { ok: true, subtitle, features, whyIt, howWeHelp, ctaText, footerText };
+  return {
+    ok: true,
+    subtitle,
+    features,
+    whyIt,
+    howWeHelp,
+    ctaText,
+    footerText,
+    nameZh,
+    subtitleZh,
+    whyItZh,
+    howWeHelpZh,
+    ctaTextZh,
+    footerTextZh,
+  };
 }
 
 function imageFile(value: FormDataEntryValue | null) {
