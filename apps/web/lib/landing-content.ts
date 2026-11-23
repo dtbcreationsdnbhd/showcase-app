@@ -122,6 +122,77 @@ export const FORM_TALK_POINTS = [
   },
 ] as const;
 export const FORM_TALK_CONNECT = "Connect With Us Directly";
+export function formCopy(locale: "en" | "zh") {
+  if (locale === "zh") {
+    return {
+      talkTitle: "让我们聊聊您的业务！",
+      talkIntro:
+        "寻找合适的广告与数字化解决方案？我们的团队随时准备了解您的需求。",
+      points: [
+        { title: "快速回应", body: "我们将在 12 小时内回复您的咨询。" },
+        {
+          title: "专业团队支持",
+          body: "拥有 iGaming 行业经验的专业团队，为您提供专属支持。",
+        },
+        {
+          title: "量身定制的解决方案",
+          body: "根据您的业务目标与实际需求，量身打造合适的解决方案。",
+        },
+      ],
+      connect: "直接联系我们",
+      telegram: "Telegram",
+      convoTitle: "开启商务对话",
+      convoIntro: "告诉我们您的需求，让我们为您寻找合适的解决方案",
+      name: "您的姓名",
+      namePlaceholder: "请输入您的姓名",
+      contact: "联系方式",
+      contactPlaceholder: "请输入您的 Telegram 用户名",
+      service: "您感兴趣的服务类型是？",
+      servicePlaceholder: "暂时还不确定",
+      extra: "补充信息",
+      optional: "（选填）",
+      company: "公司 / 品牌名称",
+      companyPlaceholder: "请输入您的企业或品牌名称",
+      market: "目标市场 / 地区",
+      marketPlaceholder: "请选择您的目标市场",
+      needs: "请进一步描述您的需求",
+      needsPlaceholder: "请告诉我们您的业务目标、想法或任何疑问……",
+      submit: "洽谈合作",
+      submitting: "提交中…",
+      submitted: "已提交。我们将在 12 小时内回复您。",
+      required: "请填写必填项。",
+    };
+  }
+
+  return {
+    talkTitle: FORM_TALK_TITLE,
+    talkIntro: FORM_TALK_INTRO,
+    points: FORM_TALK_POINTS,
+    connect: FORM_TALK_CONNECT,
+    telegram: "Telegram",
+    convoTitle: FORM_CONVO_TITLE,
+    convoIntro: FORM_CONVO_INTRO,
+    name: FORM_CONVO_NAME,
+    namePlaceholder: FORM_CONVO_NAME_PLACEHOLDER,
+    contact: FORM_CONVO_TELEGRAM,
+    contactPlaceholder: FORM_CONVO_TELEGRAM_PLACEHOLDER,
+    service: FORM_CONVO_SERVICE,
+    servicePlaceholder: FORM_CONVO_SERVICE_PLACEHOLDER,
+    extra: FORM_CONVO_EXTRA,
+    optional: FORM_CONVO_OPTIONAL,
+    company: FORM_CONVO_COMPANY,
+    companyPlaceholder: FORM_CONVO_COMPANY_PLACEHOLDER,
+    market: FORM_CONVO_MARKET,
+    marketPlaceholder: FORM_CONVO_MARKET_PLACEHOLDER,
+    needs: FORM_CONVO_NEEDS,
+    needsPlaceholder: FORM_CONVO_NEEDS_PLACEHOLDER,
+    submit: FORM_CONVO_SUBMIT,
+    submitting: "Submitting...",
+    submitted: "Submitted. We will respond within 12 hours.",
+    required: "Please fill in the required fields.",
+  };
+}
+
 export const FORM_TELEGRAM_LABEL = "Telegram";
 /** Opens Telegram until a specific handle is set. */
 export const FORM_TELEGRAM_URL = "https://t.me/";
