@@ -71,7 +71,14 @@ export default async function Home() {
               <Hero heroSrc={getLandingHeroDesktopSrc()} />
               <HeroCardsSection slides={heroSlides} />
               <TargetedSolutions />
-              <LandingBackgrounds heroSrc={getLandingHeroDesktopSrc()} />
+              <LandingBackgrounds
+                heroSrc={getLandingHeroDesktopSrc()}
+                solutionsSrc={
+                  locale === "zh"
+                    ? "/landing/solutions-bg-cn.png"
+                    : "/landing/solutions-bg.webp"
+                }
+              />
               <HowWeWork />
               <Faq />
               <ContactForm waveSrc={null} />

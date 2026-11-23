@@ -29,7 +29,17 @@ type Band = {
  * section is on screen. Where two pictures meet, they crossfade over a short
  * band instead of cutting on a hard line.
  */
-export default function LandingBackgrounds({ heroSrc }: { heroSrc: string | null }) {
+function isSolutionsPhoto(src: string) {
+  return src.includes("/landing/solutions-bg");
+}
+
+export default function LandingBackgrounds({
+  heroSrc,
+  solutionsSrc = "/landing/solutions-bg.webp",
+}: {
+  heroSrc: string | null;
+  solutionsSrc?: string;
+}) {
   const layerRefs = useRef<Array<HTMLDivElement | null>>([]);
   const hydrated = useSyncExternalStore(subscribeNoop, getHydrated, getServerSnapshot);
 
@@ -45,7 +55,7 @@ export default function LandingBackgrounds({ heroSrc }: { heroSrc: string | null
       {
         startId: "solutions",
         endId: "solutions",
-        src: "/landing/solutions-bg.webp",
+        src: solutionsSrc,
         objectPosition: "center center",
         zIndex: -4,
       },
@@ -147,13 +157,13 @@ export default function LandingBackgrounds({ heroSrc }: { heroSrc: string | null
       window.removeEventListener("resize", onScroll);
       if (heroBg) heroBg.style.visibility = "";
     };
-  }, [hydrated, heroSrc]);
+  }, [hydrated, heroSrc, solutionsSrc]);
 
   if (!hydrated) return null;
 
   const pictures = [
     heroSrc,
-    "/landing/solutions-bg.webp",
+    solutionsSrc,
     "/landing/bg-1.webp",
     "/landing/faq-bg.png",
     "/landing/contact-form-bg.png",
@@ -197,7 +207,7 @@ export default function LandingBackgrounds({ heroSrc }: { heroSrc: string | null
             style={{
               position: "absolute",
               inset: 0,
-              background: src.endsWith("solutions-bg.webp") ? SOLUTIONS_SHADE : SHADE,
+              background: isSolutionsPhoto(src) ? SOLUTIONS_SHADE : SHADE,
             }}
           />
         </div>
