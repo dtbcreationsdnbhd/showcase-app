@@ -9,7 +9,7 @@ import DialogContent from "@mui/material/DialogContent";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { useEffect, useId, useRef, useState, useTransition, type DragEvent, type FormEvent } from "react";
+import { useEffect, useId, useRef, useState, useTransition, type DragEvent, type FormEvent, type ReactNode } from "react";
 
 import { createShowcaseProject, updateShowcaseProject } from "@/app/(office)/projects/actions";
 import NoticeSnackbar, { type AuthNotice } from "@/components/NoticeSnackbar";
@@ -39,6 +39,13 @@ const fieldSx = {
   "& .MuiOutlinedInput-root": {
     borderRadius: cornerRadius,
     bgcolor: "#fff",
+  },
+};
+
+const zhFieldSx = {
+  ...fieldSx,
+  "& .MuiInputBase-input": {
+    fontFamily: '"PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif',
   },
 };
 
@@ -107,7 +114,7 @@ export default function ProjectFormDialog(props: ProjectFormDialogProps) {
         open={open}
         onClose={close}
         fullWidth
-        maxWidth="md"
+        maxWidth="lg"
         slotProps={{
           paper: {
             sx: {
@@ -175,6 +182,7 @@ function ProjectFormFields({
         features.map((feature) => ({
           label: feature.label.trim(),
           icon: feature.icon,
+          labelZh: feature.labelZh?.trim() ?? "",
         })),
       ),
     );
@@ -225,102 +233,190 @@ function ProjectFormFields({
           overflowY: "auto",
         }}
       >
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
-            gap: 2,
-          }}
+        <LanguagePair
+          english={
+            <TextField
+              name="name"
+              label="Project name"
+              required
+              fullWidth
+              size="small"
+              disabled={pending}
+              defaultValue={project?.name ?? ""}
+              sx={fieldSx}
+            />
+          }
+          chinese={
+            <TextField
+              name="nameZh"
+              label="项目名"
+              fullWidth
+              size="small"
+              disabled={pending}
+              defaultValue={project?.nameZh ?? ""}
+              sx={zhFieldSx}
+            />
+          }
+        />
+        <LanguagePair
+          english={
+            <TextField
+              name="subtitle"
+              label="Subtitle"
+              required
+              fullWidth
+              size="small"
+              disabled={pending}
+              defaultValue={project?.subtitle ?? ""}
+              sx={fieldSx}
+            />
+          }
+          chinese={
+            <TextField
+              name="subtitleZh"
+              label="副标题"
+              fullWidth
+              size="small"
+              disabled={pending}
+              defaultValue={project?.subtitleZh ?? ""}
+              sx={zhFieldSx}
+            />
+          }
+        />
+        <Typography variant="caption" color="text.secondary" sx={{ mt: -1 }}>
+          Subtitle is the line under the project name in the popup.
+        </Typography>
+        <TextField
+          name="category"
+          label="Category"
+          select
+          required
+          fullWidth
+          size="small"
+          disabled={pending}
+          defaultValue={project?.category ?? ""}
+          sx={fieldSx}
         >
-          <TextField
-            name="name"
-            label="Project name"
-            required
-            fullWidth
-            size="small"
-            disabled={pending}
-            defaultValue={project?.name ?? ""}
-            sx={{ ...fieldSx, gridColumn: "1 / -1" }}
-          />
-          <TextField
-            name="subtitle"
-            label="Subtitle"
-            required
-            fullWidth
-            size="small"
-            disabled={pending}
-            defaultValue={project?.subtitle ?? ""}
-            helperText="The line under the project name in the popup."
-            sx={{ ...fieldSx, gridColumn: "1 / -1" }}
-          />
-          <TextField
-            name="category"
-            label="Category"
-            select
-            required
-            fullWidth
-            size="small"
-            disabled={pending}
-            defaultValue={project?.category ?? ""}
-            sx={{ ...fieldSx, gridColumn: "1 / -1" }}
-          >
-            <MenuItem value="" disabled>
-              Select a category
+          <MenuItem value="" disabled>
+            Select a category
+          </MenuItem>
+          {PROJECT_CATEGORIES.map((item) => (
+            <MenuItem key={item.value} value={item.value}>
+              {item.label}
             </MenuItem>
-            {PROJECT_CATEGORIES.map((item) => (
-              <MenuItem key={item.value} value={item.value}>
-                {item.label}
-              </MenuItem>
-            ))}
-          </TextField>
-        </Box>
+          ))}
+        </TextField>
         <FeatureFields
           features={features}
           disabled={pending}
           onChange={setFeatures}
         />
-        <TextField
-          name="whyIt"
-          label="Why You Need It"
-          required
-          fullWidth
-          multiline
-          minRows={3}
-          disabled={pending}
-          defaultValue={project?.whyIt ?? ""}
-          sx={fieldSx}
+        <LanguagePair
+          english={
+            <TextField
+              name="whyIt"
+              label="Why You Need It"
+              required
+              fullWidth
+              multiline
+              minRows={4}
+              disabled={pending}
+              defaultValue={project?.whyIt ?? ""}
+              sx={fieldSx}
+            />
+          }
+          chinese={
+            <TextField
+              name="whyItZh"
+              label="为什么需要"
+              fullWidth
+              multiline
+              minRows={4}
+              disabled={pending}
+              defaultValue={project?.whyItZh ?? ""}
+              sx={zhFieldSx}
+            />
+          }
         />
-        <TextField
-          name="howWeHelp"
-          label="How We Help"
-          required
-          fullWidth
-          multiline
-          minRows={3}
-          disabled={pending}
-          defaultValue={project?.howWeHelp ?? ""}
-          sx={fieldSx}
+        <LanguagePair
+          english={
+            <TextField
+              name="howWeHelp"
+              label="How We Help"
+              required
+              fullWidth
+              multiline
+              minRows={4}
+              disabled={pending}
+              defaultValue={project?.howWeHelp ?? ""}
+              sx={fieldSx}
+            />
+          }
+          chinese={
+            <TextField
+              name="howWeHelpZh"
+              label="我们如何协助"
+              fullWidth
+              multiline
+              minRows={4}
+              disabled={pending}
+              defaultValue={project?.howWeHelpZh ?? ""}
+              sx={zhFieldSx}
+            />
+          }
         />
-        <TextField
-          name="ctaText"
-          label="Button text"
-          required
-          fullWidth
-          size="small"
-          disabled={pending}
-          defaultValue={project?.ctaText ?? ""}
-          helperText="The gold button. It still opens the contact form."
-          sx={fieldSx}
+        <LanguagePair
+          english={
+            <TextField
+              name="ctaText"
+              label="Button text"
+              required
+              fullWidth
+              size="small"
+              disabled={pending}
+              defaultValue={project?.ctaText ?? ""}
+              sx={fieldSx}
+            />
+          }
+          chinese={
+            <TextField
+              name="ctaTextZh"
+              label="按钮文字"
+              fullWidth
+              size="small"
+              disabled={pending}
+              defaultValue={project?.ctaTextZh ?? ""}
+              sx={zhFieldSx}
+            />
+          }
         />
-        <TextField
-          name="footerText"
-          label="Line under the button"
-          required
-          fullWidth
-          size="small"
-          disabled={pending}
-          defaultValue={project?.footerText ?? ""}
-          sx={fieldSx}
+        <Typography variant="caption" color="text.secondary" sx={{ mt: -1 }}>
+          The gold button still opens the contact form.
+        </Typography>
+        <LanguagePair
+          english={
+            <TextField
+              name="footerText"
+              label="Line under the button"
+              required
+              fullWidth
+              size="small"
+              disabled={pending}
+              defaultValue={project?.footerText ?? ""}
+              sx={fieldSx}
+            />
+          }
+          chinese={
+            <TextField
+              name="footerTextZh"
+              label="按钮下方文字"
+              fullWidth
+              size="small"
+              disabled={pending}
+              defaultValue={project?.footerTextZh ?? ""}
+              sx={zhFieldSx}
+            />
+          }
         />
         <ImageField
           name="mainImage"
@@ -352,6 +448,28 @@ function ProjectFormFields({
   );
 }
 
+function LanguagePair({
+  english,
+  chinese,
+}: {
+  english: ReactNode;
+  chinese: ReactNode;
+}) {
+  return (
+    <Box
+      sx={{
+        display: "grid",
+        gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+        gap: 2,
+        alignItems: "start",
+      }}
+    >
+      {english}
+      {chinese}
+    </Box>
+  );
+}
+
 function FeatureFields({
   features,
   disabled,
@@ -371,7 +489,7 @@ function FeatureFields({
         Key features
       </Typography>
       <Typography variant="caption" color="text.secondary">
-        Up to 6. Each one needs a name and one of the popup icons.
+        Up to 6. Chinese name is optional.
       </Typography>
       <Box sx={{ display: "flex", flexDirection: "column", gap: 1.25, mt: 1.25 }}>
         {features.map((feature, index) => (
@@ -379,7 +497,7 @@ function FeatureFields({
             key={index}
             sx={{
               display: "grid",
-              gridTemplateColumns: { xs: "1fr", sm: "1fr 200px auto" },
+              gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr 168px auto" },
               gap: 1,
               alignItems: "center",
             }}
@@ -395,6 +513,17 @@ function FeatureFields({
                 update(index, { ...feature, label: event.target.value })
               }
               sx={fieldSx}
+            />
+            <TextField
+              label="中文"
+              fullWidth
+              size="small"
+              disabled={disabled}
+              value={feature.labelZh ?? ""}
+              onChange={(event) =>
+                update(index, { ...feature, labelZh: event.target.value })
+              }
+              sx={zhFieldSx}
             />
             <TextField
               select
@@ -434,7 +563,7 @@ function FeatureFields({
       <Button
         type="button"
         disabled={disabled || features.length >= 6}
-        onClick={() => onChange([...features, { label: "", icon: "search" }])}
+        onClick={() => onChange([...features, { label: "", labelZh: "", icon: "search" }])}
         sx={{ mt: 1 }}
       >
         Add feature

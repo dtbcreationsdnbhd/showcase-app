@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Barlow_Semi_Condensed, Plus_Jakarta_Sans } from "next/font/google";
+import LocaleLoadingProvider from "@/components/landing/LocaleLoading";
 import SiteCursor from "@/components/landing/SiteCursor";
 import ThemeRegistry from "@/components/ThemeRegistry";
+import { getLocale } from "@/lib/get-locale";
 import "./globals.css";
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -24,14 +26,25 @@ export const metadata: Metadata = {
     "Empower your business with next-gen AI-powered tools, video creation, and design assets. From creative content to automated workflows, we craft your vision for commercial success.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const locale = await getLocale();
+
   return (
     <html
-      lang="en"
+      lang={locale === "zh" ? "zh-Hans" : "en"}
       className={`${plusJakarta.variable} ${barlowSemiCondensed.variable} h-full antialiased`}
     >
+      {locale === "zh" ? (
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@500;600&display=swap"
+          precedence="default"
+        />
+      ) : null}
       <body className={`${plusJakarta.className} min-h-full flex flex-col`}>
-        <ThemeRegistry>{children}</ThemeRegistry>
+        <ThemeRegistry>
+          <LocaleLoadingProvider>{children}</LocaleLoadingProvider>
+        </ThemeRegistry>
         <SiteCursor />
       </body>
     </html>

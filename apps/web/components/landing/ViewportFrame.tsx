@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
+import { FORCE_DESKTOP_STAGE } from "@/lib/landing-layout-mobile";
 
 /** Desktop HTML first, so a wide window never mounts the mobile tree. */
 export default function ViewportFrame({
@@ -20,5 +21,6 @@ export default function ViewportFrame({
     return () => query.removeEventListener("change", apply);
   }, []);
 
+  if (FORCE_DESKTOP_STAGE) return desktop;
   return isMobile ? mobile : desktop;
 }

@@ -99,6 +99,29 @@ body {
   font-family: var(--font-plus-jakarta), "Plus Jakarta Sans", system-ui, sans-serif;
 }
 
+@keyframes locale-loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.locale-loading-spin {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2.5px solid rgba(255, 216, 102, 0.22);
+  border-top-color: #ffd866;
+  box-shadow: 0 0 16px rgba(255, 216, 102, 0.28);
+  animation: locale-loading-spin 0.75s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .locale-loading-spin {
+    animation: none;
+    border-right-color: #ffd866;
+  }
+}
+
 .site-cursor {
   position: fixed;
   top: 0;

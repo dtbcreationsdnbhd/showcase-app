@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { figmaPx } from "@/lib/landing-layout";
+import { CJK_FONT } from "@/lib/locale";
 
 const DOT = figmaPx(12);
 const VIEW = figmaPx(88);
@@ -96,6 +97,7 @@ export default function SiteCursor() {
       if (nextLabel) {
         activeLabel = nextLabel;
         label.textContent = nextLabel;
+        label.style.fontFamily = /[\u3400-\u9fff]/.test(nextLabel) ? CJK_FONT : "";
       }
     };
 

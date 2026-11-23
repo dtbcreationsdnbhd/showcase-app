@@ -10,6 +10,7 @@ import {
 } from "@/lib/landing-nav";
 import { GOLD_RIM } from "@/lib/gold-theme";
 import { LANDING_DESIGN_WIDTH } from "@/lib/landing-layout";
+import { CJK_FONT, type Locale } from "@/lib/locale";
 
 const barlow = {
   fontFamily:
@@ -101,9 +102,11 @@ const PANEL_MASK = `linear-gradient(180deg, transparent 0, #000 ${PANEL_TOP_FADE
 /** Hover/focus target: wraps the SERVICES link and owns the dropdown panel. */
 export default function ServicesMenu({
   href,
+  locale,
   children,
 }: {
   href: string;
+  locale: Locale;
   children: ReactNode;
 }) {
   const [open, setOpen] = useState(false);
@@ -134,6 +137,7 @@ export default function ServicesMenu({
       {children}
       <ServicesPanel
         href={href}
+        locale={locale}
         open={open}
         instant={instant}
         onNavigate={() => {
@@ -180,15 +184,22 @@ export function ServicesCaret() {
  *  flush with the header's bottom edge. */
 function ServicesPanel({
   href,
+  locale,
   open,
   instant,
   onNavigate,
 }: {
   href: string;
+  locale: Locale;
   open: boolean;
   instant: boolean;
   onNavigate: () => void;
 }) {
+  const textFont = locale === "zh" ? { fontFamily: CJK_FONT } : barlow;
+  const type =
+    locale === "zh"
+      ? { pill: 16, pillLine: "20px", badge: 12, badgeLine: "16px", title: 18, titleLine: "24px", tag: 12, tagLine: "16px", desc: 13, descLine: "18px" }
+      : { pill: 20, pillLine: "24px", badge: 14, badgeLine: "18px", title: 22, titleLine: "28px", tag: 13, tagLine: "18px", desc: 16, descLine: "22px" };
   return (
     <Box
       className={PANEL_CLASS}
@@ -224,7 +235,7 @@ function ServicesPanel({
         }}
       >
         {SERVICES_MENU.map((group) => (
-          <Box component="section" key={group.title}>
+          <Box component="section" key={group.id}>
             <Box
               sx={{
                 display: "flex",
@@ -237,10 +248,10 @@ function ServicesPanel({
               <Box
                 component="span"
                 sx={{
-                  ...barlow,
+                  ...textFont,
                   fontWeight: 600,
-                  fontSize: 20,
-                  lineHeight: "24px",
+                  fontSize: type.pill,
+                  lineHeight: type.pillLine,
                   letterSpacing: "0.02em",
                   color: "#FFE08A",
                   px: "18px",
@@ -252,16 +263,16 @@ function ServicesPanel({
                     "inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 0 16px rgba(255, 184, 72, 0.25)",
                 }}
               >
-                {group.title}
+                {group.title[locale] ?? group.title.en}
               </Box>
               {group.badge ? (
                 <Box
                   component="span"
                   sx={{
-                    ...barlow,
+                    ...textFont,
                     fontWeight: 500,
-                    fontSize: 14,
-                    lineHeight: "18px",
+                    fontSize: type.badge,
+                    lineHeight: type.badgeLine,
                     color: "rgba(255, 255, 255, 0.7)",
                     px: "10px",
                     py: "4px",
@@ -269,14 +280,14 @@ function ServicesPanel({
                     border: "1px solid rgba(255, 255, 255, 0.2)",
                   }}
                 >
-                  {group.badge}
+                  {group.badge[locale] ?? group.badge.en}
                 </Box>
               ) : null}
             </Box>
 
             {group.items.map((item) => (
               <CenterHashLink
-                key={item.label}
+                key={item.id}
                 hash={href.slice(href.indexOf("#"))}
                 href={href}
                 sx={{
@@ -305,13 +316,13 @@ function ServicesPanel({
                   <Box
                     className="services-item-title"
                     sx={{
-                      ...barlow,
+                      ...textFont,
                       display: "flex",
                       alignItems: "center",
                       gap: "10px",
                       fontWeight: 600,
-                      fontSize: 22,
-                      lineHeight: "28px",
+                      fontSize: type.title,
+                      lineHeight: type.titleLine,
                       color: "rgba(255, 255, 255, 0.88)",
                       transition: "color 0.15s ease",
                     }}
@@ -334,14 +345,14 @@ function ServicesPanel({
                           "width 0.2s ease, margin 0.2s ease, opacity 0.2s ease",
                       }}
                     />
-                    {item.label}
+                    {item.label[locale] ?? item.label.en}
                     {item.tag ? (
                       <Box
                         component="span"
                         sx={{
                           fontWeight: 500,
-                          fontSize: 13,
-                          lineHeight: "18px",
+                          fontSize: type.tag,
+                          lineHeight: type.tagLine,
                           px: "8px",
                           py: "2px",
                           borderRadius: "9999px",
@@ -349,21 +360,21 @@ function ServicesPanel({
                           color: "#FFB3CC",
                         }}
                       >
-                        {item.tag}
+                        {item.tag[locale] ?? item.tag.en}
                       </Box>
                     ) : null}
                   </Box>
                   <Box
                     sx={{
-                      ...barlow,
+                      ...textFont,
                       mt: "4px",
                       fontWeight: 400,
-                      fontSize: 16,
-                      lineHeight: "22px",
+                      fontSize: type.desc,
+                      lineHeight: type.descLine,
                       color: "rgba(255, 255, 255, 0.72)",
                     }}
                   >
-                    {item.desc}
+                    {item.desc[locale] ?? item.desc.en}
                   </Box>
                 </Box>
                 <Box

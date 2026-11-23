@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import type { HeroSlide } from "@/components/landing/HeroCarousel";
+import type { Locale } from "@/lib/locale";
 import {
   HERO_CATEGORY_ORDER,
   isProjectCategory,
@@ -16,14 +17,20 @@ type ProjectTable = (typeof PROJECT_TABLES)[number];
 export type ShowcaseProject = {
   id: string;
   name: string;
+  nameZh: string;
   category: ProjectCategory | "";
   tags: string[];
   subtitle: string;
+  subtitleZh: string;
   features: ProjectFeature[];
   whyIt: string;
+  whyItZh: string;
   howWeHelp: string;
+  howWeHelpZh: string;
   ctaText: string;
+  ctaTextZh: string;
   footerText: string;
+  footerTextZh: string;
   challenge: string;
   solution: string;
   mainImageUrl: string;
@@ -34,14 +41,20 @@ export type ShowcaseProject = {
 type ProjectRow = {
   id: string;
   name: string;
+  name_zh?: string | null;
   category: string | null;
   tags: string[] | null;
   subtitle?: string | null;
+  subtitle_zh?: string | null;
   features?: unknown;
   why_it?: string | null;
+  why_it_zh?: string | null;
   how_we_help?: string | null;
+  how_we_help_zh?: string | null;
   cta_text?: string | null;
+  cta_text_zh?: string | null;
   footer_text?: string | null;
+  footer_text_zh?: string | null;
   challenge: string;
   solution: string;
   main_image_url: string;
@@ -113,14 +126,53 @@ export function pickHeroProjects(
   return picked;
 }
 
-export function projectToHeroSlide(project: ShowcaseProject): HeroSlide {
+function pickZh(zh: string, en: string) {
+  const text = zh.trim();
+  return text || en;
+}
+
+/** Chinese page uses zh fields when they are filled, and the English field otherwise. */
+export function localizeProject(
+  project: ShowcaseProject,
+  locale: Locale,
+): ShowcaseProject {
+  if (locale !== "zh") return project;
+  return {
+    ...project,
+    name: pickZh(project.nameZh, project.name),
+    subtitle: pickZh(project.subtitleZh, project.subtitle),
+    whyIt: pickZh(project.whyItZh, project.whyIt),
+    howWeHelp: pickZh(project.howWeHelpZh, project.howWeHelp),
+    ctaText: pickZh(project.ctaTextZh, project.ctaText),
+    footerText: pickZh(project.footerTextZh, project.footerText),
+    features: project.features.map((feature) => ({
+      ...feature,
+      label: pickZh(feature.labelZh ?? "", feature.label),
+    })),
+  };
+}
+
+export function localizeProjects(
+  projects: readonly ShowcaseProject[],
+  locale: Locale,
+): ShowcaseProject[] {
+  return locale === "zh" ? projects.map((project) => localizeProject(project, locale)) : [...projects];
+}
+
+export function projectToHeroSlide(
+  project: ShowcaseProject,
+  locale: Locale = "en",
+): HeroSlide {
   return {
     key: project.id,
     category: project.category
-      ? projectCategoryLabel(project.category)
-      : "Project",
+      ? projectCategoryLabel(project.category, locale)
+      : locale === "zh"
+        ? "项目"
+        : "Project",
     title: project.name,
-    href: "/projects",
+    href: locale === "zh" ? "/zh/projects" : "/projects",
+    details: locale === "zh" ? "查看详情 ↗" : "View Details ↗",
     src: project.mainImageUrl || null,
     isVideo: Boolean(project.mainImageUrl && isVideoUrl(project.mainImageUrl)),
   };
@@ -159,33 +211,50 @@ export async function listProjects(): Promise<ShowcaseProject[]> {
     "id, name, category, tags, challenge, solution, main_image_url, detail_image_urls, updated_at";
   const sheetColumns =
     "subtitle, features, why_it, how_we_help, cta_text, footer_text";
+  const zhColumns =
+    "name_zh, subtitle_zh, why_it_zh, how_we_help_zh, cta_text_zh, footer_text_zh";
+  const table = projectTable();
   const listed = await supabase
-    .from(projectTable())
-    .select(`${baseColumns}, ${sheetColumns}`)
+    .from(table)
+    .select(`${baseColumns}, ${sheetColumns}, ${zhColumns}`)
     .order("created_at", { ascending: true });
-  const fallback = listed.error
+  const withoutZh = listed.error
     ? await supabase
-        .from(projectTable())
-        .select(baseColumns)
+        .from(table)
+        .select(`${baseColumns}, ${sheetColumns}`)
         .order("created_at", { ascending: true })
     : null;
-  const data = listed.error ? fallback?.data : listed.data;
-  const error = listed.error ? fallback?.error : null;
+  const fallback =
+    listed.error && withoutZh?.error
+      ? await supabase.from(table).select(baseColumns).order("created_at", { ascending: true })
+      : null;
+  const data = listed.error
+    ? withoutZh?.error
+      ? fallback?.data
+      : withoutZh?.data
+    : listed.data;
+  const error = listed.error ? (withoutZh?.error ? fallback?.error : null) : null;
 
   if (error || !data) return [];
 
   return (data as ProjectRow[]).map((row) => ({
     id: row.id,
     name: row.name,
+    nameZh: row.name_zh ?? "",
     category:
       row.category && isProjectCategory(row.category) ? row.category : "",
     tags: row.tags ?? [],
     subtitle: row.subtitle ?? "",
+    subtitleZh: row.subtitle_zh ?? "",
     features: parseProjectFeatures(row.features),
     whyIt: row.why_it ?? "",
+    whyItZh: row.why_it_zh ?? "",
     howWeHelp: row.how_we_help ?? "",
+    howWeHelpZh: row.how_we_help_zh ?? "",
     ctaText: row.cta_text ?? "",
+    ctaTextZh: row.cta_text_zh ?? "",
     footerText: row.footer_text ?? "",
+    footerTextZh: row.footer_text_zh ?? "",
     challenge: row.challenge,
     solution: row.solution,
     mainImageUrl: row.main_image_url,

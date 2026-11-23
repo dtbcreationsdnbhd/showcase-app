@@ -2,11 +2,14 @@
 
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type MouseEvent } from "react";
+import { usePathname } from "next/navigation";
 import { createPortal } from "react-dom";
 import ShowcaseMedia from "@/components/landing/ShowcaseMedia";
+import { useLocaleLoading } from "@/components/landing/LocaleLoading";
 import { GOLD_INK, GOLD_SOLID, GOLD_TEXT, GOLD_TEXT_GLOW, goldButtonSx } from "@/lib/gold-theme";
 import { figmaPx } from "@/lib/landing-layout";
+import { CJK_FONT, homeHashPrefix, sheetCopy, type Locale } from "@/lib/locale";
 import type { FeatureIconName } from "@/lib/project-sheet";
 import {
   projectGalleryMedia,
@@ -246,7 +249,7 @@ function GoldTitle({ id, children }: { id: string; children: string }) {
   );
 }
 
-function SheetLabel({ children }: { children: string }) {
+function SheetLabel({ children, locale }: { children: string; locale: Locale }) {
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: `${figmaPx(8)}px` }}>
       <Box
@@ -260,11 +263,11 @@ function SheetLabel({ children }: { children: string }) {
       />
       <Typography
         sx={{
-          ...barlow,
+          ...(locale === "zh" ? { fontFamily: CJK_FONT } : barlow),
           m: 0,
           fontWeight: 600,
           fontSize: figmaPx(22),
-          letterSpacing: "0.04em",
+          letterSpacing: locale === "zh" ? "0.02em" : "0.04em",
           color: POPUP_GOLD,
           textShadow:
             "0 1px 0 rgba(255, 236, 190, 0.85), 0 2px 0 #C4841A",
@@ -509,6 +512,15 @@ export default function ProjectDetailPopup({
   onClose: () => void;
   closable?: boolean;
 }) {
+  const pathname = usePathname();
+  const { begin: beginLoading } = useLocaleLoading();
+  const locale: Locale = pathname === "/zh" || pathname.startsWith("/zh/") ? "zh" : "en";
+  const contactHref = `${homeHashPrefix(pathname)}#contact`;
+  const labels = sheetCopy(locale);
+  const copyFace = locale === "zh" ? { fontFamily: CJK_FONT } : null;
+  const subtitleSize = locale === "zh" ? figmaPx(16) : figmaPx(20);
+  const answerSize = locale === "zh" ? figmaPx(13) : figmaPx(16);
+  const footerSize = locale === "zh" ? figmaPx(13) : figmaPx(16);
   const detail = project;
   const hasSheet =
     Boolean(detail.subtitle || detail.whyIt || detail.howWeHelp || detail.ctaText || detail.footerText) ||
@@ -798,10 +810,10 @@ export default function ProjectDetailPopup({
             }}
           >
             <Box sx={{ display: "flex", flexDirection: "column", gap: `${figmaPx(4)}px`, width: "100%" }}>
-              <SheetLabel>Product Name</SheetLabel>
+              <SheetLabel locale={locale}>{labels.productName}</SheetLabel>
               <GoldTitle id="project-detail-title">{sheet.name}</GoldTitle>
               {sheet.subtitle ? (
-                <Typography sx={{ ...bodySx, color: "rgba(255,255,255,0.88)" }}>
+                <Typography sx={{ ...bodySx, ...copyFace, fontSize: subtitleSize, color: "rgba(255,255,255,0.88)" }}>
                   {sheet.subtitle}
                 </Typography>
               ) : null}
@@ -809,7 +821,7 @@ export default function ProjectDetailPopup({
 
             {sheet.features.length > 0 ? (
             <Box sx={{ display: "flex", flexDirection: "column", gap: `${figmaPx(8)}px`, width: "100%" }}>
-              <SheetLabel>Key Features</SheetLabel>
+              <SheetLabel locale={locale}>{labels.keyFeatures}</SheetLabel>
               <Box
                 sx={{
                   display: "grid",
@@ -855,15 +867,15 @@ export default function ProjectDetailPopup({
 
             {sheet.whyIt ? (
             <Box sx={{ display: "flex", flexDirection: "column", gap: `${figmaPx(6)}px`, width: "100%" }}>
-              <SheetLabel>Why You Need It</SheetLabel>
-              <Typography sx={{ ...bodySx, fontSize: figmaPx(16) }}>{sheet.whyIt}</Typography>
+              <SheetLabel locale={locale}>{labels.whyYouNeedIt}</SheetLabel>
+              <Typography sx={{ ...bodySx, ...copyFace, fontSize: answerSize }}>{sheet.whyIt}</Typography>
             </Box>
             ) : null}
 
             {sheet.howWeHelp ? (
             <Box sx={{ display: "flex", flexDirection: "column", gap: `${figmaPx(6)}px`, width: "100%" }}>
-              <SheetLabel>How We Help</SheetLabel>
-              <Typography sx={{ ...bodySx, fontSize: figmaPx(16) }}>{sheet.howWeHelp}</Typography>
+              <SheetLabel locale={locale}>{labels.howWeHelp}</SheetLabel>
+              <Typography sx={{ ...bodySx, ...copyFace, fontSize: answerSize }}>{sheet.howWeHelp}</Typography>
             </Box>
             ) : null}
 
@@ -881,8 +893,29 @@ export default function ProjectDetailPopup({
               {sheet.ctaText ? (
               <Box
                 component="a"
-                href="/#contact"
-                onClick={onClose}
+                href={contactHref}
+                onClick={(event: MouseEvent<HTMLAnchorElement>) => {
+                  if (
+                    event.metaKey ||
+                    event.ctrlKey ||
+                    event.shiftKey ||
+                    event.altKey ||
+                    event.button !== 0
+                  ) {
+                    return;
+                  }
+                  if (homeHashPrefix(pathname) === "") {
+                    onClose();
+                    return;
+                  }
+                  event.preventDefault();
+                  beginLoading();
+                  requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                      window.location.assign(contactHref);
+                    });
+                  });
+                }}
                 className="hover-grow"
                 sx={{
                   display: "inline-flex",
@@ -911,11 +944,12 @@ export default function ProjectDetailPopup({
               <Typography
                 sx={{
                   ...barlow,
+                  ...copyFace,
                   m: 0,
                   width: "100%",
                   textAlign: "center",
                   fontWeight: 500,
-                  fontSize: figmaPx(16),
+                  fontSize: footerSize,
                   letterSpacing: "0.02em",
                   color: "rgba(255, 220, 160, 0.78)",
                 }}

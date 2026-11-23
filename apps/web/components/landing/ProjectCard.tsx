@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import ShowcaseMedia from "@/components/landing/ShowcaseMedia";
 import { figmaPx } from "@/lib/landing-layout";
+import { CJK_FONT } from "@/lib/locale";
 
 const barlow = {
   fontFamily:
@@ -34,6 +35,7 @@ export default function ProjectCard({
   /** Lazy loading misses cards that only slide into view via transform. */
   eager?: boolean;
 }) {
+  const zhDescription = /[\u3400-\u9fff]/.test(description);
   return (
     <Box
       sx={{
@@ -171,11 +173,12 @@ export default function ProjectCard({
             <Typography
               sx={{
                 ...barlow,
+                ...(zhDescription ? { fontFamily: CJK_FONT } : null),
                 width: TITLE_INNER_W,
                 m: 0,
                 fontStyle: "normal",
                 fontWeight: 500,
-                fontSize: figmaPx(12),
+                fontSize: zhDescription ? figmaPx(10.5) : figmaPx(12),
                 lineHeight: "160%",
                 letterSpacing: "0.02em",
                 color: "rgba(255, 255, 255, 0.5)",

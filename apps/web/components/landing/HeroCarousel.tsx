@@ -22,6 +22,7 @@ export type HeroSlide = {
   category: string;
   title: string;
   href: string;
+  details?: string;
   src: string | null;
   isVideo?: boolean;
 };
@@ -29,6 +30,14 @@ export type HeroSlide = {
 const jakarta = {
   fontFamily: 'var(--font-plus-jakarta), "Plus Jakarta Sans", sans-serif',
 } as const;
+
+const cjk = {
+  fontFamily: '"Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif',
+} as const;
+
+function hasChinese(value: string) {
+  return /[\u3400-\u9fff]/.test(value);
+}
 
 const CARD_W = 380;
 const IMAGE_H = (CARD_W * 4) / 3;
@@ -289,10 +298,10 @@ export default function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
               >
                 <Typography
                   sx={{
-                    ...jakarta,
+                    ...(hasChinese(s.category) ? cjk : jakarta),
                     fontSize: 14,
                     fontWeight: 600,
-                    letterSpacing: "0.1em",
+                    letterSpacing: hasChinese(s.category) ? "0.04em" : "0.1em",
                     textTransform: "uppercase",
                     color: "#FFD77A",
                   }}
@@ -301,7 +310,7 @@ export default function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                 </Typography>
                 <Typography
                   sx={{
-                    ...jakarta,
+                    ...(hasChinese(s.title) ? cjk : jakarta),
                     fontSize: 26,
                     fontWeight: 600,
                     lineHeight: "32px",
@@ -318,7 +327,7 @@ export default function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                   onClick={(e) => e.stopPropagation()}
                   className="hover-grow"
                   sx={{
-                    ...jakarta,
+                    ...(hasChinese(s.details ?? "") ? cjk : jakarta),
                     mt: "auto",
                     alignSelf: "flex-start",
                     fontSize: 17,
@@ -328,7 +337,7 @@ export default function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                     "&:hover": { color: "#FFD866" },
                   }}
                 >
-                  View Details ↗
+                  {s.details ?? "View Details ↗"}
                 </Box>
               </Box>
             </Box>

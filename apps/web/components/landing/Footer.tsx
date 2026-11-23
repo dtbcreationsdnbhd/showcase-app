@@ -4,7 +4,9 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { useEffect, useRef } from "react";
 import { GOLD_TEXT } from "@/lib/gold-theme";
-import { COPYRIGHT_TEXT } from "@/lib/landing-content";
+import { usePathname } from "next/navigation";
+import { copyrightText } from "@/lib/landing-content";
+import { CJK_FONT, type Locale } from "@/lib/locale";
 import { FOOTER_HEIGHT, figmaPx } from "@/lib/landing-layout";
 
 const barlow = {
@@ -56,6 +58,9 @@ const SPRING_END = SPRING.length - 1;
 
 export default function Footer() {
   const footerRef = useRef<HTMLElement>(null);
+  const pathname = usePathname();
+  const locale: Locale = pathname === "/zh" || pathname.startsWith("/zh/") ? "zh" : "en";
+  const face = locale === "zh" ? { fontFamily: CJK_FONT } : barlow;
 
   useEffect(() => {
     const footer = footerRef.current;
@@ -224,7 +229,7 @@ export default function Footer() {
 
       <Typography
         sx={{
-          ...barlow,
+          ...face,
           position: "absolute",
           width: "100%",
           height: figmaPx(26),
@@ -241,7 +246,7 @@ export default function Footer() {
           color: "#FFFFFF",
         }}
       >
-        {COPYRIGHT_TEXT}
+        {copyrightText(locale)}
       </Typography>
     </Box>
   );

@@ -4,31 +4,9 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import { useState, type ReactNode } from "react";
-import {
-  FORM_CONVO_COMPANY,
-  FORM_CONVO_COMPANY_PLACEHOLDER,
-  FORM_CONVO_EXTRA,
-  FORM_CONVO_INTRO,
-  FORM_CONVO_MARKET,
-  FORM_CONVO_MARKET_PLACEHOLDER,
-  FORM_CONVO_NAME,
-  FORM_CONVO_NAME_PLACEHOLDER,
-  FORM_CONVO_NEEDS,
-  FORM_CONVO_NEEDS_PLACEHOLDER,
-  FORM_CONVO_OPTIONAL,
-  FORM_CONVO_SERVICE,
-  FORM_CONVO_SERVICE_PLACEHOLDER,
-  FORM_CONVO_SUBMIT,
-  FORM_CONVO_TELEGRAM,
-  FORM_CONVO_TELEGRAM_PLACEHOLDER,
-  FORM_CONVO_TITLE,
-  FORM_TALK_CONNECT,
-  FORM_TALK_INTRO,
-  FORM_TALK_POINTS,
-  FORM_TALK_TITLE,
-  FORM_TELEGRAM_LABEL,
-  FORM_TELEGRAM_URL,
-} from "@/lib/landing-content";
+import { usePathname } from "next/navigation";
+import { FORM_TELEGRAM_URL, formCopy } from "@/lib/landing-content";
+import { CJK_FONT, type Locale } from "@/lib/locale";
 import InquirySnackbar, {
   type InquiryNotice,
 } from "@/components/InquirySnackbar";
@@ -37,6 +15,7 @@ import {
   glassPanelSx,
   goldButtonSx,
 } from "@/lib/gold-theme";
+import { useLocaleLoading } from "@/components/landing/LocaleLoading";
 import { submitInquiry } from "@/lib/inquiries";
 import {
   CONTACT_FORM_HEIGHT_CSS,
@@ -106,7 +85,10 @@ const TALK_ICONS = [
   </>,
 ];
 
-function TalkPanel() {
+type FormCopy = ReturnType<typeof formCopy>;
+type Face = { fontFamily: string };
+
+function TalkPanel({ copy, face, locale }: { copy: FormCopy; face: Face; locale: Locale }) {
   return (
     <Box
       sx={{
@@ -147,7 +129,7 @@ function TalkPanel() {
           <Typography
             component="h2"
             sx={{
-              ...barlow,
+              ...face,
               m: 0,
               fontWeight: 700,
               fontSize: figmaPx(26),
@@ -155,19 +137,19 @@ function TalkPanel() {
               color: "#FFC46B",
             }}
           >
-            {FORM_TALK_TITLE}
+            {copy.talkTitle}
           </Typography>
           <Typography
             sx={{
-              ...barlow,
+              ...face,
               m: 0,
               fontWeight: 500,
-              fontSize: figmaPx(14),
+              fontSize: locale === "zh" ? figmaPx(12) : figmaPx(14),
               lineHeight: "150%",
               color: "rgba(255, 214, 150, 0.88)",
             }}
           >
-            {FORM_TALK_INTRO}
+            {copy.talkIntro}
           </Typography>
         </Box>
       </Box>
@@ -180,7 +162,7 @@ function TalkPanel() {
           pl: `${figmaPx(28)}px`,
         }}
       >
-        {FORM_TALK_POINTS.map((point, index) => (
+        {copy.points.map((point, index) => (
           <Box
             key={point.title}
             sx={{ display: "flex", alignItems: "center", gap: `${figmaPx(12)}px` }}
@@ -189,7 +171,7 @@ function TalkPanel() {
             <Box>
               <Typography
                 sx={{
-                  ...barlow,
+                  ...face,
                   m: 0,
                   fontWeight: 600,
                   fontSize: figmaPx(16),
@@ -201,11 +183,11 @@ function TalkPanel() {
               </Typography>
               <Typography
                 sx={{
-                  ...barlow,
+                  ...face,
                   m: 0,
                   mt: `${figmaPx(2)}px`,
                   fontWeight: 500,
-                  fontSize: figmaPx(13),
+                  fontSize: locale === "zh" ? figmaPx(11) : figmaPx(13),
                   lineHeight: "150%",
                   color: "rgba(255, 255, 255, 0.72)",
                 }}
@@ -230,7 +212,7 @@ function TalkPanel() {
       >
         <Typography
           sx={{
-            ...barlow,
+            ...face,
             m: 0,
             fontWeight: 600,
             fontSize: figmaPx(16),
@@ -238,7 +220,7 @@ function TalkPanel() {
             color: "#FFC46B",
           }}
         >
-          {FORM_TALK_CONNECT}
+          {copy.connect}
         </Typography>
         <Box
           component="a"
@@ -247,7 +229,7 @@ function TalkPanel() {
           rel="noopener noreferrer"
           className="hover-grow-sm"
           sx={{
-            ...barlow,
+            ...face,
             ...goldButtonSx,
             display: "inline-flex",
             alignItems: "center",
@@ -276,7 +258,7 @@ function TalkPanel() {
           >
             <path d="M21 4 3.5 11.2l6.2 2.1L17 8l-5.6 6.4.2 5.1 2.6-4.2L20 18.5 21 4Z" />
           </Box>
-          {FORM_TELEGRAM_LABEL}
+          {copy.telegram}
         </Box>
       </Box>
     </Box>
@@ -317,22 +299,27 @@ function FieldLabel({
   htmlFor,
   children,
   required,
+  face,
+  fontSize = fieldLabelSx.fontSize,
 }: {
   htmlFor?: string;
   children: ReactNode;
   required?: boolean;
+  face: Face;
+  fontSize?: number;
 }) {
+  const labelSx = { ...fieldLabelSx, ...face, fontSize };
   return (
     <Box
       component="label"
       htmlFor={htmlFor}
       sx={{ display: "flex", alignItems: "center", gap: `${figmaPx(4)}px` }}
     >
-      <Typography component="span" sx={fieldLabelSx}>
+      <Typography component="span" sx={labelSx}>
         {children}
       </Typography>
       {required ? (
-        <Typography component="span" aria-hidden sx={{ ...fieldLabelSx, color: "#FFD27A" }}>
+        <Typography component="span" aria-hidden sx={{ ...labelSx, color: "#FFD27A" }}>
           *
         </Typography>
       ) : null}
@@ -370,12 +357,23 @@ function FormCard({
 }
 
 export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
+  const pathname = usePathname();
+  const locale: Locale = pathname === "/zh" || pathname.startsWith("/zh/") ? "zh" : "en";
+  const copy = formCopy(locale);
+  const face: Face = locale === "zh" ? { fontFamily: CJK_FONT } : barlow;
+  const controlSx = {
+    ...fieldControlSx,
+    ...face,
+    fontSize: locale === "zh" ? figmaPx(12) : fieldControlSx.fontSize,
+  };
+  const labelFontSize = locale === "zh" ? figmaPx(12) : fieldLabelSx.fontSize;
   const [fullName, setFullName] = useState("");
   const [contact, setContact] = useState("");
   const [service, setService] = useState("");
   const [company, setCompany] = useState("");
   const [market, setMarket] = useState("");
   const [projectDetails, setProjectDetails] = useState("");
+  const { begin: beginLoading, end: endLoading } = useLocaleLoading();
   const [submitting, setSubmitting] = useState(false);
   const [notice, setNotice] = useState<InquiryNotice | null>(null);
 
@@ -384,27 +382,33 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
     if (!fullName.trim() || !contact.trim() || !service.trim()) {
       setNotice({
         id: Date.now(),
-        message: "Please fill in the required fields.",
+        message: copy.required,
         tone: "error",
       });
       return;
     }
     setSubmitting(true);
-    const result = await submitInquiry({
-      source: "web",
-      services: [],
-      budget: null,
-      projectCycle: null,
-      fullName,
-      contact: "",
-      lookingToBuild: "",
-      projectDetails,
-      telegram: contact,
-      service,
-      brandName: company,
-      region: market,
-    });
-    setSubmitting(false);
+    beginLoading();
+    let result: Awaited<ReturnType<typeof submitInquiry>>;
+    try {
+      result = await submitInquiry({
+        source: "web",
+        services: [],
+        budget: null,
+        projectCycle: null,
+        fullName,
+        contact: "",
+        lookingToBuild: "",
+        projectDetails,
+        telegram: contact,
+        service,
+        brandName: company,
+        region: market,
+      });
+    } finally {
+      setSubmitting(false);
+      endLoading();
+    }
     if (!result.ok) {
       setNotice({ id: Date.now(), message: result.message, tone: "error" });
       return;
@@ -417,7 +421,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
     setProjectDetails("");
     setNotice({
       id: Date.now(),
-      message: "Submitted. We will respond within 12 hours.",
+      message: copy.submitted,
       tone: "success",
     });
   }
@@ -476,7 +480,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
         }}
       >
         <FormCard width={TALK_W}>
-          <TalkPanel />
+          <TalkPanel copy={copy} face={face} locale={locale} />
         </FormCard>
 
         <FormCard>
@@ -496,7 +500,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
                 <Typography
                   component="h2"
                   sx={{
-                    ...barlow,
+                    ...face,
                     m: 0,
                     fontWeight: 700,
                     fontSize: figmaPx(22),
@@ -504,20 +508,20 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
                     color: "#FFC46B",
                   }}
                 >
-                  {FORM_CONVO_TITLE}
+                  {copy.convoTitle}
                 </Typography>
                 <Typography
                   sx={{
-                    ...barlow,
+                    ...face,
                     m: 0,
                     mt: `${figmaPx(2)}px`,
                     fontWeight: 500,
-                    fontSize: figmaPx(13),
+                    fontSize: locale === "zh" ? figmaPx(11) : figmaPx(13),
                     lineHeight: "145%",
                     color: "rgba(255, 255, 255, 0.55)",
                   }}
                 >
-                  {FORM_CONVO_INTRO}
+                  {copy.convoIntro}
                 </Typography>
               </Box>
               <Box
@@ -534,90 +538,90 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
 
             <Box sx={{ display: "flex", alignItems: "flex-start", gap: `${figmaPx(12)}px` }}>
               <Box sx={{ display: "flex", flex: 1, flexDirection: "column", gap: `${figmaPx(4)}px`, minWidth: 0 }}>
-                <FieldLabel htmlFor="contact-name" required>
-                  {FORM_CONVO_NAME}
+                <FieldLabel htmlFor="contact-name" required face={face} fontSize={labelFontSize}>
+                  {copy.name}
                 </FieldLabel>
                 <Box
                   component="input"
                   id="contact-name"
                   value={fullName}
-                  placeholder={FORM_CONVO_NAME_PLACEHOLDER}
+                  placeholder={copy.namePlaceholder}
                   onChange={(event) => setFullName(event.target.value)}
-                  sx={fieldControlSx}
+                  sx={controlSx}
                 />
               </Box>
 
               <Box sx={{ display: "flex", flex: 1, flexDirection: "column", gap: `${figmaPx(4)}px`, minWidth: 0 }}>
-                <FieldLabel htmlFor="contact-telegram" required>
-                  {FORM_CONVO_TELEGRAM}
+                <FieldLabel htmlFor="contact-telegram" required face={face} fontSize={labelFontSize}>
+                  {copy.contact}
                 </FieldLabel>
                 <Box
                   component="input"
                   id="contact-telegram"
                   value={contact}
-                  placeholder={FORM_CONVO_TELEGRAM_PLACEHOLDER}
+                  placeholder={copy.contactPlaceholder}
                   onChange={(event) => setContact(event.target.value)}
-                  sx={fieldControlSx}
+                  sx={controlSx}
                 />
               </Box>
             </Box>
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: `${figmaPx(4)}px` }}>
-              <FieldLabel htmlFor="contact-service" required>
-                {FORM_CONVO_SERVICE}
+              <FieldLabel htmlFor="contact-service" required face={face} fontSize={labelFontSize}>
+                {copy.service}
               </FieldLabel>
               <Box
                 component="input"
                 id="contact-service"
                 value={service}
-                placeholder={FORM_CONVO_SERVICE_PLACEHOLDER}
+                placeholder={copy.servicePlaceholder}
                 onChange={(event) => setService(event.target.value)}
-                sx={fieldControlSx}
+                sx={controlSx}
               />
             </Box>
 
-            <Typography sx={{ ...fieldLabelSx, color: "#FFC46B", mt: `${figmaPx(2)}px` }}>
-              {FORM_CONVO_EXTRA}{" "}
+            <Typography sx={{ ...fieldLabelSx, ...face, fontSize: labelFontSize, color: "#FFC46B", mt: `${figmaPx(2)}px` }}>
+              {copy.extra}{" "}
               <Box component="span" sx={{ color: "rgba(255, 196, 107, 0.72)", fontWeight: 500 }}>
-                {FORM_CONVO_OPTIONAL}
+                {copy.optional}
               </Box>
             </Typography>
 
             <Box sx={{ display: "flex", alignItems: "flex-start", gap: `${figmaPx(12)}px` }}>
               <Box sx={{ display: "flex", flex: 1, flexDirection: "column", gap: `${figmaPx(4)}px`, minWidth: 0 }}>
-                <FieldLabel htmlFor="contact-company">{FORM_CONVO_COMPANY}</FieldLabel>
+                <FieldLabel htmlFor="contact-company" face={face} fontSize={labelFontSize}>{copy.company}</FieldLabel>
                 <Box
                   component="input"
                   id="contact-company"
                   value={company}
-                  placeholder={FORM_CONVO_COMPANY_PLACEHOLDER}
+                  placeholder={copy.companyPlaceholder}
                   onChange={(event) => setCompany(event.target.value)}
-                  sx={fieldControlSx}
+                  sx={controlSx}
                 />
               </Box>
               <Box sx={{ display: "flex", flex: 1, flexDirection: "column", gap: `${figmaPx(4)}px`, minWidth: 0 }}>
-                <FieldLabel htmlFor="contact-market">{FORM_CONVO_MARKET}</FieldLabel>
+                <FieldLabel htmlFor="contact-market" face={face} fontSize={labelFontSize}>{copy.market}</FieldLabel>
                 <Box
                   component="input"
                   id="contact-market"
                   value={market}
-                  placeholder={FORM_CONVO_MARKET_PLACEHOLDER}
+                  placeholder={copy.marketPlaceholder}
                   onChange={(event) => setMarket(event.target.value)}
-                  sx={fieldControlSx}
+                  sx={controlSx}
                 />
               </Box>
             </Box>
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: `${figmaPx(4)}px` }}>
-              <FieldLabel htmlFor="contact-needs">{FORM_CONVO_NEEDS}</FieldLabel>
+              <FieldLabel htmlFor="contact-needs" face={face} fontSize={labelFontSize}>{copy.needs}</FieldLabel>
               <Box
                 component="textarea"
                 id="contact-needs"
                 value={projectDetails}
-                placeholder={FORM_CONVO_NEEDS_PLACEHOLDER}
+                placeholder={copy.needsPlaceholder}
                 onChange={(event) => setProjectDetails(event.target.value)}
                 sx={{
-                  ...fieldControlSx,
+                  ...controlSx,
                   height: figmaPx(52),
                   py: `${figmaPx(8)}px`,
                   borderRadius: `${figmaPx(14)}px`,
@@ -635,7 +639,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
                 void handleSubmit();
               }}
               sx={{
-                ...barlow,
+                ...face,
                 boxSizing: "border-box",
                 display: "flex",
                 justifyContent: "center",
@@ -653,7 +657,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
                 opacity: submitting ? 0.7 : 1,
               }}
             >
-              {submitting ? "Submitting..." : `${FORM_CONVO_SUBMIT} →`}
+              {submitting ? copy.submitting : `${copy.submit} →`}
             </Box>
           </Box>
         </FormCard>
