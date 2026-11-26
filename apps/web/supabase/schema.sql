@@ -112,6 +112,14 @@
   alter table public.staging_projects add column if not exists footer_text_zh text not null default '';
   alter table public.production_projects add column if not exists footer_text_zh text not null default '';
 
+  -- Optional link to the project's own landing page. Empty hides the Visit Site row.
+  alter table public.staging_projects add column if not exists landing_url text not null default '';
+  alter table public.production_projects add column if not exists landing_url text not null default '';
+  alter table public.staging_projects drop column if exists landing_label;
+  alter table public.production_projects drop column if exists landing_label;
+  alter table public.staging_projects drop column if exists landing_label_zh;
+  alter table public.production_projects drop column if exists landing_label_zh;
+
   create or replace function public.touch_project_updated_at()
   returns trigger
   language plpgsql

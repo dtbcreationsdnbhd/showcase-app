@@ -256,6 +256,15 @@ function ProjectSheet({ project }: { project: ShowcaseProject }) {
             <ZhLine>{project.footerTextZh}</ZhLine>
           </Panel>
         </Box>
+
+        <Panel>
+          <Eyebrow>Landing page</Eyebrow>
+          {project.landingUrl ? (
+            <Body>{project.landingUrl}</Body>
+          ) : (
+            <Muted>No landing page</Muted>
+          )}
+        </Panel>
       </Box>
 
       <ProjectPreview id={project.id} name={project.name} />

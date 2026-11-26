@@ -31,6 +31,7 @@ export type ShowcaseProject = {
   ctaTextZh: string;
   footerText: string;
   footerTextZh: string;
+  landingUrl: string;
   challenge: string;
   solution: string;
   mainImageUrl: string;
@@ -55,6 +56,7 @@ type ProjectRow = {
   cta_text_zh?: string | null;
   footer_text?: string | null;
   footer_text_zh?: string | null;
+  landing_url?: string | null;
   challenge: string;
   solution: string;
   main_image_url: string;
@@ -124,6 +126,19 @@ export function pickHeroProjects(
   }
 
   return picked;
+}
+
+/** http(s) landing links only. Anything else stays off the popup. */
+export function landingPageUrl(value: string): string | null {
+  const text = value.trim();
+  if (!text) return null;
+  try {
+    const url = new URL(text);
+    if (url.protocol !== "http:" && url.protocol !== "https:") return null;
+    return url.href;
+  } catch {
+    return null;
+  }
 }
 
 function pickZh(zh: string, en: string) {
@@ -212,7 +227,7 @@ export async function listProjects(): Promise<ShowcaseProject[]> {
   const sheetColumns =
     "subtitle, features, why_it, how_we_help, cta_text, footer_text";
   const zhColumns =
-    "name_zh, subtitle_zh, why_it_zh, how_we_help_zh, cta_text_zh, footer_text_zh";
+    "name_zh, subtitle_zh, why_it_zh, how_we_help_zh, cta_text_zh, footer_text_zh, landing_url";
   const table = projectTable();
   const listed = await supabase
     .from(table)
@@ -255,6 +270,7 @@ export async function listProjects(): Promise<ShowcaseProject[]> {
     ctaTextZh: row.cta_text_zh ?? "",
     footerText: row.footer_text ?? "",
     footerTextZh: row.footer_text_zh ?? "",
+    landingUrl: row.landing_url ?? "",
     challenge: row.challenge,
     solution: row.solution,
     mainImageUrl: row.main_image_url,

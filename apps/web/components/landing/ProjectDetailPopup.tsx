@@ -12,6 +12,7 @@ import { figmaPx } from "@/lib/landing-layout";
 import { CJK_FONT, homeHashPrefix, sheetCopy, type Locale } from "@/lib/locale";
 import type { FeatureIconName } from "@/lib/project-sheet";
 import {
+  landingPageUrl,
   projectGalleryMedia,
   type ShowcaseProject,
 } from "@/lib/projects";
@@ -530,6 +531,7 @@ export default function ProjectDetailPopup({
   const answerSize = locale === "zh" ? figmaPx(13) : figmaPx(16);
   const footerSize = locale === "zh" ? figmaPx(13) : figmaPx(16);
   const detail = project;
+  const landingUrl = landingPageUrl(detail.landingUrl);
   const hasSheet =
     Boolean(detail.subtitle || detail.whyIt || detail.howWeHelp || detail.ctaText || detail.footerText) ||
     detail.features.length > 0;
@@ -906,6 +908,29 @@ export default function ProjectDetailPopup({
             <Box sx={{ display: "flex", flexDirection: "column", gap: `${figmaPx(6)}px`, width: "100%" }}>
               <SheetLabel locale={locale}>{labels.howWeHelp}</SheetLabel>
               <Typography sx={{ ...bodySx, ...copyFace, fontSize: answerSize }}>{sheet.howWeHelp}</Typography>
+            </Box>
+            ) : null}
+
+            {landingUrl ? (
+            <Box sx={{ display: "flex", flexDirection: "column", gap: `${figmaPx(6)}px`, width: "100%" }}>
+              <SheetLabel locale={locale}>{labels.visitSite}</SheetLabel>
+              <Typography
+                component="a"
+                href={landingUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{
+                  ...bodySx,
+                  ...copyFace,
+                  fontSize: answerSize,
+                  color: "#FFFFFF",
+                  textDecoration: "underline",
+                  textUnderlineOffset: "0.18em",
+                  "&:hover": { color: "#FFE7A3" },
+                }}
+              >
+                {detail.landingUrl.trim()}
+              </Typography>
             </Box>
             ) : null}
 

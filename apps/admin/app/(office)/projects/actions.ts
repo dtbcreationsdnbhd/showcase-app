@@ -384,6 +384,7 @@ type ProjectSheet = {
   howWeHelp: string;
   ctaText: string;
   footerText: string;
+  landingUrl: string;
   nameZh: string;
   subtitleZh: string;
   whyItZh: string;
@@ -403,8 +404,17 @@ function zhColumns(sheet: ProjectSheet) {
   };
 }
 
+function landingColumns(sheet: ProjectSheet) {
+  return {
+    landing_url: sheet.landingUrl,
+  };
+}
+
 const ZH_COLUMNS_MISSING =
   "Chinese fields need the new project columns. Run apps/web/supabase/schema.sql in the Supabase SQL Editor, then save again.";
+
+const LANDING_COLUMNS_MISSING =
+  "Landing page fields need the new project columns. Run apps/web/supabase/schema.sql in the Supabase SQL Editor, then save again.";
 
 function sheetHasZhColumns(sheet: ProjectSheet) {
   return Object.values(zhColumns(sheet)).some((value) => value.length > 0);
@@ -412,6 +422,14 @@ function sheetHasZhColumns(sheet: ProjectSheet) {
 
 function missingZhColumn(message: string) {
   return message.includes("name_zh") || message.includes("schema cache");
+}
+
+function missingLandingColumn(message: string) {
+  return message.includes("landing_url");
+}
+
+function sheetHasLanding(sheet: ProjectSheet) {
+  return Object.values(landingColumns(sheet)).some((value) => value.length > 0);
 }
 
 type OfficeClient = Awaited<ReturnType<typeof createClient>>;
@@ -424,14 +442,28 @@ async function writeProject(
   sheet: ProjectSheet,
   id?: string,
 ): Promise<ActionResult> {
-  const withZh = { ...row, ...zhColumns(sheet) };
-  const wrote =
+  const withZh = { ...row, ...zhColumns(sheet), ...landingColumns(sheet) };
+  let wrote =
     mode === "insert"
       ? await supabase.from(table).insert(withZh)
       : await supabase.from(table).update(withZh).eq("id", id ?? "").select("id");
 
   if (!wrote.error && (mode === "insert" || (wrote.data?.length ?? 0) > 0)) {
     return { ok: true };
+  }
+
+  if (wrote.error && missingLandingColumn(wrote.error.message)) {
+    if (sheetHasLanding(sheet)) {
+      return { ok: false, message: LANDING_COLUMNS_MISSING };
+    }
+    const withoutLanding = { ...row, ...zhColumns(sheet) };
+    wrote =
+      mode === "insert"
+        ? await supabase.from(table).insert(withoutLanding)
+        : await supabase.from(table).update(withoutLanding).eq("id", id ?? "").select("id");
+    if (!wrote.error && (mode === "insert" || (wrote.data?.length ?? 0) > 0)) {
+      return { ok: true };
+    }
   }
 
   if (wrote.error && missingZhColumn(wrote.error.message)) {
@@ -472,6 +504,14 @@ function readSheet(formData: FormData):
   const howWeHelpZh = String(formData.get("howWeHelpZh") ?? "").trim();
   const ctaTextZh = String(formData.get("ctaTextZh") ?? "").trim();
   const footerTextZh = String(formData.get("footerTextZh") ?? "").trim();
+  const landingUrl = String(formData.get("landingUrl") ?? "").trim();
+
+  if (landingUrl && !landingPageUrl(landingUrl)) {
+    return {
+      ok: false,
+      message: "Landing page link must start with http:// or https://.",
+    };
+  }
 
   if (!subtitle || !whyIt || !howWeHelp || !ctaText || !footerText) {
     return { ok: false, message: "Fill in every field." };
@@ -514,6 +554,7 @@ function readSheet(formData: FormData):
     howWeHelp,
     ctaText,
     footerText,
+    landingUrl,
     nameZh,
     subtitleZh,
     whyItZh,
@@ -521,6 +562,15 @@ function readSheet(formData: FormData):
     ctaTextZh,
     footerTextZh,
   };
+}
+
+function landingPageUrl(value: string) {
+  try {
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
 }
 
 function imageFile(value: FormDataEntryValue | null) {

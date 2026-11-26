@@ -420,6 +420,19 @@ function ProjectFormFields({
             />
           }
         />
+        <TextField
+          name="landingUrl"
+          label="Landing page link (optional)"
+          placeholder="https://"
+          fullWidth
+          size="small"
+          disabled={pending}
+          defaultValue={project?.landingUrl ?? ""}
+          sx={fieldSx}
+        />
+        <Typography variant="caption" color="text.secondary" sx={{ mt: -1 }}>
+          Optional. Shown under How We Help as Visit Site. The text is this link.
+        </Typography>
         <ImageField
           name="mainImage"
           keptName="keptMainImage"

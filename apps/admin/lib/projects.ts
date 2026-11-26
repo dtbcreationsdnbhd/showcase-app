@@ -48,6 +48,7 @@ export type ShowcaseProject = {
   ctaTextZh: string;
   footerText: string;
   footerTextZh: string;
+  landingUrl: string;
   challenge: string;
   solution: string;
   mainImageUrl: string;
@@ -83,6 +84,7 @@ type ProjectRow = {
   cta_text_zh?: string | null;
   footer_text?: string | null;
   footer_text_zh?: string | null;
+  landing_url?: string | null;
   challenge: string;
   solution: string;
   main_image_url: string;
@@ -98,7 +100,7 @@ const SHEET_COLUMNS =
   "subtitle, features, why_it, how_we_help, cta_text, footer_text";
 
 const ZH_COLUMNS =
-  "name_zh, subtitle_zh, why_it_zh, how_we_help_zh, cta_text_zh, footer_text_zh";
+  "name_zh, subtitle_zh, why_it_zh, how_we_help_zh, cta_text_zh, footer_text_zh, landing_url";
 
 export function projectTable(): ProjectTable {
   const name = process.env.NEXT_PUBLIC_PROJECT_TABLE;
@@ -274,6 +276,7 @@ function toProject(row: ProjectRow): ShowcaseProject {
     ctaTextZh: row.cta_text_zh ?? "",
     footerText: row.footer_text ?? "",
     footerTextZh: row.footer_text_zh ?? "",
+    landingUrl: row.landing_url ?? "",
     challenge: row.challenge,
     solution: row.solution,
     mainImageUrl: row.main_image_url,
