@@ -16,6 +16,8 @@ import Typography from "@mui/material/Typography";
 import CarouselSlideMedia, {
   carouselVideoRole,
 } from "@/components/landing/CarouselSlideMedia";
+import ProjectDetailPopup from "@/components/landing/ProjectDetailPopup";
+import type { ShowcaseProject } from "@/lib/projects";
 
 export type HeroSlide = {
   key: string;
@@ -50,7 +52,13 @@ const DRAG_START_PX = 6;
 const WHEEL_THRESHOLD = 30;
 const WHEEL_COOLDOWN_MS = 600;
 
-export default function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
+export default function HeroCarousel({
+  slides,
+  projects,
+}: {
+  slides: HeroSlide[];
+  projects: readonly ShowcaseProject[];
+}) {
   const n = slides.length;
   // Three copies of the slides let the track loop: `pos` stays in the middle copy
   // and snaps back there (without animation) whenever it drifts into an outer copy.
@@ -59,6 +67,7 @@ export default function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
   const [animate, setAnimate] = useState(true);
   const [dragX, setDragX] = useState(0);
   const [dragging, setDragging] = useState(false);
+  const [selected, setSelected] = useState<ShowcaseProject | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const posRef = useRef(initialPos);
@@ -199,6 +208,7 @@ export default function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
   if (n === 0) return null;
 
   return (
+    <>
     <Box
       ref={rootRef}
       sx={{
@@ -320,16 +330,26 @@ export default function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                   {s.title}
                 </Typography>
                 <Box
-                  component="a"
-                  href={s.href}
+                  component="button"
+                  type="button"
                   draggable={false}
                   tabIndex={isClone ? -1 : undefined}
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    if (suppressClick.current) return;
+                    const project = projects.find((item) => item.id === s.key);
+                    if (project) setSelected(project);
+                  }}
                   className="hover-grow"
                   sx={{
                     ...(hasChinese(s.details ?? "") ? cjk : jakarta),
                     mt: "auto",
                     alignSelf: "flex-start",
+                    p: 0,
+                    border: "none",
+                    background: "none",
+                    font: "inherit",
+                    cursor: "pointer",
                     fontSize: 17,
                     fontWeight: 600,
                     color: "#FFFFFF",
@@ -345,5 +365,9 @@ export default function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
         })}
       </Box>
     </Box>
+    {selected ? (
+      <ProjectDetailPopup project={selected} onClose={() => setSelected(null)} />
+    ) : null}
+    </>
   );
 }

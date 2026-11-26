@@ -24,7 +24,8 @@ import { listProjects, localizeProjects, projectToHeroSlide } from "@/lib/projec
 
 export default async function Home() {
   const locale = await getLocale();
-  const projects = localizeProjects(await listProjects(), locale);
+  const catalog = await listProjects();
+  const projects = localizeProjects(catalog, locale);
   const logoSrc = getLandingLogoSrc();
   const heroSrc = getLandingHeroSrc();
   const heroSlides = projects.map((project) => projectToHeroSlide(project, locale));
@@ -57,7 +58,7 @@ export default async function Home() {
                   pointerEvents: "auto",
                 }}
               >
-                <Navbar logoSrc={logoSrc} />
+                <Navbar logoSrc={logoSrc} projects={catalog} />
               </Box>
             </Box>
 
@@ -69,7 +70,7 @@ export default async function Home() {
               }}
             >
               <Hero heroSrc={getLandingHeroDesktopSrc()} />
-              <HeroCardsSection slides={heroSlides} />
+              <HeroCardsSection slides={heroSlides} projects={projects} />
               <TargetedSolutions />
               <LandingBackgrounds
                 solutionsSrc={

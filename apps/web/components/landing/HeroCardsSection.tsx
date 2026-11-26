@@ -1,5 +1,6 @@
 import Box from "@mui/material/Box";
 import HeroCarousel, { type HeroSlide } from "@/components/landing/HeroCarousel";
+import type { ShowcaseProject } from "@/lib/projects";
 import {
   HERO_CARDS_VIEWPORT_PAGES,
   STAGE_VIEWPORT_PAGE_HEIGHT_CSS,
@@ -8,7 +9,13 @@ import {
 /** Same window the hero used: previous card, active card, next card. */
 const CARDS_VIEW_W = 12 + 380 * 3 + 28 * 2;
 
-export default function HeroCardsSection({ slides }: { slides: HeroSlide[] }) {
+export default function HeroCardsSection({
+  slides,
+  projects,
+}: {
+  slides: HeroSlide[];
+  projects: readonly ShowcaseProject[];
+}) {
   return (
     <Box
       component="section"
@@ -34,7 +41,7 @@ export default function HeroCardsSection({ slides }: { slides: HeroSlide[] }) {
         }}
       >
         <Box sx={{ width: CARDS_VIEW_W, maxWidth: "100%", overflow: "hidden" }}>
-          <HeroCarousel slides={slides} />
+          <HeroCarousel slides={slides} projects={projects} />
         </Box>
       </Box>
     </Box>
