@@ -8,11 +8,8 @@ const subscribeNoop = () => () => {};
 const getHydrated = () => true;
 const getServerSnapshot = () => false;
 
-/** Even shade over the whole picture. Same color on every section background. */
+/** Even shade over the whole picture. Same color the hero lays over its photo. */
 const SHADE = "rgba(30, 4, 16, 0.55)";
-/** Solutions is a photo of the content, so only the outer edges stay dark. */
-const SOLUTIONS_SHADE =
-  "radial-gradient(ellipse 80% 74% at center, rgba(30, 4, 16, 0) 0%, rgba(30, 4, 16, 0) 58%, rgba(30, 4, 16, 0.55) 100%)";
 /** Short crossfade where two pictures meet. The rest of each picture stays solid. */
 const BLEND = 20;
 
@@ -30,18 +27,14 @@ type Band = {
  * section is on screen. Where two pictures meet, they crossfade over a short
  * band instead of cutting on a hard line.
  *
- * The hero picture stays in the hero section. The project-card picture uses the
- * same edge crossfade as the sections below it.
+ * The hero picture stays in the hero section and is reused, blank of the old
+ * solutions poster, while the solutions section is on screen.
  */
-function isSolutionsPhoto(src: string) {
-  return src.includes("/landing/solutions-bg");
-}
-
 const PROJECTS_PAGE_BG = "/landing/contact-form-bg.png";
 /** Same darkening as the projects page frame. */
 const PROJECTS_PAGE_SHADE = "rgba(0, 0, 0, 0.58)";
 
-function sectionBands(solutionsSrc: string): Band[] {
+function sectionBands(heroSrc: string | null): Band[] {
   return [
     {
       startId: "hero-cards",
@@ -54,9 +47,10 @@ function sectionBands(solutionsSrc: string): Band[] {
     {
       startId: "solutions",
       endId: "solutions",
-      src: solutionsSrc,
+      src: heroSrc ?? "",
       objectPosition: "center center",
       zIndex: -4,
+      shade: SHADE,
     },
     {
       startId: "why-us",
@@ -83,16 +77,16 @@ function sectionBands(solutionsSrc: string): Band[] {
 }
 
 export default function LandingBackgrounds({
-  solutionsSrc = "/landing/solutions-bg.webp",
+  heroSrc = null,
 }: {
-  solutionsSrc?: string;
+  heroSrc?: string | null;
 }) {
   const layerRefs = useRef<Array<HTMLDivElement | null>>([]);
   const hydrated = useSyncExternalStore(subscribeNoop, getHydrated, getServerSnapshot);
-  const bands = sectionBands(solutionsSrc);
+  const bands = sectionBands(heroSrc);
 
   useEffect(() => {
-    const nodes = sectionBands(solutionsSrc).map((band, index) => ({
+    const nodes = sectionBands(heroSrc).map((band, index) => ({
       band,
       start: document.getElementById(band.startId),
       end: document.getElementById(band.endId),
@@ -164,7 +158,7 @@ export default function LandingBackgrounds({
       stopNear();
       window.removeEventListener("resize", onScroll);
     };
-  }, [hydrated, solutionsSrc]);
+  }, [hydrated, heroSrc]);
 
   if (!hydrated) return null;
 
@@ -190,24 +184,27 @@ export default function LandingBackgrounds({
             overflow: "hidden",
           }}
         >
-          <img
-            src={band.src}
-            alt=""
-            style={{
-              position: "absolute",
-              inset: 0,
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              objectPosition: band.objectPosition,
-            }}
-          />
+          {band.src ? (
+            <img
+              src={band.src}
+              alt=""
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                objectPosition: band.objectPosition,
+              }}
+            />
+          ) : (
+            <div style={{ position: "absolute", inset: 0, background: "#1e0410" }} />
+          )}
           <div
             style={{
               position: "absolute",
               inset: 0,
-              background:
-                band.shade ?? (isSolutionsPhoto(band.src) ? SOLUTIONS_SHADE : SHADE),
+              background: band.shade ?? SHADE,
             }}
           />
         </div>

@@ -29,6 +29,7 @@ export default async function Home() {
   const connectLinks = await listContactLinks();
   const projects = localizeProjects(catalog, locale);
   const logoSrc = getLandingLogoSrc();
+  const heroDesktopSrc = getLandingHeroDesktopSrc();
   const heroSrc = getLandingHeroSrc();
   const heroSlides = projects.map((project) => projectToHeroSlide(project, locale));
 
@@ -71,16 +72,10 @@ export default async function Home() {
                 transformOrigin: "top left",
               }}
             >
-              <Hero heroSrc={getLandingHeroDesktopSrc()} />
+              <Hero heroSrc={heroDesktopSrc} />
               <HeroCardsSection slides={heroSlides} projects={projects} />
               <TargetedSolutions />
-              <LandingBackgrounds
-                solutionsSrc={
-                  locale === "zh"
-                    ? "/landing/solutions-bg-cn.png"
-                    : "/landing/solutions-bg.webp"
-                }
-              />
+              <LandingBackgrounds heroSrc={heroDesktopSrc} />
               <HowWeWork />
               <Faq />
               <ContactForm waveSrc={null} projects={projects} connectLinks={connectLinks} />
