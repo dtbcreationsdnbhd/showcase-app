@@ -5,7 +5,8 @@ import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
-import { FORM_TELEGRAM_URL, formCopy } from "@/lib/landing-content";
+import { formCopy } from "@/lib/landing-content";
+import type { ContactLink, ContactLinkId } from "@/lib/contact-links";
 import { CJK_FONT, type Locale } from "@/lib/locale";
 import InquirySnackbar, {
   type InquiryNotice,
@@ -35,6 +36,63 @@ const TALK_W = CARD_W;
 const CARD_PAD = figmaPx(26);
 const INNER_W = CARD_W - CARD_PAD * 2;
 const TALK_INNER = TALK_W - CARD_PAD * 2;
+
+const CONNECT_BRAND = {
+  whatsapp: {
+    background: "linear-gradient(180deg, #7DFFB0 0%, #25D366 58%, #128C7E 100%)",
+    glow: "rgba(37, 211, 102, 0.55)",
+    rim: "#B8FFD4",
+  },
+  telegram: {
+    background: "linear-gradient(180deg, #8FD8FF 0%, #2AABEE 58%, #1A8CC7 100%)",
+    glow: "rgba(42, 171, 238, 0.55)",
+    rim: "#C6ECFF",
+  },
+  facebook: {
+    background: "linear-gradient(180deg, #6AABFF 0%, #1877F2 62%, #0C5DC4 100%)",
+    glow: "rgba(24, 119, 242, 0.55)",
+    rim: "#C5DEFF",
+  },
+  instagram: {
+    background:
+      "linear-gradient(135deg, #F9CE34 0%, #F77737 28%, #EE2A7B 58%, #6228D7 100%)",
+    glow: "rgba(238, 42, 123, 0.5)",
+    rim: "#FFD0E6",
+  },
+} as const;
+
+function ConnectIcon({ id }: { id: ContactLinkId }) {
+  return (
+    <Box
+      component="svg"
+      viewBox="0 0 24 24"
+      aria-hidden
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      sx={{ width: figmaPx(16), height: figmaPx(16) }}
+    >
+      {id === "whatsapp" ? (
+        <path d="M22 16.9v2.2a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.7A2 2 0 0 1 4.1 1.1h2.2a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.6a2 2 0 0 1-.5 2.1L7.1 8.9a16 16 0 0 0 6 6l1.4-1.3a2 2 0 0 1 2.1-.5c.8.3 1.7.5 2.6.6a2 2 0 0 1 1.8 2.2Z" />
+      ) : null}
+      {id === "telegram" ? (
+        <path d="M21 4 3.5 11.2l6.2 2.1L17 8l-5.6 6.4.2 5.1 2.6-4.2L20 18.5 21 4Z" />
+      ) : null}
+      {id === "facebook" ? (
+        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+      ) : null}
+      {id === "instagram" ? (
+        <>
+          <rect x="3" y="3" width="18" height="18" rx="5" />
+          <circle cx="12" cy="12" r="4" />
+          <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none" />
+        </>
+      ) : null}
+    </Box>
+  );
+}
 
 function IconFrame({ children }: { children: ReactNode }) {
   return (
@@ -89,7 +147,18 @@ const TALK_ICONS = [
 type FormCopy = ReturnType<typeof formCopy>;
 type Face = { fontFamily: string };
 
-function TalkPanel({ copy, face, locale }: { copy: FormCopy; face: Face; locale: Locale }) {
+function TalkPanel({
+  copy,
+  face,
+  locale,
+  links,
+}: {
+  copy: FormCopy;
+  face: Face;
+  locale: Locale;
+  links: readonly ContactLink[];
+}) {
+  const visibleLinks = links.filter((link) => link.href.trim());
   return (
     <Box
       sx={{
@@ -200,6 +269,7 @@ function TalkPanel({ copy, face, locale }: { copy: FormCopy; face: Face; locale:
         ))}
       </Box>
 
+      {visibleLinks.length > 0 ? (
       <Box
         sx={{
           width: "100%",
@@ -224,44 +294,48 @@ function TalkPanel({ copy, face, locale }: { copy: FormCopy; face: Face; locale:
           {copy.connect}
         </Typography>
         <Box
-          component="a"
-          href={FORM_TELEGRAM_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover-grow-sm"
           sx={{
-            ...face,
-            ...goldButtonSx,
-            display: "inline-flex",
+            display: "flex",
+            flexWrap: "wrap",
             alignItems: "center",
-            justifyContent: "center",
-            gap: `${figmaPx(8)}px`,
-            minWidth: figmaPx(168),
-            height: figmaPx(34),
-            px: `${figmaPx(18)}px`,
-            borderRadius: "9999px",
-            textDecoration: "none",
-            fontWeight: 700,
-            fontSize: figmaPx(14),
-            lineHeight: `${figmaPx(20)}px`,
+            gap: `${figmaPx(10)}px`,
           }}
         >
-          <Box
-            component="svg"
-            viewBox="0 0 24 24"
-            aria-hidden
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={1.8}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            sx={{ width: figmaPx(14), height: figmaPx(14) }}
-          >
-            <path d="M21 4 3.5 11.2l6.2 2.1L17 8l-5.6 6.4.2 5.1 2.6-4.2L20 18.5 21 4Z" />
-          </Box>
-          {copy.telegram}
+          {visibleLinks.map((link) => (
+            <Box
+              key={link.id}
+              component="a"
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={link.label}
+              title={link.label}
+              className="hover-grow-sm"
+              sx={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: figmaPx(34),
+                height: figmaPx(34),
+                p: 0,
+                borderRadius: "9999px",
+                textDecoration: "none",
+                color: "#FFFFFF",
+                background: CONNECT_BRAND[link.id].background,
+                boxShadow: [
+                  "inset 0 1.5px 0 rgba(255, 255, 255, 0.7)",
+                  "inset 0 -3px 6px rgba(0, 0, 0, 0.22)",
+                  `0 0 0 1.5px ${CONNECT_BRAND[link.id].rim}`,
+                  `0 6px 18px ${CONNECT_BRAND[link.id].glow}`,
+                ].join(", "),
+              }}
+            >
+              <ConnectIcon id={link.id} />
+            </Box>
+          ))}
         </Box>
       </Box>
+      ) : null}
     </Box>
   );
 }
@@ -553,9 +627,11 @@ function ServicePicker({
 export default function ContactForm({
   waveSrc,
   projects,
+  connectLinks,
 }: {
   waveSrc: string | null;
   projects: readonly ShowcaseProject[];
+  connectLinks: readonly ContactLink[];
 }) {
   const pathname = usePathname();
   const locale: Locale = pathname === "/zh" || pathname.startsWith("/zh/") ? "zh" : "en";
@@ -683,7 +759,7 @@ export default function ContactForm({
         }}
       >
         <FormCard width={TALK_W}>
-          <TalkPanel copy={copy} face={face} locale={locale} />
+          <TalkPanel copy={copy} face={face} locale={locale} links={connectLinks} />
         </FormCard>
 
         <FormCard overflow="visible">

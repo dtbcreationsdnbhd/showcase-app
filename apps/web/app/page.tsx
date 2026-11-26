@@ -20,11 +20,13 @@ import {
   landingFrameHeightCss,
 } from "@/lib/landing-layout";
 import { getLocale } from "@/lib/get-locale";
+import { listContactLinks } from "@/lib/contact-links";
 import { listProjects, localizeProjects, projectToHeroSlide } from "@/lib/projects";
 
 export default async function Home() {
   const locale = await getLocale();
   const catalog = await listProjects();
+  const connectLinks = await listContactLinks();
   const projects = localizeProjects(catalog, locale);
   const logoSrc = getLandingLogoSrc();
   const heroSrc = getLandingHeroSrc();
@@ -81,7 +83,7 @@ export default async function Home() {
               />
               <HowWeWork />
               <Faq />
-              <ContactForm waveSrc={null} projects={projects} />
+              <ContactForm waveSrc={null} projects={projects} connectLinks={connectLinks} />
               <Footer />
             </Box>
           </Box>

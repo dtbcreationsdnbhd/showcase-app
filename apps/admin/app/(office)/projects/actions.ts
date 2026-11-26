@@ -404,7 +404,7 @@ function zhColumns(sheet: ProjectSheet) {
 }
 
 const ZH_COLUMNS_MISSING =
-  "Chinese fields need the new project columns. Run apps/web/supabase/projects.sql in the Supabase SQL Editor, then save again.";
+  "Chinese fields need the new project columns. Run apps/web/supabase/schema.sql in the Supabase SQL Editor, then save again.";
 
 function sheetHasZhColumns(sheet: ProjectSheet) {
   return Object.values(zhColumns(sheet)).some((value) => value.length > 0);
