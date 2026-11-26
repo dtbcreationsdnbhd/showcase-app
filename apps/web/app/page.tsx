@@ -81,7 +81,7 @@ export default async function Home() {
               />
               <HowWeWork />
               <Faq />
-              <ContactForm waveSrc={null} />
+              <ContactForm waveSrc={null} projects={projects} />
               <Footer />
             </Box>
           </Box>

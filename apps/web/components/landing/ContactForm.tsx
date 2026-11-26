@@ -3,7 +3,7 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { FORM_TELEGRAM_URL, formCopy } from "@/lib/landing-content";
 import { CJK_FONT, type Locale } from "@/lib/locale";
@@ -17,6 +17,7 @@ import {
 } from "@/lib/gold-theme";
 import { useLocaleLoading } from "@/components/landing/LocaleLoading";
 import { submitInquiry } from "@/lib/inquiries";
+import type { ShowcaseProject } from "@/lib/projects";
 import {
   CONTACT_FORM_HEIGHT_CSS,
   CONTACT_WAVE_MASK_FADE,
@@ -330,9 +331,11 @@ function FieldLabel({
 function FormCard({
   children,
   width = CARD_W,
+  overflow = "hidden",
 }: {
   children: ReactNode;
   width?: number;
+  overflow?: "hidden" | "visible";
 }) {
   return (
     <Box
@@ -345,7 +348,7 @@ function FormCard({
         p: `${CARD_PAD}px`,
         width,
         height: "auto",
-        overflow: "hidden",
+        overflow,
         flexShrink: 0,
         ...glassPanelSx,
         borderRadius: `${figmaPx(30)}px`,
@@ -356,7 +359,204 @@ function FormCard({
   );
 }
 
-export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
+function ServiceCheck({ on }: { on: boolean }) {
+  return (
+    <Box
+      aria-hidden
+      sx={{
+        flexShrink: 0,
+        width: figmaPx(16),
+        height: figmaPx(16),
+        borderRadius: `${figmaPx(4)}px`,
+        boxSizing: "border-box",
+        border: on ? "none" : "1.5px solid rgba(255, 214, 128, 0.55)",
+        background: on ? "#FFD866" : "transparent",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      {on ? (
+        <Box
+          component="svg"
+          viewBox="0 0 12 12"
+          sx={{ width: figmaPx(10), height: figmaPx(10), display: "block" }}
+        >
+          <path
+            d="M2.2 6.2 4.8 8.8 9.8 3.2"
+            fill="none"
+            stroke="#3A1808"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </Box>
+      ) : null}
+    </Box>
+  );
+}
+
+function ServicePicker({
+  projects,
+  selectedIds,
+  onChange,
+  placeholder,
+  face,
+  controlSx,
+}: {
+  projects: readonly ShowcaseProject[];
+  selectedIds: readonly string[];
+  onChange: (ids: string[]) => void;
+  placeholder: string;
+  face: Face;
+  controlSx: object;
+}) {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const selected = projects.filter((project) => selectedIds.includes(project.id));
+  const label = selected.map((project) => project.name).join(", ");
+
+  useEffect(() => {
+    if (!open) return;
+    const onPointer = (event: MouseEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("mousedown", onPointer);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onPointer);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  return (
+    <Box ref={rootRef} sx={{ position: "relative", zIndex: open ? 30 : 1 }}>
+      <Box
+        component="button"
+        type="button"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        onClick={() => setOpen((current) => !current)}
+        sx={{
+          ...controlSx,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: `${figmaPx(8)}px`,
+          cursor: "pointer",
+          textAlign: "left",
+          color: label ? "#FFFFFF" : "rgba(255, 255, 255, 0.38)",
+        }}
+      >
+        <Box
+          component="span"
+          sx={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+        >
+          {label || placeholder}
+        </Box>
+        <Box
+          component="svg"
+          viewBox="0 0 12 12"
+          aria-hidden
+          sx={{
+            flexShrink: 0,
+            width: figmaPx(12),
+            height: figmaPx(12),
+            transform: open ? "rotate(180deg)" : "none",
+            transition: "transform 0.15s ease",
+          }}
+        >
+          <path
+            d="M2.5 4.5 6 8l3.5-3.5"
+            fill="none"
+            stroke="#FFD866"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </Box>
+      </Box>
+      {open ? (
+        <Box
+          role="listbox"
+          aria-multiselectable="true"
+          sx={{
+            position: "absolute",
+            top: `calc(100% + ${figmaPx(6)}px)`,
+            left: 0,
+            right: 0,
+            zIndex: 30,
+            m: 0,
+            p: `${figmaPx(6)}px`,
+            maxHeight: figmaPx(228),
+            overflowY: "auto",
+            borderRadius: `${figmaPx(16)}px`,
+            backgroundColor: "#16040C",
+            border: "1px solid rgba(255, 214, 128, 0.4)",
+            boxShadow: "0 18px 40px rgba(12, 0, 6, 0.55)",
+          }}
+        >
+          {projects.map((project) => {
+            const on = selectedIds.includes(project.id);
+            return (
+              <Box
+                key={project.id}
+                component="button"
+                type="button"
+                role="option"
+                aria-selected={on}
+                onClick={() =>
+                  onChange(
+                    on
+                      ? selectedIds.filter((id) => id !== project.id)
+                      : [...selectedIds, project.id],
+                  )
+                }
+                sx={{
+                  ...face,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: `${figmaPx(10)}px`,
+                  width: "100%",
+                  m: 0,
+                  px: `${figmaPx(12)}px`,
+                  py: `${figmaPx(8)}px`,
+                  border: 0,
+                  borderRadius: `${figmaPx(10)}px`,
+                  background: on ? "rgba(255, 196, 92, 0.14)" : "transparent",
+                  color: on ? "#FFD866" : "rgba(255, 255, 255, 0.9)",
+                  fontWeight: 500,
+                  fontSize: "inherit",
+                  lineHeight: `${figmaPx(18)}px`,
+                  textAlign: "left",
+                  cursor: "pointer",
+                  "&:hover": {
+                    background: "rgba(255, 196, 92, 0.16)",
+                    color: "#FFD866",
+                  },
+                }}
+              >
+                <ServiceCheck on={on} />
+                {project.name}
+              </Box>
+            );
+          })}
+        </Box>
+      ) : null}
+    </Box>
+  );
+}
+
+export default function ContactForm({
+  waveSrc,
+  projects,
+}: {
+  waveSrc: string | null;
+  projects: readonly ShowcaseProject[];
+}) {
   const pathname = usePathname();
   const locale: Locale = pathname === "/zh" || pathname.startsWith("/zh/") ? "zh" : "en";
   const copy = formCopy(locale);
@@ -369,7 +569,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
   const labelFontSize = locale === "zh" ? figmaPx(12) : fieldLabelSx.fontSize;
   const [fullName, setFullName] = useState("");
   const [contact, setContact] = useState("");
-  const [service, setService] = useState("");
+  const [serviceIds, setServiceIds] = useState<string[]>([]);
   const [company, setCompany] = useState("");
   const [market, setMarket] = useState("");
   const [projectDetails, setProjectDetails] = useState("");
@@ -379,7 +579,10 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
 
   async function handleSubmit() {
     if (submitting) return;
-    if (!fullName.trim() || !contact.trim() || !service.trim()) {
+    const selectedServices = projects
+      .filter((project) => serviceIds.includes(project.id))
+      .map((project) => project.name);
+    if (!fullName.trim() || !contact.trim() || selectedServices.length === 0) {
       setNotice({
         id: Date.now(),
         message: copy.required,
@@ -393,7 +596,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
     try {
       result = await submitInquiry({
         source: "web",
-        services: [],
+        services: selectedServices,
         budget: null,
         projectCycle: null,
         fullName,
@@ -401,7 +604,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
         lookingToBuild: "",
         projectDetails,
         telegram: contact,
-        service,
+        service: selectedServices.join(", "),
         brandName: company,
         region: market,
       });
@@ -415,7 +618,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
     }
     setFullName("");
     setContact("");
-    setService("");
+    setServiceIds([]);
     setCompany("");
     setMarket("");
     setProjectDetails("");
@@ -483,7 +686,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
           <TalkPanel copy={copy} face={face} locale={locale} />
         </FormCard>
 
-        <FormCard>
+        <FormCard overflow="visible">
           <Box
             sx={{
               display: "flex",
@@ -567,16 +770,16 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
             </Box>
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: `${figmaPx(4)}px` }}>
-              <FieldLabel htmlFor="contact-service" required face={face} fontSize={labelFontSize}>
+              <FieldLabel required face={face} fontSize={labelFontSize}>
                 {copy.service}
               </FieldLabel>
-              <Box
-                component="input"
-                id="contact-service"
-                value={service}
+              <ServicePicker
+                projects={projects}
+                selectedIds={serviceIds}
+                onChange={setServiceIds}
                 placeholder={copy.servicePlaceholder}
-                onChange={(event) => setService(event.target.value)}
-                sx={controlSx}
+                face={face}
+                controlSx={controlSx}
               />
             </Box>
 
