@@ -3,7 +3,7 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import ShowcaseMedia from "@/components/landing/ShowcaseMedia";
-import { figmaPx } from "@/lib/landing-layout";
+import { SHOWCASE_CARD_H, SHOWCASE_CARD_W, figmaPx } from "@/lib/landing-layout";
 import { CJK_FONT } from "@/lib/locale";
 
 const barlow = {
@@ -11,8 +11,8 @@ const barlow = {
     'var(--font-barlow-semi-condensed), "Barlow Semi Condensed", sans-serif',
 } as const;
 
-const CARD_W = figmaPx(276);
-const CARD_H = figmaPx(414.75);
+const CARD_W = SHOWCASE_CARD_W;
+const CARD_H = SHOWCASE_CARD_H;
 const CARD_R = figmaPx(18);
 const TITLE_PAD = figmaPx(18);
 const TITLE_INNER_W = CARD_W - TITLE_PAD * 2;

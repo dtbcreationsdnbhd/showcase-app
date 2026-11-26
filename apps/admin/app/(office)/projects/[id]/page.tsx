@@ -126,24 +126,38 @@ export default async function ProjectDetailPage({
 }
 
 function ProjectSheet({ project }: { project: ShowcaseProject }) {
-  const photos = [
-    ...(project.mainImageUrl ? [{ url: project.mainImageUrl, label: "Main" }] : []),
-    ...project.detailImageUrls.map((url, index) => ({ url, label: String(index + 1) })),
-  ];
+  const details = project.detailImageUrls.map((url, index) => ({
+    url,
+    label: String(index + 1),
+  }));
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
-      <Box>
-        <Eyebrow>Photos</Eyebrow>
-        {photos.length === 0 ? (
-          <Muted>No photos yet</Muted>
-        ) : (
-          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5 }}>
-            {photos.map((photo) => (
-              <PhotoCard key={`${photo.label}-${photo.url}`} url={photo.url} label={photo.label} />
-            ))}
-          </Box>
-        )}
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
+        <Box>
+          <Eyebrow>Main</Eyebrow>
+          {project.mainImageUrl ? (
+            <PhotoCard url={project.mainImageUrl} label="Main" />
+          ) : (
+            <Muted>No main photo yet</Muted>
+          )}
+        </Box>
+        <Box>
+          <Eyebrow>Detail</Eyebrow>
+          {details.length === 0 ? (
+            <Muted>No detail photos yet</Muted>
+          ) : (
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5 }}>
+              {details.map((photo) => (
+                <PhotoCard
+                  key={`${photo.label}-${photo.url}`}
+                  url={photo.url}
+                  label={photo.label}
+                />
+              ))}
+            </Box>
+          )}
+        </Box>
       </Box>
 
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -251,17 +265,17 @@ function ProjectSheet({ project }: { project: ShowcaseProject }) {
 
 function PhotoCard({ url, label }: { url: string; label: string }) {
   const frame = {
-    width: 148,
-    height: 244,
-    objectFit: "cover" as const,
-    objectPosition: "center top",
+    maxWidth: 420,
+    maxHeight: 560,
+    width: "auto",
+    height: "auto",
     borderRadius: "8px",
     bgcolor: "#111",
     display: "block",
   };
 
   return (
-    <Box sx={{ position: "relative", width: 148, flexShrink: 0 }}>
+    <Box sx={{ position: "relative", width: "fit-content", maxWidth: 420, flexShrink: 0 }}>
       {isVideoUrl(url) ? (
         <Box component="video" src={url} controls sx={frame} />
       ) : (

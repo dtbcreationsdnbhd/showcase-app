@@ -5,12 +5,17 @@ import { useCallback, useState } from "react";
 import { usePathname } from "next/navigation";
 import ProjectCard from "@/components/landing/ProjectCard";
 import ProjectDetailPopup from "@/components/landing/ProjectDetailPopup";
-import { SHOWCASE_COLUMNS, figmaPx } from "@/lib/landing-layout";
+import {
+  SHOWCASE_CARD_H,
+  SHOWCASE_CARD_W,
+  SHOWCASE_COLUMNS,
+  figmaPx,
+} from "@/lib/landing-layout";
 import { viewProjectLabel } from "@/lib/locale";
 import { projectTagLine, type ShowcaseProject } from "@/lib/projects";
 
-const CARD_W = figmaPx(276);
-const CARD_H = figmaPx(414.75);
+const CARD_W = SHOWCASE_CARD_W;
+const CARD_H = SHOWCASE_CARD_H;
 const CARD_GAP = figmaPx(24);
 
 export default function ProjectShowcaseGallery({

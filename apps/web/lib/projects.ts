@@ -179,13 +179,13 @@ export function projectToHeroSlide(
 }
 
 /**
- * Detail popup gallery: main first, then optional details.
+ * Detail popup gallery: detail images only.
  * One frame — auto-slides when there is more than one item.
  */
 export function projectGalleryMedia(project: ShowcaseProject): {
   media: string[];
 } {
-  const media = [project.mainImageUrl, ...project.detailImageUrls].filter(
+  const media = project.detailImageUrls.filter(
     (url, index, list) => Boolean(url) && list.indexOf(url) === index,
   );
 

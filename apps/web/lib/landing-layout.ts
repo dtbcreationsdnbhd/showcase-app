@@ -57,15 +57,18 @@ export const SHOWCASE_PAD_TOP = figmaPx(60);
 export const SHOWCASE_PAD_BOTTOM = figmaPx(60);
 /** Card row (cards + arrows) is drawn at this zoom of the base 276×414.75 card. */
 export const SHOWCASE_CARD_ZOOM = 1.05;
+/** Outer project card on the 1920 stage. Figma 276×414.75 maps to 368×553. */
+export const SHOWCASE_CARD_W = figmaPx(276);
+export const SHOWCASE_CARD_H = figmaPx(414.75);
 /** padding + header 80 + gap 50 + zoomed cards */
 export const SHOWCASE_HEIGHT =
   SHOWCASE_PAD_TOP +
-  figmaPx(80 + 50 + 414.75 * SHOWCASE_CARD_ZOOM) +
+  figmaPx(80 + 50) +
+  SHOWCASE_CARD_H * SHOWCASE_CARD_ZOOM +
   SHOWCASE_PAD_BOTTOM;
 /** Landing showcase: one viewport page for the pinned slider plus its hold. */
 export const SHOWCASE_VIEWPORT_PAGES = 1 + TITLE_HOLD_PAGES;
 export const SHOWCASE_COLUMNS = 3;
-const SHOWCASE_CARD_H = figmaPx(414.75);
 const SHOWCASE_CARD_GAP = figmaPx(24);
 
 /** One showcase row, plus each extra row of cards on the projects page. */

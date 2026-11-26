@@ -7,6 +7,8 @@ import { usePathname } from "next/navigation";
 import ProjectCard from "@/components/landing/ProjectCard";
 import ProjectDetailPopup from "@/components/landing/ProjectDetailPopup";
 import {
+  SHOWCASE_CARD_H,
+  SHOWCASE_CARD_W,
   SHOWCASE_CARD_ZOOM,
   SHOWCASE_COLUMNS,
   figmaPx,
@@ -25,8 +27,8 @@ const barlow = {
     'var(--font-barlow-semi-condensed), "Barlow Semi Condensed", sans-serif',
 } as const;
 
-const CARD_W = figmaPx(276);
-const CARD_H = figmaPx(414.75);
+const CARD_W = SHOWCASE_CARD_W;
+const CARD_H = SHOWCASE_CARD_H;
 const CARD_GAP = figmaPx(24);
 const STEP = CARD_W + CARD_GAP;
 const ROW_W = CARD_W * SHOWCASE_COLUMNS + CARD_GAP * (SHOWCASE_COLUMNS - 1);
