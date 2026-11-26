@@ -3,9 +3,10 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
-import { FORM_TELEGRAM_URL, formCopy } from "@/lib/landing-content";
+import { formCopy } from "@/lib/landing-content";
+import type { ContactLink, ContactLinkId } from "@/lib/contact-links";
 import { CJK_FONT, type Locale } from "@/lib/locale";
 import InquirySnackbar, {
   type InquiryNotice,
@@ -17,6 +18,7 @@ import {
 } from "@/lib/gold-theme";
 import { useLocaleLoading } from "@/components/landing/LocaleLoading";
 import { submitInquiry } from "@/lib/inquiries";
+import type { ShowcaseProject } from "@/lib/projects";
 import {
   CONTACT_FORM_HEIGHT_CSS,
   CONTACT_WAVE_MASK_FADE,
@@ -34,6 +36,63 @@ const TALK_W = CARD_W;
 const CARD_PAD = figmaPx(26);
 const INNER_W = CARD_W - CARD_PAD * 2;
 const TALK_INNER = TALK_W - CARD_PAD * 2;
+
+const CONNECT_BRAND = {
+  whatsapp: {
+    background: "linear-gradient(180deg, #7DFFB0 0%, #25D366 58%, #128C7E 100%)",
+    glow: "rgba(37, 211, 102, 0.55)",
+    rim: "#B8FFD4",
+  },
+  telegram: {
+    background: "linear-gradient(180deg, #8FD8FF 0%, #2AABEE 58%, #1A8CC7 100%)",
+    glow: "rgba(42, 171, 238, 0.55)",
+    rim: "#C6ECFF",
+  },
+  facebook: {
+    background: "linear-gradient(180deg, #6AABFF 0%, #1877F2 62%, #0C5DC4 100%)",
+    glow: "rgba(24, 119, 242, 0.55)",
+    rim: "#C5DEFF",
+  },
+  instagram: {
+    background:
+      "linear-gradient(135deg, #F9CE34 0%, #F77737 28%, #EE2A7B 58%, #6228D7 100%)",
+    glow: "rgba(238, 42, 123, 0.5)",
+    rim: "#FFD0E6",
+  },
+} as const;
+
+function ConnectIcon({ id }: { id: ContactLinkId }) {
+  return (
+    <Box
+      component="svg"
+      viewBox="0 0 24 24"
+      aria-hidden
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      sx={{ width: figmaPx(16), height: figmaPx(16) }}
+    >
+      {id === "whatsapp" ? (
+        <path d="M22 16.9v2.2a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.7A2 2 0 0 1 4.1 1.1h2.2a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.6a2 2 0 0 1-.5 2.1L7.1 8.9a16 16 0 0 0 6 6l1.4-1.3a2 2 0 0 1 2.1-.5c.8.3 1.7.5 2.6.6a2 2 0 0 1 1.8 2.2Z" />
+      ) : null}
+      {id === "telegram" ? (
+        <path d="M21 4 3.5 11.2l6.2 2.1L17 8l-5.6 6.4.2 5.1 2.6-4.2L20 18.5 21 4Z" />
+      ) : null}
+      {id === "facebook" ? (
+        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+      ) : null}
+      {id === "instagram" ? (
+        <>
+          <rect x="3" y="3" width="18" height="18" rx="5" />
+          <circle cx="12" cy="12" r="4" />
+          <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none" />
+        </>
+      ) : null}
+    </Box>
+  );
+}
 
 function IconFrame({ children }: { children: ReactNode }) {
   return (
@@ -88,7 +147,18 @@ const TALK_ICONS = [
 type FormCopy = ReturnType<typeof formCopy>;
 type Face = { fontFamily: string };
 
-function TalkPanel({ copy, face, locale }: { copy: FormCopy; face: Face; locale: Locale }) {
+function TalkPanel({
+  copy,
+  face,
+  locale,
+  links,
+}: {
+  copy: FormCopy;
+  face: Face;
+  locale: Locale;
+  links: readonly ContactLink[];
+}) {
+  const visibleLinks = links.filter((link) => link.href.trim());
   return (
     <Box
       sx={{
@@ -199,6 +269,7 @@ function TalkPanel({ copy, face, locale }: { copy: FormCopy; face: Face; locale:
         ))}
       </Box>
 
+      {visibleLinks.length > 0 ? (
       <Box
         sx={{
           width: "100%",
@@ -223,44 +294,48 @@ function TalkPanel({ copy, face, locale }: { copy: FormCopy; face: Face; locale:
           {copy.connect}
         </Typography>
         <Box
-          component="a"
-          href={FORM_TELEGRAM_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover-grow-sm"
           sx={{
-            ...face,
-            ...goldButtonSx,
-            display: "inline-flex",
+            display: "flex",
+            flexWrap: "wrap",
             alignItems: "center",
-            justifyContent: "center",
-            gap: `${figmaPx(8)}px`,
-            minWidth: figmaPx(168),
-            height: figmaPx(34),
-            px: `${figmaPx(18)}px`,
-            borderRadius: "9999px",
-            textDecoration: "none",
-            fontWeight: 700,
-            fontSize: figmaPx(14),
-            lineHeight: `${figmaPx(20)}px`,
+            gap: `${figmaPx(10)}px`,
           }}
         >
-          <Box
-            component="svg"
-            viewBox="0 0 24 24"
-            aria-hidden
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={1.8}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            sx={{ width: figmaPx(14), height: figmaPx(14) }}
-          >
-            <path d="M21 4 3.5 11.2l6.2 2.1L17 8l-5.6 6.4.2 5.1 2.6-4.2L20 18.5 21 4Z" />
-          </Box>
-          {copy.telegram}
+          {visibleLinks.map((link) => (
+            <Box
+              key={link.id}
+              component="a"
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={link.label}
+              title={link.label}
+              className="hover-grow-sm"
+              sx={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: figmaPx(34),
+                height: figmaPx(34),
+                p: 0,
+                borderRadius: "9999px",
+                textDecoration: "none",
+                color: "#FFFFFF",
+                background: CONNECT_BRAND[link.id].background,
+                boxShadow: [
+                  "inset 0 1.5px 0 rgba(255, 255, 255, 0.7)",
+                  "inset 0 -3px 6px rgba(0, 0, 0, 0.22)",
+                  `0 0 0 1.5px ${CONNECT_BRAND[link.id].rim}`,
+                  `0 6px 18px ${CONNECT_BRAND[link.id].glow}`,
+                ].join(", "),
+              }}
+            >
+              <ConnectIcon id={link.id} />
+            </Box>
+          ))}
         </Box>
       </Box>
+      ) : null}
     </Box>
   );
 }
@@ -330,9 +405,11 @@ function FieldLabel({
 function FormCard({
   children,
   width = CARD_W,
+  overflow = "hidden",
 }: {
   children: ReactNode;
   width?: number;
+  overflow?: "hidden" | "visible";
 }) {
   return (
     <Box
@@ -345,7 +422,7 @@ function FormCard({
         p: `${CARD_PAD}px`,
         width,
         height: "auto",
-        overflow: "hidden",
+        overflow,
         flexShrink: 0,
         ...glassPanelSx,
         borderRadius: `${figmaPx(30)}px`,
@@ -356,7 +433,206 @@ function FormCard({
   );
 }
 
-export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
+function ServiceCheck({ on }: { on: boolean }) {
+  return (
+    <Box
+      aria-hidden
+      sx={{
+        flexShrink: 0,
+        width: figmaPx(16),
+        height: figmaPx(16),
+        borderRadius: `${figmaPx(4)}px`,
+        boxSizing: "border-box",
+        border: on ? "none" : "1.5px solid rgba(255, 214, 128, 0.55)",
+        background: on ? "#FFD866" : "transparent",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      {on ? (
+        <Box
+          component="svg"
+          viewBox="0 0 12 12"
+          sx={{ width: figmaPx(10), height: figmaPx(10), display: "block" }}
+        >
+          <path
+            d="M2.2 6.2 4.8 8.8 9.8 3.2"
+            fill="none"
+            stroke="#3A1808"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </Box>
+      ) : null}
+    </Box>
+  );
+}
+
+function ServicePicker({
+  projects,
+  selectedIds,
+  onChange,
+  placeholder,
+  face,
+  controlSx,
+}: {
+  projects: readonly ShowcaseProject[];
+  selectedIds: readonly string[];
+  onChange: (ids: string[]) => void;
+  placeholder: string;
+  face: Face;
+  controlSx: object;
+}) {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const selected = projects.filter((project) => selectedIds.includes(project.id));
+  const label = selected.map((project) => project.name).join(", ");
+
+  useEffect(() => {
+    if (!open) return;
+    const onPointer = (event: MouseEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("mousedown", onPointer);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onPointer);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  return (
+    <Box ref={rootRef} sx={{ position: "relative", zIndex: open ? 30 : 1 }}>
+      <Box
+        component="button"
+        type="button"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        onClick={() => setOpen((current) => !current)}
+        sx={{
+          ...controlSx,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: `${figmaPx(8)}px`,
+          cursor: "pointer",
+          textAlign: "left",
+          color: label ? "#FFFFFF" : "rgba(255, 255, 255, 0.38)",
+        }}
+      >
+        <Box
+          component="span"
+          sx={{ minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+        >
+          {label || placeholder}
+        </Box>
+        <Box
+          component="svg"
+          viewBox="0 0 12 12"
+          aria-hidden
+          sx={{
+            flexShrink: 0,
+            width: figmaPx(12),
+            height: figmaPx(12),
+            transform: open ? "rotate(180deg)" : "none",
+            transition: "transform 0.15s ease",
+          }}
+        >
+          <path
+            d="M2.5 4.5 6 8l3.5-3.5"
+            fill="none"
+            stroke="#FFD866"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </Box>
+      </Box>
+      {open ? (
+        <Box
+          role="listbox"
+          aria-multiselectable="true"
+          sx={{
+            position: "absolute",
+            top: `calc(100% + ${figmaPx(6)}px)`,
+            left: 0,
+            right: 0,
+            zIndex: 30,
+            m: 0,
+            p: `${figmaPx(6)}px`,
+            maxHeight: figmaPx(228),
+            overflowY: "auto",
+            borderRadius: `${figmaPx(16)}px`,
+            backgroundColor: "#16040C",
+            border: "1px solid rgba(255, 214, 128, 0.4)",
+            boxShadow: "0 18px 40px rgba(12, 0, 6, 0.55)",
+          }}
+        >
+          {projects.map((project) => {
+            const on = selectedIds.includes(project.id);
+            return (
+              <Box
+                key={project.id}
+                component="button"
+                type="button"
+                role="option"
+                aria-selected={on}
+                onClick={() =>
+                  onChange(
+                    on
+                      ? selectedIds.filter((id) => id !== project.id)
+                      : [...selectedIds, project.id],
+                  )
+                }
+                sx={{
+                  ...face,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: `${figmaPx(10)}px`,
+                  width: "100%",
+                  m: 0,
+                  px: `${figmaPx(12)}px`,
+                  py: `${figmaPx(8)}px`,
+                  border: 0,
+                  borderRadius: `${figmaPx(10)}px`,
+                  background: on ? "rgba(255, 196, 92, 0.14)" : "transparent",
+                  color: on ? "#FFD866" : "rgba(255, 255, 255, 0.9)",
+                  fontWeight: 500,
+                  fontSize: "inherit",
+                  lineHeight: `${figmaPx(18)}px`,
+                  textAlign: "left",
+                  cursor: "pointer",
+                  "&:hover": {
+                    background: "rgba(255, 196, 92, 0.16)",
+                    color: "#FFD866",
+                  },
+                }}
+              >
+                <ServiceCheck on={on} />
+                {project.name}
+              </Box>
+            );
+          })}
+        </Box>
+      ) : null}
+    </Box>
+  );
+}
+
+export default function ContactForm({
+  waveSrc,
+  projects,
+  connectLinks,
+}: {
+  waveSrc: string | null;
+  projects: readonly ShowcaseProject[];
+  connectLinks: readonly ContactLink[];
+}) {
   const pathname = usePathname();
   const locale: Locale = pathname === "/zh" || pathname.startsWith("/zh/") ? "zh" : "en";
   const copy = formCopy(locale);
@@ -369,7 +645,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
   const labelFontSize = locale === "zh" ? figmaPx(12) : fieldLabelSx.fontSize;
   const [fullName, setFullName] = useState("");
   const [contact, setContact] = useState("");
-  const [service, setService] = useState("");
+  const [serviceIds, setServiceIds] = useState<string[]>([]);
   const [company, setCompany] = useState("");
   const [market, setMarket] = useState("");
   const [projectDetails, setProjectDetails] = useState("");
@@ -379,7 +655,10 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
 
   async function handleSubmit() {
     if (submitting) return;
-    if (!fullName.trim() || !contact.trim() || !service.trim()) {
+    const selectedServices = projects
+      .filter((project) => serviceIds.includes(project.id))
+      .map((project) => project.name);
+    if (!fullName.trim() || !contact.trim() || selectedServices.length === 0) {
       setNotice({
         id: Date.now(),
         message: copy.required,
@@ -393,7 +672,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
     try {
       result = await submitInquiry({
         source: "web",
-        services: [],
+        services: selectedServices,
         budget: null,
         projectCycle: null,
         fullName,
@@ -401,7 +680,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
         lookingToBuild: "",
         projectDetails,
         telegram: contact,
-        service,
+        service: selectedServices.join(", "),
         brandName: company,
         region: market,
       });
@@ -415,7 +694,7 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
     }
     setFullName("");
     setContact("");
-    setService("");
+    setServiceIds([]);
     setCompany("");
     setMarket("");
     setProjectDetails("");
@@ -480,10 +759,10 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
         }}
       >
         <FormCard width={TALK_W}>
-          <TalkPanel copy={copy} face={face} locale={locale} />
+          <TalkPanel copy={copy} face={face} locale={locale} links={connectLinks} />
         </FormCard>
 
-        <FormCard>
+        <FormCard overflow="visible">
           <Box
             sx={{
               display: "flex",
@@ -567,16 +846,16 @@ export default function ContactForm({ waveSrc }: { waveSrc: string | null }) {
             </Box>
 
             <Box sx={{ display: "flex", flexDirection: "column", gap: `${figmaPx(4)}px` }}>
-              <FieldLabel htmlFor="contact-service" required face={face} fontSize={labelFontSize}>
+              <FieldLabel required face={face} fontSize={labelFontSize}>
                 {copy.service}
               </FieldLabel>
-              <Box
-                component="input"
-                id="contact-service"
-                value={service}
+              <ServicePicker
+                projects={projects}
+                selectedIds={serviceIds}
+                onChange={setServiceIds}
                 placeholder={copy.servicePlaceholder}
-                onChange={(event) => setService(event.target.value)}
-                sx={controlSx}
+                face={face}
+                controlSx={controlSx}
               />
             </Box>
 

@@ -12,6 +12,7 @@ import { figmaPx } from "@/lib/landing-layout";
 import { CJK_FONT, homeHashPrefix, sheetCopy, type Locale } from "@/lib/locale";
 import type { FeatureIconName } from "@/lib/project-sheet";
 import {
+  landingPageUrl,
   projectGalleryMedia,
   type ShowcaseProject,
 } from "@/lib/projects";
@@ -47,10 +48,16 @@ const POPUP_GOLD = "#F6C15A";
 const PAD_X = 44;
 const PAD_Y = 52;
 /** Popup frame stays this wide; the photo column is the narrower share. */
-const PHOTO_W = 420;
-const PHOTO_H = 540 / 0.78;
+const PHOTO_W = 560;
+/** Left image only. 1800×1200. The dialog scale does not use this height. */
+const PHOTO_H = (PHOTO_W * 1200) / 1800;
+/** Original photo height. Popup scale stays here so the type does not shrink. */
+const POPUP_SCALE_H = 540 / 0.78;
 const COL_GAP = 48;
-const TEXT_W = 760;
+const TEXT_W = 860;
+const THUMB_GAP = 12;
+const THUMB_H = 86;
+const THUMB_W = THUMB_H * (PHOTO_W / PHOTO_H);
 
 const bodySx = {
   ...barlow,
@@ -74,6 +81,7 @@ function ProjectPhoto({
   alt,
   controls = false,
   objectFit = "cover",
+  objectPosition = "center top",
   aspectRatio = PHOTO_W / PHOTO_H,
 }: {
   src: string | null;
@@ -82,6 +90,7 @@ function ProjectPhoto({
   alt: string;
   controls?: boolean;
   objectFit?: "contain" | "cover";
+  objectPosition?: string;
   aspectRatio?: number;
 }) {
   const frameSx = {
@@ -122,7 +131,7 @@ function ProjectPhoto({
         controls={controls}
         autoPlay={!controls}
         objectFit={objectFit}
-        objectPosition="center top"
+        objectPosition={objectPosition}
         filter="drop-shadow(0 0 1px rgba(255, 255, 255, 0.55)) drop-shadow(0 12px 22px rgba(0, 0, 0, 0.4))"
       />
     </Box>
@@ -522,6 +531,7 @@ export default function ProjectDetailPopup({
   const answerSize = locale === "zh" ? figmaPx(13) : figmaPx(16);
   const footerSize = locale === "zh" ? figmaPx(13) : figmaPx(16);
   const detail = project;
+  const landingUrl = landingPageUrl(detail.landingUrl);
   const hasSheet =
     Boolean(detail.subtitle || detail.whyIt || detail.howWeHelp || detail.ctaText || detail.footerText) ||
     detail.features.length > 0;
@@ -598,7 +608,7 @@ export default function ProjectDetailPopup({
 
   const cardW = figmaPx(PAD_X + PHOTO_W + COL_GAP + TEXT_W + PAD_X);
   const closeSize = figmaPx(36);
-  const cardH = figmaPx(PAD_Y * 2 + PHOTO_H + 72);
+  const cardH = figmaPx(PAD_Y * 2 + POPUP_SCALE_H + 72);
 
   return createPortal(
     <Box
@@ -683,9 +693,10 @@ export default function ProjectDetailPopup({
             boxSizing: "border-box",
             display: "flex",
             flexDirection: "column",
-            justifyContent: "center",
+            justifyContent: "flex-start",
             alignItems: "center",
-            py: `${figmaPx(28)}px`,
+            pt: `${figmaPx(48)}px`,
+            pb: `${figmaPx(20)}px`,
             px: 0,
             width: cardW,
             bgcolor: "#160904",
@@ -718,8 +729,9 @@ export default function ProjectDetailPopup({
               flexDirection: "row",
               justifyContent: "flex-start",
               alignItems: "stretch",
+              flex: "1 1 auto",
               px: `${figmaPx(PAD_X)}px`,
-              pb: `${figmaPx(8)}px`,
+              pb: 0,
               gap: `${figmaPx(COL_GAP)}px`,
               width: "100%",
               boxSizing: "border-box",
@@ -727,73 +739,92 @@ export default function ProjectDetailPopup({
           >
             <Box
               sx={{
-                position: "relative",
+                display: "flex",
+                flexDirection: "column",
+                gap: `${figmaPx(THUMB_GAP)}px`,
                 width: figmaPx(PHOTO_W),
                 flexShrink: 0,
               }}
             >
-              <ProjectPhoto
-                src={imageSrc}
-                width={figmaPx(PHOTO_W)}
-                height={figmaPx(PHOTO_H)}
-                alt={detail.name}
-                objectFit="cover"
-              />
+              <Box sx={{ position: "relative", width: "100%" }}>
+                <ProjectPhoto
+                  src={imageSrc}
+                  width={figmaPx(PHOTO_W)}
+                  height={figmaPx(PHOTO_H)}
+                  alt={detail.name}
+                  objectFit="contain"
+                  objectPosition="center"
+                />
+                {canSlide ? (
+                  <>
+                    <GalleryArrow
+                      direction="prev"
+                      onClick={() => goTo(slide - 1)}
+                    />
+                    <GalleryArrow
+                      direction="next"
+                      onClick={() => goTo(slide + 1)}
+                    />
+                  </>
+                ) : null}
+              </Box>
               {canSlide ? (
-                <>
-                  <GalleryArrow
-                    direction="prev"
-                    onClick={() => goTo(slide - 1)}
-                  />
-                  <GalleryArrow
-                    direction="next"
-                    onClick={() => goTo(slide + 1)}
-                  />
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      left: 0,
-                      right: 0,
-                      bottom: figmaPx(16),
-                      display: "flex",
-                      justifyContent: "center",
-                      gap: `${figmaPx(8)}px`,
-                      zIndex: 2,
-                    }}
-                  >
-                    {media.map((src, index) => (
+                <Box
+                  sx={{
+                    display: "flex",
+                    gap: `${figmaPx(THUMB_GAP)}px`,
+                    width: "100%",
+                    overflowX: "auto",
+                    pb: `${figmaPx(2)}px`,
+                  }}
+                >
+                  {media.map((src, index) => {
+                    const active = slide === index;
+                    return (
                       <Box
                         key={`${src}-${index}`}
                         component="button"
                         type="button"
-                        aria-label={`Go to media ${index + 1}`}
-                        aria-current={slide === index ? "true" : undefined}
-                        onClick={() => goTo(index)}
+                        aria-label={`Show media ${index + 1}`}
+                        aria-current={active ? "true" : undefined}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          goTo(index);
+                        }}
                         sx={{
-                          width: figmaPx(8),
-                          height: figmaPx(8),
+                          position: "relative",
+                          flex: "0 0 auto",
+                          width: figmaPx(THUMB_W),
+                          height: figmaPx(THUMB_H),
                           p: 0,
                           m: 0,
-                          border: 0,
-                          borderRadius: "50%",
+                          overflow: "hidden",
                           cursor: "pointer",
                           appearance: "none",
-                          bgcolor:
-                            slide === index
-                              ? "rgba(255, 215, 122, 0.95)"
-                              : "rgba(255, 255, 255, 0.35)",
-                          boxShadow: "0 1px 4px rgba(0, 0, 0, 0.35)",
-                          "&:hover": {
-                            bgcolor:
-                              slide === index
-                                ? "rgba(255, 215, 122, 1)"
-                                : "rgba(255, 255, 255, 0.55)",
-                          },
+                          borderRadius: `${figmaPx(10)}px`,
+                          border: active
+                            ? "2px solid #F6C15A"
+                            : "1px solid rgba(255, 196, 92, 0.45)",
+                          boxShadow: active
+                            ? "0 0 12px rgba(255, 196, 92, 0.45)"
+                            : "none",
+                          bgcolor: "#120804",
+                          opacity: active ? 1 : 0.72,
+                          "&:hover": { opacity: 1 },
                         }}
-                      />
-                    ))}
-                  </Box>
-                </>
+                      >
+                        <ShowcaseMedia
+                          src={src}
+                          alt=""
+                          sizes={`${figmaPx(THUMB_W)}px`}
+                          objectFit="contain"
+                          objectPosition="center"
+                          autoPlay={false}
+                        />
+                      </Box>
+                    );
+                  })}
+                </Box>
               ) : null}
             </Box>
 
@@ -802,6 +833,7 @@ export default function ProjectDetailPopup({
               display: "flex",
               flexDirection: "column",
               alignItems: "flex-start",
+              alignSelf: "stretch",
               p: 0,
               gap: `${figmaPx(20)}px`,
               width: figmaPx(TEXT_W),
@@ -876,6 +908,29 @@ export default function ProjectDetailPopup({
             <Box sx={{ display: "flex", flexDirection: "column", gap: `${figmaPx(6)}px`, width: "100%" }}>
               <SheetLabel locale={locale}>{labels.howWeHelp}</SheetLabel>
               <Typography sx={{ ...bodySx, ...copyFace, fontSize: answerSize }}>{sheet.howWeHelp}</Typography>
+            </Box>
+            ) : null}
+
+            {landingUrl ? (
+            <Box sx={{ display: "flex", flexDirection: "column", gap: `${figmaPx(6)}px`, width: "100%" }}>
+              <SheetLabel locale={locale}>{labels.visitSite}</SheetLabel>
+              <Typography
+                component="a"
+                href={landingUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{
+                  ...bodySx,
+                  ...copyFace,
+                  fontSize: answerSize,
+                  color: "#FFFFFF",
+                  textDecoration: "underline",
+                  textUnderlineOffset: "0.18em",
+                  "&:hover": { color: "#FFE7A3" },
+                }}
+              >
+                {detail.landingUrl.trim()}
+              </Typography>
             </Box>
             ) : null}
 

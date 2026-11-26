@@ -68,25 +68,15 @@ To add another person later, create `theirname@internal.invalid` the same way. T
 
 No new tables and no service role key.
 
-### Contact form tables
+### Database
 
-Desktop and mobile submissions share one table per environment. A `source` column is `web` or `mobile`.
-
-1. Open the Supabase project → **SQL Editor** → New query.
-2. Paste and run [apps/web/supabase/inquiries.sql](apps/web/supabase/inquiries.sql).
-3. Table Editor should list `staging_inquiries` and `production_inquiries`.
-
-The script creates both tables, turns on row level security, and allows anonymous insert only. Visitors cannot read other rows. The publishable key cannot create tables, so this SQL step is manual.
-
-### Showcase projects
-
-Desktop and mobile project cards read one table per environment. Signed-in admin users create the rows and upload the images.
+One script creates the project, inquiry, and contact-link tables. Each has a staging copy and a production copy.
 
 1. Open the Supabase project → **SQL Editor** → New query.
-2. Paste and run [apps/web/supabase/projects.sql](apps/web/supabase/projects.sql).
-3. Table Editor should list `staging_projects` and `production_projects`. Storage should list a public bucket named `project-images`.
+2. Paste and run [apps/web/supabase/schema.sql](apps/web/supabase/schema.sql).
+3. Table Editor should list `staging_projects`, `production_projects`, `staging_inquiries`, `production_inquiries`, `staging_contact_links`, and `production_contact_links`. Storage should list a public bucket named `project-images`.
 
-Visitors can read projects. Only a signed-in admin user can insert a row or upload an image. Set `NEXT_PUBLIC_PROJECT_TABLE` to `staging_projects` locally and on Vercel Preview, and `production_projects` on Vercel Production. Use the same value in `web` and `admin`.
+Visitors can read projects and contact links, and can insert an inquiry. They cannot read other people's inquiries. Only a signed-in admin user can change projects, contact links, or upload an image. Set `NEXT_PUBLIC_PROJECT_TABLE` to `staging_projects` locally and on Vercel Preview, and `production_projects` on Vercel Production. Use the same value in `web` and `admin`. Inquiry tables follow the same split through `NEXT_PUBLIC_INQUIRY_TABLE`.
 
 ## Production: Vercel (web)
 

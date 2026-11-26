@@ -6,8 +6,9 @@ import LanguageSwitch from "@/components/landing/LanguageSwitch";
 import ServicesMenu, { ServicesCaret } from "@/components/landing/ServicesMenu";
 import { getLocale, getRequestPathname } from "@/lib/get-locale";
 import { GOLD_INK, goldButtonSx } from "@/lib/gold-theme";
-import { DESKTOP_NAV_LINKS, SERVICES_MENU_HASH } from "@/lib/landing-nav";
-import { CJK_FONT, chromeCopy, homeHashPrefix, navLabel } from "@/lib/locale";
+import { DESKTOP_NAV_LINKS } from "@/lib/landing-nav";
+import type { ShowcaseProject } from "@/lib/projects";
+import { CJK_FONT, chromeCopy, homeHashPrefix, navLabel, withLocale } from "@/lib/locale";
 
 const latinHeaderFont = {
   fontFamily:
@@ -39,10 +40,12 @@ function ArrowRightIcon() {
 export default async function Navbar({
   logoSrc,
   hrefPrefix,
+  projects,
 }: {
   logoSrc: string | null;
   /** Overrides the home-page prefix. Omitted pages follow the current locale path. */
   hrefPrefix?: string;
+  projects: readonly ShowcaseProject[];
 }) {
   const locale = await getLocale();
   const pathname = await getRequestPathname();
@@ -213,12 +216,11 @@ export default async function Navbar({
                 <ServicesMenu
                   key={link.hash}
                   locale={locale}
-                  href={withPrefix(SERVICES_MENU_HASH)}
+                  projects={projects}
                 >
                   <Box
-                    component="span"
-                    role="button"
-                    tabIndex={0}
+                    component="a"
+                    href={withLocale("/projects", locale)}
                     aria-haspopup="true"
                     className="hover-grow-lg"
                     sx={{ ...linkSx, position: "relative" }}

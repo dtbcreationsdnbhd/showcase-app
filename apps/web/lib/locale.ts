@@ -79,12 +79,14 @@ const SHEET = {
     keyFeatures: "Key Features",
     whyYouNeedIt: "Why You Need It",
     howWeHelp: "How We Help",
+    visitSite: "Visit Site",
   },
   zh: {
     productName: "产品名称",
     keyFeatures: "核心功能",
     whyYouNeedIt: "为什么您需要它",
     howWeHelp: "我们如何帮助您",
+    visitSite: "访问网站",
   },
 } as const;
 

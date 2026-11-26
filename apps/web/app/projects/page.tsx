@@ -29,7 +29,8 @@ const PAD_BOTTOM = figmaPx(100);
 
 export default async function ProjectsPage() {
   const locale = await getLocale();
-  const projects = localizeProjects(await listProjects(), locale);
+  const catalog = await listProjects();
+  const projects = localizeProjects(catalog, locale);
   const title = showcaseTitle(locale);
   const logoSrc = getLandingLogoSrc();
   const stageHeight =
@@ -75,7 +76,7 @@ export default async function ProjectsPage() {
               pointerEvents: "auto",
             }}
           >
-            <Navbar logoSrc={logoSrc} />
+            <Navbar logoSrc={logoSrc} projects={catalog} />
           </Box>
         </Box>
 

@@ -57,7 +57,7 @@ export async function submitInquiry(input: InquiryInput): Promise<InquiryResult>
   const { error } = await (input.source === "web"
     ? table.insert({
         source: "web",
-        services: [],
+        services,
         budget: null,
         project_cycle: null,
         full_name: fullName,

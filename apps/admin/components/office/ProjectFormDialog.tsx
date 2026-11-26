@@ -32,8 +32,10 @@ import {
 import type { ShowcaseProject } from "@/lib/projects";
 import { cornerRadius } from "@/lib/ui";
 
-const MEDIA_SIZE_HINT =
-  "Recommended 1092 × 1800 px, portrait 91:150. The popup crops the photo to fill the frame, so keep the subject centered.";
+const MAIN_MEDIA_HINT =
+  "Recommended 1200 × 1800 px, portrait 2:3. The card crops the photo to fill the frame, so keep the subject toward the top.";
+const DETAIL_MEDIA_HINT =
+  "Recommended 1800 × 1200 px, landscape 3:2. The popup shows the whole image inside the frame.";
 
 const fieldSx = {
   "& .MuiOutlinedInput-root": {
@@ -418,11 +420,24 @@ function ProjectFormFields({
             />
           }
         />
+        <TextField
+          name="landingUrl"
+          label="Landing page link (optional)"
+          placeholder="https://"
+          fullWidth
+          size="small"
+          disabled={pending}
+          defaultValue={project?.landingUrl ?? ""}
+          sx={fieldSx}
+        />
+        <Typography variant="caption" color="text.secondary" sx={{ mt: -1 }}>
+          Optional. Shown under How We Help as Visit Site. The text is this link.
+        </Typography>
         <ImageField
           name="mainImage"
           keptName="keptMainImage"
           label="Main media (required)"
-          hint={MEDIA_SIZE_HINT}
+          hint={MAIN_MEDIA_HINT}
           disabled={pending}
           existingUrls={project?.mainImageUrl ? [project.mainImageUrl] : []}
         />
@@ -430,7 +445,7 @@ function ProjectFormFields({
           name="detailImages"
           keptName="keptDetailImages"
           label="Detail media (optional)"
-          hint={MEDIA_SIZE_HINT}
+          hint={DETAIL_MEDIA_HINT}
           disabled={pending}
           multiple
           existingUrls={project?.detailImageUrls ?? []}

@@ -20,12 +20,16 @@ import {
   landingFrameHeightCss,
 } from "@/lib/landing-layout";
 import { getLocale } from "@/lib/get-locale";
+import { listContactLinks } from "@/lib/contact-links";
 import { listProjects, localizeProjects, projectToHeroSlide } from "@/lib/projects";
 
 export default async function Home() {
   const locale = await getLocale();
-  const projects = localizeProjects(await listProjects(), locale);
+  const catalog = await listProjects();
+  const connectLinks = await listContactLinks();
+  const projects = localizeProjects(catalog, locale);
   const logoSrc = getLandingLogoSrc();
+  const heroDesktopSrc = getLandingHeroDesktopSrc();
   const heroSrc = getLandingHeroSrc();
   const heroSlides = projects.map((project) => projectToHeroSlide(project, locale));
 
@@ -57,7 +61,7 @@ export default async function Home() {
                   pointerEvents: "auto",
                 }}
               >
-                <Navbar logoSrc={logoSrc} />
+                <Navbar logoSrc={logoSrc} projects={catalog} />
               </Box>
             </Box>
 
@@ -68,19 +72,13 @@ export default async function Home() {
                 transformOrigin: "top left",
               }}
             >
-              <Hero heroSrc={getLandingHeroDesktopSrc()} />
-              <HeroCardsSection slides={heroSlides} />
+              <Hero heroSrc={heroDesktopSrc} />
+              <HeroCardsSection slides={heroSlides} projects={projects} />
               <TargetedSolutions />
-              <LandingBackgrounds
-                solutionsSrc={
-                  locale === "zh"
-                    ? "/landing/solutions-bg-cn.png"
-                    : "/landing/solutions-bg.webp"
-                }
-              />
+              <LandingBackgrounds heroSrc={heroDesktopSrc} />
               <HowWeWork />
               <Faq />
-              <ContactForm waveSrc={null} />
+              <ContactForm waveSrc={null} projects={projects} connectLinks={connectLinks} />
               <Footer />
             </Box>
           </Box>

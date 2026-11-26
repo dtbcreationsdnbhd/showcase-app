@@ -2,12 +2,14 @@
 
 import { useState, type ReactNode } from "react";
 import Box from "@mui/material/Box";
-import CenterHashLink from "@/components/landing/CenterHashLink";
+import ProjectDetailPopup from "@/components/landing/ProjectDetailPopup";
 import {
+  findServiceProject,
   SERVICES_MENU,
   type ServiceGroup,
   type ServiceIcon,
 } from "@/lib/landing-nav";
+import { localizeProject, type ShowcaseProject } from "@/lib/projects";
 import { GOLD_RIM } from "@/lib/gold-theme";
 import { LANDING_DESIGN_WIDTH } from "@/lib/landing-layout";
 import { CJK_FONT, type Locale } from "@/lib/locale";
@@ -101,16 +103,17 @@ const PANEL_MASK = `linear-gradient(180deg, transparent 0, #000 ${PANEL_TOP_FADE
 
 /** Hover/focus target: wraps the SERVICES link and owns the dropdown panel. */
 export default function ServicesMenu({
-  href,
   locale,
+  projects,
   children,
 }: {
-  href: string;
   locale: Locale;
+  projects: readonly ShowcaseProject[];
   children: ReactNode;
 }) {
   const [open, setOpen] = useState(false);
   const [instant, setInstant] = useState(false);
+  const [selected, setSelected] = useState<ShowcaseProject | null>(null);
 
   return (
     <Box
@@ -136,15 +139,26 @@ export default function ServicesMenu({
     >
       {children}
       <ServicesPanel
-        href={href}
         locale={locale}
+        projects={projects}
         open={open}
         instant={instant}
         onNavigate={() => {
           setInstant(true);
           setOpen(false);
         }}
+        onOpen={(project) => {
+          setSelected(project);
+          setInstant(true);
+          setOpen(false);
+        }}
       />
+      {selected ? (
+        <ProjectDetailPopup
+          project={localizeProject(selected, locale)}
+          onClose={() => setSelected(null)}
+        />
+      ) : null}
     </Box>
   );
 }
@@ -183,17 +197,19 @@ export function ServicesCaret() {
  *  gap under the link so the pointer can cross into it, and lands the panel
  *  flush with the header's bottom edge. */
 function ServicesPanel({
-  href,
   locale,
+  projects,
   open,
   instant,
   onNavigate,
+  onOpen,
 }: {
-  href: string;
   locale: Locale;
+  projects: readonly ShowcaseProject[];
   open: boolean;
   instant: boolean;
   onNavigate: () => void;
+  onOpen: (project: ShowcaseProject) => void;
 }) {
   const textFont = locale === "zh" ? { fontFamily: CJK_FONT } : barlow;
   const type =
@@ -286,10 +302,15 @@ function ServicesPanel({
             </Box>
 
             {group.items.map((item) => (
-              <CenterHashLink
+              <Box
                 key={item.id}
-                hash={href.slice(href.indexOf("#"))}
-                href={href}
+                component="button"
+                type="button"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  const project = findServiceProject(group.id, item, projects);
+                  if (project) onOpen(project);
+                }}
                 sx={{
                   textDecoration: "none",
                   cursor: "pointer",
@@ -297,8 +318,17 @@ function ServicesPanel({
                   alignItems: "center",
                   justifyContent: "space-between",
                   gap: "24px",
+                  width: "100%",
+                  m: 0,
+                  px: 0,
                   py: "18px",
+                  border: "none",
                   borderTop: "1px solid rgba(255, 255, 255, 0.08)",
+                  borderRadius: 0,
+                  background: "none",
+                  font: "inherit",
+                  color: "inherit",
+                  textAlign: "left",
                   "&:first-of-type": { borderTop: "none" },
                   "&:hover .services-item-title": { color: "#FFD866" },
                   "&:hover .services-item-dot": {
@@ -397,7 +427,7 @@ function ServicesPanel({
                 >
                   {ICONS[item.icon]}
                 </Box>
-              </CenterHashLink>
+              </Box>
             ))}
           </Box>
         ))}

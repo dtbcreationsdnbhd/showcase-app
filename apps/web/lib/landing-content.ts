@@ -149,7 +149,6 @@ export function formCopy(locale: "en" | "zh") {
         },
       ],
       connect: "直接联系我们",
-      telegram: "Telegram",
       convoTitle: "开启商务对话",
       convoIntro: "告诉我们您的需求，让我们为您寻找合适的解决方案",
       name: "您的姓名",
@@ -178,7 +177,6 @@ export function formCopy(locale: "en" | "zh") {
     talkIntro: FORM_TALK_INTRO,
     points: FORM_TALK_POINTS,
     connect: FORM_TALK_CONNECT,
-    telegram: "Telegram",
     convoTitle: FORM_CONVO_TITLE,
     convoIntro: FORM_CONVO_INTRO,
     name: FORM_CONVO_NAME,
@@ -202,9 +200,16 @@ export function formCopy(locale: "en" | "zh") {
   };
 }
 
-export const FORM_TELEGRAM_LABEL = "Telegram";
-/** Opens Telegram until a specific handle is set. */
-export const FORM_TELEGRAM_URL = "https://t.me/";
+export const FORM_CONNECT_LINKS = [
+  { id: "whatsapp", label: "WhatsApp", href: "https://wa.me/601112172475" },
+  { id: "telegram", label: "Telegram", href: "https://t.me/visioncraftofficial" },
+  {
+    id: "facebook",
+    label: "Facebook",
+    href: "https://www.facebook.com/profile.php?id=61595156267766",
+  },
+  { id: "instagram", label: "Instagram", href: "https://www.instagram.com/visioncraftt.cn/" },
+] as const;
 
 /** Desktop has room for the long version; the mobile frame does not. */
 export const PROCESS_TITLE = "Our Proven Delivery Process.";
