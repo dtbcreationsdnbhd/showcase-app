@@ -3,7 +3,7 @@
 import { createContext, useContext, type ReactNode } from "react";
 import { FALLBACK_TELEGRAM_HREF } from "@/lib/contact-links";
 
-const TelegramHrefContext = createContext(FALLBACK_TELEGRAM_HREF);
+const TelegramHrefContext = createContext<string>(FALLBACK_TELEGRAM_HREF);
 
 export function TelegramHrefProvider({
   href,
