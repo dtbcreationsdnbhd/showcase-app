@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { mediaFileError } from "@/lib/project-media";
+import { MAX_DETAIL_MEDIA, mediaFileError } from "@/lib/project-media";
 import { isProjectCategory, projectTable } from "@/lib/projects";
 import {
   MAX_PROJECT_FEATURES,
@@ -45,6 +45,13 @@ export async function createShowcaseProject(
     return {
       ok: false,
       message: "Upload a main media file.",
+    };
+  }
+
+  if (detailImages.length > MAX_DETAIL_MEDIA) {
+    return {
+      ok: false,
+      message: `Detail media is limited to ${MAX_DETAIL_MEDIA} files.`,
     };
   }
 
@@ -238,6 +245,12 @@ export async function updateShowcaseProject(
   const keptDetailUrls = currentDetails.filter((url) =>
     keptDetailInputs.includes(url),
   );
+  if (keptDetailUrls.length + detailImages.length > MAX_DETAIL_MEDIA) {
+    return {
+      ok: false,
+      message: `Detail media is limited to ${MAX_DETAIL_MEDIA} files.`,
+    };
+  }
   if (!mainImage && !keptMain) {
     return {
       ok: false,

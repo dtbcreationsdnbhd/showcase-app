@@ -10,14 +10,13 @@ import { useLocaleLoading } from "@/components/landing/LocaleLoading";
 import { GOLD_INK, GOLD_SOLID, GOLD_TEXT, GOLD_TEXT_GLOW, goldButtonSx } from "@/lib/gold-theme";
 import { figmaPx } from "@/lib/landing-layout";
 import { CJK_FONT, homeHashPrefix, sheetCopy, type Locale } from "@/lib/locale";
+import { isVideoUrl } from "@/lib/project-media";
 import type { FeatureIconName } from "@/lib/project-sheet";
 import {
   landingPageUrl,
   projectGalleryMedia,
   type ShowcaseProject,
 } from "@/lib/projects";
-
-const GALLERY_ROTATE_MS = 5000;
 
 /** Shown until a project is saved with its own popup copy. */
 const SAMPLE_SHEET = {
@@ -80,6 +79,7 @@ function ProjectPhoto({
   height,
   alt,
   controls = false,
+  playOnClick = false,
   objectFit = "cover",
   objectPosition = "center top",
   aspectRatio = PHOTO_W / PHOTO_H,
@@ -89,6 +89,7 @@ function ProjectPhoto({
   height?: number | string;
   alt: string;
   controls?: boolean;
+  playOnClick?: boolean;
   objectFit?: "contain" | "cover";
   objectPosition?: string;
   aspectRatio?: number;
@@ -129,7 +130,8 @@ function ProjectPhoto({
         alt={alt}
         sizes={sizeHint}
         controls={controls}
-        autoPlay={!controls}
+        autoPlay={!controls && !playOnClick}
+        playOnClick={playOnClick}
         objectFit={objectFit}
         objectPosition={objectPosition}
         filter="drop-shadow(0 0 1px rgba(255, 255, 255, 0.55)) drop-shadow(0 12px 22px rgba(0, 0, 0, 0.4))"
@@ -160,7 +162,7 @@ function GalleryArrow({
         top: "50%",
         transform: "translateY(-50%)",
         ...(isPrev ? { left: figmaPx(12) } : { right: figmaPx(12) }),
-        zIndex: 2,
+        zIndex: 3,
         width: figmaPx(40),
         height: figmaPx(40),
         p: 0,
@@ -536,17 +538,18 @@ export default function ProjectDetailPopup({
     Boolean(detail.subtitle || detail.whyIt || detail.howWeHelp || detail.ctaText || detail.footerText) ||
     detail.features.length > 0;
   const sheet = hasSheet ? detail : { ...detail, ...SAMPLE_SHEET };
-  const { media } = projectGalleryMedia(project);
+  const mainSrc = project.mainImageUrl.trim();
+  const details = projectGalleryMedia(project).media.filter((url) => url !== mainSrc);
+  const media = mainSrc ? [mainSrc, ...details] : details;
   const [slide, setSlide] = useState(0);
-  const [resumeKey, setResumeKey] = useState(0);
   const [mounted, setMounted] = useState(false);
   const imageSrc = media[slide] ?? media[0] ?? null;
+  const imageIsVideo = Boolean(imageSrc && isVideoUrl(imageSrc));
   const canSlide = media.length > 1;
 
   function goTo(index: number) {
     if (media.length < 1) return;
     setSlide(((index % media.length) + media.length) % media.length);
-    setResumeKey((key) => key + 1);
   }
 
   useEffect(() => {
@@ -555,7 +558,6 @@ export default function ProjectDetailPopup({
 
   useEffect(() => {
     setSlide(0);
-    setResumeKey(0);
   }, [project.id]);
 
   useEffect(() => {
@@ -568,24 +570,14 @@ export default function ProjectDetailPopup({
       if (event.key === "ArrowLeft") {
         event.preventDefault();
         setSlide((current) => (current - 1 + media.length) % media.length);
-        setResumeKey((key) => key + 1);
       } else if (event.key === "ArrowRight") {
         event.preventDefault();
         setSlide((current) => (current + 1) % media.length);
-        setResumeKey((key) => key + 1);
       }
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [closable, onClose, media.length]);
-
-  useEffect(() => {
-    if (!canSlide) return;
-    const id = window.setInterval(() => {
-      setSlide((current) => (current + 1) % media.length);
-    }, GALLERY_ROTATE_MS);
-    return () => window.clearInterval(id);
-  }, [canSlide, media.length, project.id, resumeKey]);
 
   useEffect(() => {
     const html = document.documentElement;
@@ -748,12 +740,14 @@ export default function ProjectDetailPopup({
             >
               <Box sx={{ position: "relative", width: "100%" }}>
                 <ProjectPhoto
+                  key={imageSrc ?? "empty"}
                   src={imageSrc}
                   width={figmaPx(PHOTO_W)}
                   height={figmaPx(PHOTO_H)}
                   alt={detail.name}
                   objectFit="contain"
                   objectPosition="center"
+                  playOnClick={imageIsVideo}
                 />
                 {canSlide ? (
                   <>
@@ -768,7 +762,7 @@ export default function ProjectDetailPopup({
                   </>
                 ) : null}
               </Box>
-              {canSlide ? (
+              {details.length > 0 ? (
                 <Box
                   sx={{
                     display: "flex",
@@ -778,8 +772,9 @@ export default function ProjectDetailPopup({
                     pb: `${figmaPx(2)}px`,
                   }}
                 >
-                  {media.map((src, index) => {
-                    const active = slide === index;
+                  {details.map((src, index) => {
+                    const mediaIndex = mainSrc ? index + 1 : index;
+                    const active = slide === mediaIndex;
                     return (
                       <Box
                         key={`${src}-${index}`}
@@ -789,7 +784,7 @@ export default function ProjectDetailPopup({
                         aria-current={active ? "true" : undefined}
                         onClick={(event) => {
                           event.stopPropagation();
-                          goTo(index);
+                          goTo(mediaIndex);
                         }}
                         sx={{
                           position: "relative",
