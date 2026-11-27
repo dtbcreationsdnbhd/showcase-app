@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { Barlow_Semi_Condensed, Plus_Jakarta_Sans } from "next/font/google";
 import LocaleLoadingProvider from "@/components/landing/LocaleLoading";
 import SiteCursor from "@/components/landing/SiteCursor";
+import { TelegramHrefProvider } from "@/components/landing/TelegramHref";
 import ThemeRegistry from "@/components/ThemeRegistry";
+import { listContactLinks, telegramHref } from "@/lib/contact-links";
 import { getLocale } from "@/lib/get-locale";
 import "./globals.css";
 
@@ -28,6 +30,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const locale = await getLocale();
+  const telegram = telegramHref(await listContactLinks());
 
   return (
     <html
@@ -43,7 +46,9 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       ) : null}
       <body className={`${plusJakarta.className} min-h-full flex flex-col`}>
         <ThemeRegistry>
-          <LocaleLoadingProvider>{children}</LocaleLoadingProvider>
+          <LocaleLoadingProvider>
+            <TelegramHrefProvider href={telegram}>{children}</TelegramHrefProvider>
+          </LocaleLoadingProvider>
         </ThemeRegistry>
         <SiteCursor />
       </body>

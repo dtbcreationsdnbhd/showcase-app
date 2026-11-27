@@ -249,6 +249,12 @@ function ProjectSheet({ project }: { project: ShowcaseProject }) {
             <Eyebrow>Button text</Eyebrow>
             <Body>{project.ctaText}</Body>
             <ZhLine>{project.ctaTextZh}</ZhLine>
+            <Eyebrow>Button link</Eyebrow>
+            {project.buttonUrl ? (
+              <Body>{project.buttonUrl}</Body>
+            ) : (
+              <Muted>Opens Telegram</Muted>
+            )}
           </Panel>
           <Panel>
             <Eyebrow>Line under the button</Eyebrow>

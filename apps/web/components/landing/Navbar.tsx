@@ -4,6 +4,7 @@ import Image from "next/image";
 import CenterHashLink from "@/components/landing/CenterHashLink";
 import LanguageSwitch from "@/components/landing/LanguageSwitch";
 import ServicesMenu, { ServicesCaret } from "@/components/landing/ServicesMenu";
+import { listContactLinks, telegramHref } from "@/lib/contact-links";
 import { getLocale, getRequestPathname } from "@/lib/get-locale";
 import { GOLD_INK, goldButtonSx } from "@/lib/gold-theme";
 import { DESKTOP_NAV_LINKS } from "@/lib/landing-nav";
@@ -49,6 +50,7 @@ export default async function Navbar({
 }) {
   const locale = await getLocale();
   const pathname = await getRequestPathname();
+  const telegram = telegramHref(await listContactLinks());
   const prefix = hrefPrefix ?? homeHashPrefix(pathname);
   const copy = chromeCopy(locale);
   const headerFont =
@@ -269,7 +271,9 @@ export default async function Navbar({
         >
           <Box
             component="a"
-            href={withPrefix("#contact")}
+            href={telegram}
+            target="_blank"
+            rel="noopener noreferrer"
             className="hover-grow"
             sx={{
               boxSizing: "border-box",

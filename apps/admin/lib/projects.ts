@@ -49,6 +49,7 @@ export type ShowcaseProject = {
   footerText: string;
   footerTextZh: string;
   landingUrl: string;
+  buttonUrl: string;
   challenge: string;
   solution: string;
   mainImageUrl: string;
@@ -85,6 +86,7 @@ type ProjectRow = {
   footer_text?: string | null;
   footer_text_zh?: string | null;
   landing_url?: string | null;
+  button_url?: string | null;
   challenge: string;
   solution: string;
   main_image_url: string;
@@ -136,10 +138,16 @@ export async function listProjects({
   }
 
   const supabase = await createClient();
-  const listed = await supabase
+  const withButton = await supabase
     .from(table)
-    .select(`${PROJECT_COLUMNS}, ${SHEET_COLUMNS}, ${ZH_COLUMNS}`)
+    .select(`${PROJECT_COLUMNS}, ${SHEET_COLUMNS}, ${ZH_COLUMNS}, button_url`)
     .order("created_at", { ascending: false });
+  const listed = withButton.error?.message.includes("button_url")
+    ? await supabase
+        .from(table)
+        .select(`${PROJECT_COLUMNS}, ${SHEET_COLUMNS}, ${ZH_COLUMNS}`)
+        .order("created_at", { ascending: false })
+    : withButton;
   const withoutZh = listed.error
     ? await supabase
         .from(table)
@@ -219,11 +227,18 @@ export async function getProject(
   }
 
   const supabase = await createClient();
-  const loaded = await supabase
+  const withButton = await supabase
     .from(table)
-    .select(`${PROJECT_COLUMNS}, ${SHEET_COLUMNS}, ${ZH_COLUMNS}`)
+    .select(`${PROJECT_COLUMNS}, ${SHEET_COLUMNS}, ${ZH_COLUMNS}, button_url`)
     .eq("id", id)
     .maybeSingle();
+  const loaded = withButton.error?.message.includes("button_url")
+    ? await supabase
+        .from(table)
+        .select(`${PROJECT_COLUMNS}, ${SHEET_COLUMNS}, ${ZH_COLUMNS}`)
+        .eq("id", id)
+        .maybeSingle()
+    : withButton;
   const withoutZh = loaded.error
     ? await supabase
         .from(table)
@@ -277,6 +292,7 @@ function toProject(row: ProjectRow): ShowcaseProject {
     footerText: row.footer_text ?? "",
     footerTextZh: row.footer_text_zh ?? "",
     landingUrl: row.landing_url ?? "",
+    buttonUrl: row.button_url ?? "",
     challenge: row.challenge,
     solution: row.solution,
     mainImageUrl: row.main_image_url,
