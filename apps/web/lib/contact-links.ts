@@ -10,6 +10,16 @@ export type ContactLink = {
   href: string;
 };
 
+export const FALLBACK_TELEGRAM_HREF =
+  FORM_CONNECT_LINKS.find((link) => link.id === "telegram")?.href ??
+  "https://t.me/visioncraftofficial";
+
+/** Saved Telegram link, or the public channel when settings are empty. */
+export function telegramHref(links?: readonly Pick<ContactLink, "id" | "href">[]): string {
+  const saved = links?.find((link) => link.id === "telegram")?.href.trim();
+  return saved || FALLBACK_TELEGRAM_HREF;
+}
+
 type ContactRow = {
   whatsapp: string | null;
   telegram: string | null;

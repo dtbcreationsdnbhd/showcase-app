@@ -120,6 +120,10 @@
   alter table public.staging_projects drop column if exists landing_label_zh;
   alter table public.production_projects drop column if exists landing_label_zh;
 
+  -- Optional gold-button link. Empty sends the button to Telegram.
+  alter table public.staging_projects add column if not exists button_url text not null default '';
+  alter table public.production_projects add column if not exists button_url text not null default '';
+
   create or replace function public.touch_project_updated_at()
   returns trigger
   language plpgsql

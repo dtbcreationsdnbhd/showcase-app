@@ -398,6 +398,7 @@ type ProjectSheet = {
   ctaText: string;
   footerText: string;
   landingUrl: string;
+  buttonUrl: string;
   nameZh: string;
   subtitleZh: string;
   whyItZh: string;
@@ -423,11 +424,20 @@ function landingColumns(sheet: ProjectSheet) {
   };
 }
 
+function buttonColumns(sheet: ProjectSheet) {
+  return {
+    button_url: sheet.buttonUrl,
+  };
+}
+
 const ZH_COLUMNS_MISSING =
   "Chinese fields need the new project columns. Run apps/web/supabase/schema.sql in the Supabase SQL Editor, then save again.";
 
 const LANDING_COLUMNS_MISSING =
   "Landing page fields need the new project columns. Run apps/web/supabase/schema.sql in the Supabase SQL Editor, then save again.";
+
+const BUTTON_COLUMN_MISSING =
+  "The button link needs the new project column. Run apps/web/supabase/schema.sql in the Supabase SQL Editor, then save again.";
 
 function sheetHasZhColumns(sheet: ProjectSheet) {
   return Object.values(zhColumns(sheet)).some((value) => value.length > 0);
@@ -439,6 +449,10 @@ function missingZhColumn(message: string) {
 
 function missingLandingColumn(message: string) {
   return message.includes("landing_url");
+}
+
+function missingButtonColumn(message: string) {
+  return message.includes("button_url");
 }
 
 function sheetHasLanding(sheet: ProjectSheet) {
@@ -455,11 +469,22 @@ async function writeProject(
   sheet: ProjectSheet,
   id?: string,
 ): Promise<ActionResult> {
-  const withZh = { ...row, ...zhColumns(sheet), ...landingColumns(sheet) };
+  const withSheet = { ...row, ...zhColumns(sheet), ...landingColumns(sheet), ...buttonColumns(sheet) };
   let wrote =
     mode === "insert"
-      ? await supabase.from(table).insert(withZh)
-      : await supabase.from(table).update(withZh).eq("id", id ?? "").select("id");
+      ? await supabase.from(table).insert(withSheet)
+      : await supabase.from(table).update(withSheet).eq("id", id ?? "").select("id");
+
+  if (wrote.error && missingButtonColumn(wrote.error.message)) {
+    if (sheet.buttonUrl) {
+      return { ok: false, message: BUTTON_COLUMN_MISSING };
+    }
+    const withoutButton = { ...row, ...zhColumns(sheet), ...landingColumns(sheet) };
+    wrote =
+      mode === "insert"
+        ? await supabase.from(table).insert(withoutButton)
+        : await supabase.from(table).update(withoutButton).eq("id", id ?? "").select("id");
+  }
 
   if (!wrote.error && (mode === "insert" || (wrote.data?.length ?? 0) > 0)) {
     return { ok: true };
@@ -518,11 +543,19 @@ function readSheet(formData: FormData):
   const ctaTextZh = String(formData.get("ctaTextZh") ?? "").trim();
   const footerTextZh = String(formData.get("footerTextZh") ?? "").trim();
   const landingUrl = String(formData.get("landingUrl") ?? "").trim();
+  const buttonUrl = String(formData.get("buttonUrl") ?? "").trim();
 
   if (landingUrl && !landingPageUrl(landingUrl)) {
     return {
       ok: false,
       message: "Landing page link must start with http:// or https://.",
+    };
+  }
+
+  if (buttonUrl && !landingPageUrl(buttonUrl)) {
+    return {
+      ok: false,
+      message: "Button link must start with http:// or https://.",
     };
   }
 
@@ -568,6 +601,7 @@ function readSheet(formData: FormData):
     ctaText,
     footerText,
     landingUrl,
+    buttonUrl,
     nameZh,
     subtitleZh,
     whyItZh,

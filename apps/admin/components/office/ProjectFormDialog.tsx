@@ -408,8 +408,18 @@ function ProjectFormFields({
           }
         />
         <Typography variant="caption" color="text.secondary" sx={{ mt: -1 }}>
-          The gold button still opens the contact form.
+          The gold button opens the button link. Leave that link empty and it opens Telegram.
         </Typography>
+        <TextField
+          name="buttonUrl"
+          label="Button link (optional)"
+          placeholder="https://"
+          fullWidth
+          size="small"
+          disabled={pending}
+          defaultValue={project?.buttonUrl ?? ""}
+          sx={fieldSx}
+        />
         <LanguagePair
           english={
             <TextField

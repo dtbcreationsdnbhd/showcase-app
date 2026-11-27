@@ -2,14 +2,14 @@
 
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { useEffect, useState, type MouseEvent } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { createPortal } from "react-dom";
 import ShowcaseMedia from "@/components/landing/ShowcaseMedia";
-import { useLocaleLoading } from "@/components/landing/LocaleLoading";
+import { useTelegramHref } from "@/components/landing/TelegramHref";
 import { GOLD_INK, GOLD_SOLID, GOLD_TEXT, GOLD_TEXT_GLOW, goldButtonSx } from "@/lib/gold-theme";
 import { figmaPx } from "@/lib/landing-layout";
-import { CJK_FONT, homeHashPrefix, sheetCopy, type Locale } from "@/lib/locale";
+import { CJK_FONT, sheetCopy, type Locale } from "@/lib/locale";
 import { isVideoUrl } from "@/lib/project-media";
 import type { FeatureIconName } from "@/lib/project-sheet";
 import {
@@ -524,9 +524,8 @@ export default function ProjectDetailPopup({
   closable?: boolean;
 }) {
   const pathname = usePathname();
-  const { begin: beginLoading } = useLocaleLoading();
+  const telegramHref = useTelegramHref();
   const locale: Locale = pathname === "/zh" || pathname.startsWith("/zh/") ? "zh" : "en";
-  const contactHref = `${homeHashPrefix(pathname)}#contact`;
   const labels = sheetCopy(locale);
   const copyFace = locale === "zh" ? { fontFamily: CJK_FONT } : null;
   const subtitleSize = locale === "zh" ? figmaPx(16) : figmaPx(20);
@@ -534,6 +533,7 @@ export default function ProjectDetailPopup({
   const footerSize = locale === "zh" ? figmaPx(13) : figmaPx(16);
   const detail = project;
   const landingUrl = landingPageUrl(detail.landingUrl);
+  const buttonUrl = landingPageUrl(detail.buttonUrl);
   const hasSheet =
     Boolean(detail.subtitle || detail.whyIt || detail.howWeHelp || detail.ctaText || detail.footerText) ||
     detail.features.length > 0;
@@ -943,29 +943,9 @@ export default function ProjectDetailPopup({
               {sheet.ctaText ? (
               <Box
                 component="a"
-                href={contactHref}
-                onClick={(event: MouseEvent<HTMLAnchorElement>) => {
-                  if (
-                    event.metaKey ||
-                    event.ctrlKey ||
-                    event.shiftKey ||
-                    event.altKey ||
-                    event.button !== 0
-                  ) {
-                    return;
-                  }
-                  if (homeHashPrefix(pathname) === "") {
-                    onClose();
-                    return;
-                  }
-                  event.preventDefault();
-                  beginLoading();
-                  requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                      window.location.assign(contactHref);
-                    });
-                  });
-                }}
+                href={buttonUrl ?? telegramHref}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="hover-grow"
                 sx={{
                   display: "inline-flex",

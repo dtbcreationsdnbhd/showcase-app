@@ -32,6 +32,7 @@ export type ShowcaseProject = {
   footerText: string;
   footerTextZh: string;
   landingUrl: string;
+  buttonUrl: string;
   challenge: string;
   solution: string;
   mainImageUrl: string;
@@ -57,6 +58,7 @@ type ProjectRow = {
   footer_text?: string | null;
   footer_text_zh?: string | null;
   landing_url?: string | null;
+  button_url?: string | null;
   challenge: string;
   solution: string;
   main_image_url: string;
@@ -229,10 +231,17 @@ export async function listProjects(): Promise<ShowcaseProject[]> {
   const zhColumns =
     "name_zh, subtitle_zh, why_it_zh, how_we_help_zh, cta_text_zh, footer_text_zh, landing_url";
   const table = projectTable();
-  const listed = await supabase
+  const withButton = await supabase
     .from(table)
-    .select(`${baseColumns}, ${sheetColumns}, ${zhColumns}`)
+    .select(`${baseColumns}, ${sheetColumns}, ${zhColumns}, button_url`)
     .order("created_at", { ascending: true });
+  const listed =
+    withButton.error?.message.includes("button_url")
+      ? await supabase
+          .from(table)
+          .select(`${baseColumns}, ${sheetColumns}, ${zhColumns}`)
+          .order("created_at", { ascending: true })
+      : withButton;
   const withoutZh = listed.error
     ? await supabase
         .from(table)
@@ -271,6 +280,7 @@ export async function listProjects(): Promise<ShowcaseProject[]> {
     footerText: row.footer_text ?? "",
     footerTextZh: row.footer_text_zh ?? "",
     landingUrl: row.landing_url ?? "",
+    buttonUrl: row.button_url ?? "",
     challenge: row.challenge,
     solution: row.solution,
     mainImageUrl: row.main_image_url,
