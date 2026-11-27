@@ -20,6 +20,8 @@ export const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
  * Keep a little under next.config proxyClientMaxBodySize.
  */
 export const MAX_UPLOAD_TOTAL_BYTES = 100 * 1024 * 1024;
+/** Detail gallery on a project. Main stays a single file. */
+export const MAX_DETAIL_MEDIA = 4;
 
 const VIDEO_EXT = /\.(mp4|webm)(?:$|\?)/i;
 

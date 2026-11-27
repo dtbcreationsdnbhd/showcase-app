@@ -22,6 +22,7 @@ import {
   type ProjectFeature,
 } from "@/lib/project-sheet";
 import {
+  MAX_DETAIL_MEDIA,
   MAX_UPLOAD_TOTAL_BYTES,
   PROJECT_MEDIA_ACCEPT,
   isProjectVideoType,
@@ -35,7 +36,7 @@ import { cornerRadius } from "@/lib/ui";
 const MAIN_MEDIA_HINT =
   "Recommended 1200 × 1800 px, portrait 2:3. The card crops the photo to fill the frame, so keep the subject toward the top.";
 const DETAIL_MEDIA_HINT =
-  "Recommended 1800 × 1200 px, landscape 3:2. The popup shows the whole image inside the frame.";
+  "Up to 4. Recommended 1800 × 1200 px, landscape 3:2. The popup shows these under the main image.";
 
 const fieldSx = {
   "& .MuiOutlinedInput-root": {
@@ -205,6 +206,20 @@ function ProjectFormFields({
         id: crypto.randomUUID(),
         message:
           "All new media together must be 100 MB or smaller (each video ≤50 MB).",
+        tone: "error",
+      });
+      return;
+    }
+
+    const detailCount =
+      data.getAll("keptDetailImages").filter((value) => String(value).trim()).length +
+      data
+        .getAll("detailImages")
+        .filter((value) => value instanceof File && value.size > 0).length;
+    if (detailCount > MAX_DETAIL_MEDIA) {
+      onNotice({
+        id: crypto.randomUUID(),
+        message: `Detail media is limited to ${MAX_DETAIL_MEDIA} files.`,
         tone: "error",
       });
       return;
@@ -448,6 +463,10 @@ function ProjectFormFields({
           hint={DETAIL_MEDIA_HINT}
           disabled={pending}
           multiple
+          maxCount={MAX_DETAIL_MEDIA}
+          onLimit={(message) =>
+            onNotice({ id: crypto.randomUUID(), message, tone: "error" })
+          }
           existingUrls={project?.detailImageUrls ?? []}
         />
       </DialogContent>
@@ -596,6 +615,8 @@ function ImageField({
   hint,
   disabled,
   multiple = false,
+  maxCount,
+  onLimit,
   existingUrls = [],
 }: {
   name: string;
@@ -604,6 +625,8 @@ function ImageField({
   hint?: string;
   disabled: boolean;
   multiple?: boolean;
+  maxCount?: number;
+  onLimit?: (message: string) => void;
   existingUrls?: string[];
 }) {
   const inputId = useId();
@@ -643,8 +666,24 @@ function ImageField({
       media.push(file);
     }
     if (media.length === 0) return;
-    if (!multiple) setKept([]);
-    applyFiles(multiple ? [...filesRef.current, ...media] : media.slice(0, 1));
+    if (!multiple) {
+      setKept([]);
+      applyFiles(media.slice(0, 1));
+      return;
+    }
+    const room =
+      maxCount == null
+        ? media.length
+        : maxCount - kept.length - filesRef.current.length;
+    if (room <= 0) {
+      onLimit?.(`Detail media is limited to ${maxCount} files.`);
+      return;
+    }
+    const accepted = media.slice(0, room);
+    if (accepted.length < media.length) {
+      onLimit?.(`Detail media is limited to ${maxCount} files.`);
+    }
+    applyFiles([...filesRef.current, ...accepted]);
   }
 
   function removeFileAt(index: number) {
@@ -770,7 +809,7 @@ function ImageField({
         </Typography>
         <Typography variant="caption" sx={{ color: "#9AA3B2", textAlign: "center" }}>
           {multiple
-            ? "Select more than one. JPG/PNG/WebP ≤5MB · MP4/WebM ≤50MB · all new files ≤100MB total"
+            ? `${maxCount ? `Up to ${maxCount}. ` : ""}JPG/PNG/WebP ≤5MB · MP4/WebM ≤50MB · all new files ≤100MB total`
             : "JPG/PNG/WebP ≤5MB · MP4/WebM ≤50MB · all new files ≤100MB total"}
         </Typography>
       </Box>
